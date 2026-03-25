@@ -9,34 +9,38 @@ Ce dépôt contient l'ensemble des documents nécessaires à la création et au 
 
 ## Documents disponibles
 
+Chaque document est disponible en deux formats :
+- **Markdown** (`.md`) — source, versionnable, lisible en ligne sur GitHub
+- **Word** (`.docx`) — prêt à imprimer, signer et déposer en préfecture
+
 ### 📁 Dossier de dépôt en préfecture *(documents obligatoires)*
 
-| Fichier | Description |
-|---|---|
-| [cerfa_13973_modele.md](cerfa_13973_modele.md) | Guide de remplissage du formulaire Cerfa 13973 (déclaration de création) |
-| [statuts.md](statuts.md) | Statuts de l'association — 2 exemplaires signés requis |
-| [proces_verbal_constitutif.md](proces_verbal_constitutif.md) | Procès-verbal de l'assemblée générale constitutive |
-| [liste_dirigeants.md](liste_dirigeants.md) | Liste des personnes chargées de l'administration (équivalent Cerfa 13971) |
+| Document | Markdown | Word |
+|---|---|---|
+| Guide de remplissage Cerfa 13973 | [cerfa_13973_modele.md](cerfa_13973_modele.md) | [cerfa_13973_modele.docx](word/cerfa_13973_modele.docx) |
+| Statuts de l'association | [statuts.md](statuts.md) | [statuts.docx](word/statuts.docx) |
+| Procès-verbal de l'assemblée constitutive | [proces_verbal_constitutif.md](proces_verbal_constitutif.md) | [proces_verbal_constitutif.docx](word/proces_verbal_constitutif.docx) |
+| Liste des personnes chargées de l'administration | [liste_dirigeants.md](liste_dirigeants.md) | [liste_dirigeants.docx](word/liste_dirigeants.docx) |
 
 ### 📁 Documents de fonctionnement interne
 
-| Fichier | Description |
-|---|---|
-| [reglement_interieur.md](reglement_interieur.md) | Règlement intérieur |
+| Document | Markdown | Word |
+|---|---|---|
+| Règlement intérieur | [reglement_interieur.md](reglement_interieur.md) | [reglement_interieur.docx](word/reglement_interieur.docx) |
 
 ### 📁 Documents de présentation et de développement
 
-| Fichier | Description |
-|---|---|
-| [projet_artistique.md](projet_artistique.md) | Note d'intention et projet artistique |
-| [biographies.md](biographies.md) | Biographies des fondateurs |
-| [dossier_subvention.md](dossier_subvention.md) | Trame de dossier de demande de subvention |
+| Document | Markdown | Word |
+|---|---|---|
+| Note d'intention et projet artistique | [projet_artistique.md](projet_artistique.md) | [projet_artistique.docx](word/projet_artistique.docx) |
+| Biographies des fondateurs | [biographies.md](biographies.md) | [biographies.docx](word/biographies.docx) |
+| Trame de dossier de demande de subvention | [dossier_subvention.md](dossier_subvention.md) | [dossier_subvention.docx](word/dossier_subvention.docx) |
 
 ### 📋 Suivi
 
-| Fichier | Description |
-|---|---|
-| [TODO.md](TODO.md) | Liste complète des étapes de création de l'association |
+| Document | Markdown | Word |
+|---|---|---|
+| Liste des étapes de création | [TODO.md](TODO.md) | [TODO.docx](word/TODO.docx) |
 
 ## À propos du nom
 
