@@ -165,7 +165,7 @@ Les présents statuts ont été adoptés lors de l'assemblée générale constit
 
 | Nom | Prénom | Qualité | Signature |
 |---|---|---|---|
-| d'Aviau | Ewen | Co-fondateur, Président | |
-| Lavignac | Ambre | Co-fondatrice, Trésorière | |
+| Lavignac | Ambre | Co-fondatrice, Présidente | |
+| d'Aviau | Ewen | Co-fondateur, Secrétaire et Trésorier | |
 
 *Fait à __________, le __________*
