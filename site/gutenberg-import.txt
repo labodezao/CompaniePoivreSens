@@ -1,0 +1,646 @@
+<!-- ====================================================================
+     POIVRE & SENS — Import Gutenberg natif WordPress
+     ====================================================================
+     Comment utiliser ce fichier :
+     1. Dans WordPress, créez ou ouvrez une page.
+     2. Cliquez sur les trois points (⋮) en haut à droite > "Éditeur de code".
+     3. Sélectionnez tout (Ctrl+A) et collez ce contenu.
+     4. Repassez en mode "Éditeur visuel" pour modifier librement.
+     5. Remplacez chaque URL d'image (actuellement vides) par vos photos.
+
+     Structure de la page :
+       • Hero — Bannière plein écran
+       • Galerie — 6 emplacements photo éditoriaux
+       • Manifeste — Texte d'intention
+       • Projet — 3 axes artistiques
+       • Artistes — Biographies
+       • Activités — Liste des propositions
+       • Esthétique — Valeurs de la compagnie
+       • Contact
+==================================================================== -->
+
+<!-- wp:cover {"url":"","dimRatio":80,"overlayColor":"black","minHeight":100,"minHeightUnit":"vh","align":"full","className":"ps-hero"} -->
+<div class="wp-block-cover alignfull ps-hero" style="min-height:100vh">
+<span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim-80"></span>
+<div class="wp-block-cover__inner-container">
+
+<!-- wp:group {"layout":{"type":"constrained","contentSize":"960px"}} -->
+<div class="wp-block-group">
+
+<!-- wp:paragraph {"align":"center","textColor":"","style":{"typography":{"fontSize":"0.7rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p class="has-text-align-center" style="color:#c28b36;font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase">Compagnie artistique · Association loi 1901</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"16px"} -->
+<div style="height:16px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading {"textAlign":"center","level":1,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(4rem,10vw,7rem)","fontWeight":"300","lineHeight":"1"},"color":{"text":"#ece3cb"}}} -->
+<h1 class="wp-block-heading has-text-align-center" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(4rem,10vw,7rem);font-weight:300;line-height:1;color:#ece3cb">Poivre &amp; Sens</h1>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"24px"} -->
+<div style="height:24px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:separator {"backgroundColor":"","style":{"color":{"background":"#c28b36"}},"className":"is-style-wide"} -->
+<hr class="wp-block-separator is-style-wide" style="background-color:#c28b36;border-color:#c28b36"/>
+<!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"24px"} -->
+<div style="height:24px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"0.82rem","letterSpacing":"0.16em","textTransform":"uppercase"},"color":{"text":"rgba(236,227,203,0.65)"}}} -->
+<p class="has-text-align-center" style="color:rgba(236,227,203,0.65);font-size:0.82rem;letter-spacing:0.16em;text-transform:uppercase">Danse contemporaine · Contact-improvisation · Musique improvisée · Pratiques somatiques</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"32px"} -->
+<div style="height:32px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(1.4rem,2.5vw,2rem)","fontStyle":"italic","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<p class="has-text-align-center" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(1.4rem,2.5vw,2rem);font-style:italic;font-weight:300;color:#ece3cb">« Le corps sait ce que l'esprit cherche encore. »</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
+<div class="wp-block-buttons">
+<!-- wp:button {"style":{"border":{"radius":"0"},"color":{"background":"transparent","text":"#c28b36"},"spacing":{"padding":{"top":"14px","bottom":"12px","left":"32px","right":"32px"}},"border":{"color":"#c28b36","width":"1px"}}} -->
+<div class="wp-block-button"><a class="wp-block-button__link" style="border-radius:0;background:transparent;color:#c28b36;padding:14px 32px;border:1px solid #c28b36">Découvrir la compagnie →</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+
+</div>
+<!-- /wp:group -->
+</div>
+</div>
+<!-- /wp:cover -->
+
+<!-- wp:spacer {"height":"0px"} -->
+<div style="height:0px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:group {"align":"full","backgroundColor":"","style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#100e0b;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Galerie</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Images de la compagnie</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"32px"} -->
+<div style="height:32px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,0.9)"},"typography":{"fontSize":"0.82rem"}}} -->
+<p style="color:rgba(127,116,99,0.9);font-size:0.82rem">Cliquez sur chaque image pour la remplacer. Format recommandé : JPEG, minimum 1200 px de large.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"32px"} -->
+<div style="height:32px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:gallery {"columns":3,"linkTo":"none","sizeSlug":"large","allowResize":true} -->
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped">
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"En scène · Spectacle vivant"} -->
+<figure class="wp-block-image size-large"><img src="" alt="Spectacle vivant — en scène" /><figcaption class="wp-element-caption">En scène · Spectacle vivant</figcaption></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"Jam de contact-improvisation"} -->
+<figure class="wp-block-image size-large"><img src="" alt="Jam de contact-improvisation" /><figcaption class="wp-element-caption">Jam de contact-improvisation</figcaption></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"Ewen d'Aviau · Luthier, musicien, danseur"} -->
+<figure class="wp-block-image size-large"><img src="" alt="Portrait Ewen d'Aviau" /><figcaption class="wp-element-caption">Ewen d'Aviau · Luthier, musicien, danseur</figcaption></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"Ambre Lavignac · Danseuse, pédagogue"} -->
+<figure class="wp-block-image size-large"><img src="" alt="Portrait Ambre Lavignac" /><figcaption class="wp-element-caption">Ambre Lavignac · Danseuse, pédagogue</figcaption></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"En résidence · Laboratoire artistique"} -->
+<figure class="wp-block-image size-large"><img src="" alt="En résidence artistique" /><figcaption class="wp-element-caption">En résidence · Laboratoire artistique</figcaption></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"sizeSlug":"large","linkDestination":"none","caption":"Pédagogie du sensible · Atelier"} -->
+<figure class="wp-block-image size-large"><img src="" alt="Atelier pédagogique" /><figcaption class="wp-element-caption">Pédagogie du sensible · Atelier</figcaption></figure>
+<!-- /wp:image -->
+
+</figure>
+<!-- /wp:gallery -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#181510"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#181510;padding:80px">
+
+<!-- wp:group {"layout":{"type":"constrained","contentSize":"840px"}} -->
+<div class="wp-block-group">
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.8vw,3.2rem)","fontWeight":"300","fontStyle":"normal"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.8vw,3.2rem);font-weight:300;color:#ece3cb">Une rencontre entre le corps et le son</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"28px"} -->
+<div style="height:28px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns -->
+<div class="wp-block-columns">
+
+<!-- wp:column -->
+<div class="wp-block-column">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.96rem","lineHeight":"1.88"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.96rem;line-height:1.88">La compagnie explore les espaces de porosité entre le mouvement et le son, entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu. Ses créations ne cherchent pas à illustrer ni à démontrer, mais à <em>habiter</em>.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.96rem","lineHeight":"1.88"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.96rem;line-height:1.88">Inspirée du Tao, des méridiens, de l'aïkido et de la lutherie, la compagnie croit en l'<em>artisanat du spectacle</em> : chaque geste compte, chaque son est matière, chaque silence est espace habité.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#080705;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Note d'intention</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Le projet artistique</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2px"}}} -->
+<div class="wp-block-columns">
+
+<!-- wp:column {"style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"40px","right":"32px","bottom":"40px","left":"32px"}},"border":{"top":{"color":"#9e3710","width":"2px"}}}} -->
+<div class="wp-block-column" style="background-color:#080705;padding:40px 32px;border-top:2px solid #9e3710">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.2)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"4rem","fontWeight":"300","lineHeight":"1"}}} -->
+<p style="color:rgba(194,139,54,0.2);font-family:Cormorant Garamond,Georgia,serif;font-size:4rem;font-weight:300;line-height:1">01</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.35rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">Création chorégraphique &amp; musicale</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.78"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.78">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre composition musicale et partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"40px","right":"32px","bottom":"40px","left":"32px"}},"border":{"top":{"color":"#9e3710","width":"2px"}}}} -->
+<div class="wp-block-column" style="background-color:#080705;padding:40px 32px;border-top:2px solid #9e3710">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.2)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"4rem","fontWeight":"300","lineHeight":"1"}}} -->
+<p style="color:rgba(194,139,54,0.2);font-family:Cormorant Garamond,Georgia,serif;font-size:4rem;font-weight:300;line-height:1">02</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.35rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">L'improvisation comme forme</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.78"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.78">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"40px","right":"32px","bottom":"40px","left":"32px"}},"border":{"top":{"color":"#9e3710","width":"2px"}}}} -->
+<div class="wp-block-column" style="background-color:#080705;padding:40px 32px;border-top:2px solid #9e3710">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.2)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"4rem","fontWeight":"300","lineHeight":"1"}}} -->
+<p style="color:rgba(194,139,54,0.2);font-family:Cormorant Garamond,Georgia,serif;font-size:4rem;font-weight:300;line-height:1">03</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.35rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">La pédagogie du sensible</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.78"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.78">Stages, ateliers de mouvement somatique et de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#100e0b;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Les fondateurs</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Artistes &amp; pédagogues</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2px"}}} -->
+<div class="wp-block-columns">
+
+<!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"48px","right":"44px","bottom":"48px","left":"44px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
+<div class="wp-block-column" style="background-color:#100e0b;padding:48px 44px;border:1px solid rgba(194,139,54,0.18)">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.6rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.6rem;font-weight:400;color:#ece3cb">Ambre Lavignac</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#c28b36"},"typography":{"fontSize":"0.68rem","letterSpacing":"0.15em","textTransform":"uppercase"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase">Danseuse · Pédagogue · Praticienne du mouvement</p>
+<!-- /wp:paragraph -->
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.9rem;line-height:1.82">Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.9rem;line-height:1.82">Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.</p>
+<!-- /wp:paragraph -->
+<!-- wp:spacer {"height":"12px"} -->
+<div style="height:12px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.8)"},"typography":{"fontSize":"0.78rem","letterSpacing":"0.06em"}}} -->
+<p style="color:rgba(194,139,54,0.8);font-size:0.78rem;letter-spacing:0.06em">Danse contemporaine · Improvisation · Somatique · Tao · Méridiens · Massage · Pédagogie</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"48px","right":"44px","bottom":"48px","left":"44px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
+<div class="wp-block-column" style="background-color:#100e0b;padding:48px 44px;border:1px solid rgba(194,139,54,0.18)">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.6rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.6rem;font-weight:400;color:#ece3cb">Ewen d'Aviau</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"#c28b36"},"typography":{"fontSize":"0.68rem","letterSpacing":"0.15em","textTransform":"uppercase"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase">Luthier-ingénieur · Musicien · Danseur</p>
+<!-- /wp:paragraph -->
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.9rem;line-height:1.82">Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,0.65);font-size:0.9rem;line-height:1.82">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation, des pratiques somatiques et de l'aïkido.</p>
+<!-- /wp:paragraph -->
+<!-- wp:spacer {"height":"12px"} -->
+<div style="height:12px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.8)"},"typography":{"fontSize":"0.78rem","letterSpacing":"0.06em"}}} -->
+<p style="color:rgba(194,139,54,0.8);font-size:0.78rem;letter-spacing:0.06em">Lutherie · Musique improvisée · Contact-improvisation · Somatique · Aïkido · Enseignement</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:spacer {"height":"56px"} -->
+<div style="height:56px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Références &amp; influences</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2px"}}} -->
+<div class="wp-block-columns">
+
+<!-- wp:column -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
+<div class="wp-block-group" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,0.18)">
+<!-- wp:paragraph {"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<p style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb">Steve Paxton &amp; Lisa Nelson</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.78rem">Fondateurs du contact-improvisation</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
+<div class="wp-block-group" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,0.18)">
+<!-- wp:paragraph {"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<p style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb">Anna Halprin &amp; Thomas Hanna</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.78rem">Éducation somatique et danse thérapie</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column">
+<!-- wp:group {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
+<div class="wp-block-group" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,0.18)">
+<!-- wp:paragraph {"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<p style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb">John Cage &amp; Derek Bailey</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.78rem">Improvisation musicale et indétermination</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#080705;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Ce que nous proposons</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Nos activités</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:separator {"style":{"color":{"background":"rgba(194,139,54,0.18)"}}} -->
+<hr class="wp-block-separator" style="background-color:rgba(194,139,54,0.18);border-color:rgba(194,139,54,0.18)"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"16px"}}} -->
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis:48px;flex-grow:0">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.22)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"2.2rem","fontWeight":"300"}}} -->
+<p style="color:rgba(194,139,54,0.22);font-family:Cormorant Garamond,Georgia,serif;font-size:2.2rem;font-weight:300;line-height:1">01</p>
+<!-- /wp:paragraph -->
+</div>
+<div class="wp-block-column">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.4rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb">Spectacles vivants</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.72">Créations scéniques en duo ou en collaboration avec artistes invités. En festivals, théâtres et lieux non conventionnels.</p>
+<!-- /wp:paragraph -->
+</div>
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"rgba(194,139,54,0.18)"}}} -->
+<hr class="wp-block-separator" style="background-color:rgba(194,139,54,0.18);border-color:rgba(194,139,54,0.18)"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"16px"}}} -->
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis:48px;flex-grow:0">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.22)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"2.2rem","fontWeight":"300"}}} -->
+<p style="color:rgba(194,139,54,0.22);font-family:Cormorant Garamond,Georgia,serif;font-size:2.2rem;font-weight:300;line-height:1">02</p>
+<!-- /wp:paragraph -->
+</div>
+<div class="wp-block-column">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.4rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb">Jams contact-improvisation</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.72">Sessions ouvertes au public en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p>
+<!-- /wp:paragraph -->
+</div>
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"rgba(194,139,54,0.18)"}}} -->
+<hr class="wp-block-separator" style="background-color:rgba(194,139,54,0.18);border-color:rgba(194,139,54,0.18)"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"16px"}}} -->
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis:48px;flex-grow:0">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.22)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"2.2rem","fontWeight":"300"}}} -->
+<p style="color:rgba(194,139,54,0.22);font-family:Cormorant Garamond,Georgia,serif;font-size:2.2rem;font-weight:300;line-height:1">03</p>
+<!-- /wp:paragraph -->
+</div>
+<div class="wp-block-column">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.4rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb">Stages &amp; ateliers</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.72">Contact-improvisation, mouvement somatique, musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p>
+<!-- /wp:paragraph -->
+</div>
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"rgba(194,139,54,0.18)"}}} -->
+<hr class="wp-block-separator" style="background-color:rgba(194,139,54,0.18);border-color:rgba(194,139,54,0.18)"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"16px"}}} -->
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis:48px;flex-grow:0">
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(194,139,54,0.22)"},"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"2.2rem","fontWeight":"300"}}} -->
+<p style="color:rgba(194,139,54,0.22);font-family:Cormorant Garamond,Georgia,serif;font-size:2.2rem;font-weight:300;line-height:1">04</p>
+<!-- /wp:paragraph -->
+</div>
+<div class="wp-block-column">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.4rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb">Résidences pédagogiques</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:0.87rem;line-height:1.72">Interventions en milieu scolaire, médico-social ou en entreprise. Pédagogie du sensible adaptée à tous les publics.</p>
+<!-- /wp:paragraph -->
+</div>
+</div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"style":{"color":{"background":"rgba(194,139,54,0.18)"}}} -->
+<hr class="wp-block-separator" style="background-color:rgba(194,139,54,0.18);border-color:rgba(194,139,54,0.18)"/>
+<!-- /wp:separator -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#100e0b;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Identité &amp; valeurs</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Esthétique de la compagnie</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns -->
+<div class="wp-block-columns">
+
+<!-- wp:column -->
+<div class="wp-block-column">
+
+<!-- wp:group {"style":{"spacing":{"padding":{"left":"20px"}},"border":{"left":{"color":"rgba(194,139,54,0.28)","width":"2px"}}}} -->
+<div class="wp-block-group" style="padding-left:20px;border-left:2px solid rgba(194,139,54,0.28)">
+<!-- wp:paragraph {"style":{"color":{"text":"#c28b36"},"typography":{"fontSize":"0.67rem","letterSpacing":"0.22em","textTransform":"uppercase"}}} -->
+<p style="color:#c28b36;font-size:0.67rem;letter-spacing:0.22em;text-transform:uppercase">Scénographie</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.62)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(236,227,203,0.62);font-size:0.9rem;line-height:1.72">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"24px"} -->
+<div style="height:24px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"left":"20px"}},"border":{"left":{"color":"rgba(194,139,54,0.28)","width":"2px"}}}} -->
+<div class="wp-block-group" style="padding-left:20px;border-left:2px solid rgba(194,139,54,0.28)">
+<!-- wp:paragraph {"style":{"color":{"text":"#c28b36"},"typography":{"fontSize":"0.67rem","letterSpacing":"0.22em","textTransform":"uppercase"}}} -->
+<p style="color:#c28b36;font-size:0.67rem;letter-spacing:0.22em;text-transform:uppercase">Mouvement</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.62)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(236,227,203,0.62);font-size:0.9rem;line-height:1.72">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:spacer {"height":"24px"} -->
+<div style="height:24px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"left":"20px"}},"border":{"left":{"color":"rgba(194,139,54,0.28)","width":"2px"}}}} -->
+<div class="wp-block-group" style="padding-left:20px;border-left:2px solid rgba(194,139,54,0.28)">
+<!-- wp:paragraph {"style":{"color":{"text":"#c28b36"},"typography":{"fontSize":"0.67rem","letterSpacing":"0.22em","textTransform":"uppercase"}}} -->
+<p style="color:#c28b36;font-size:0.67rem;letter-spacing:0.22em;text-transform:uppercase">Philosophie</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.62)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.72"}}} -->
+<p style="color:rgba(236,227,203,0.62);font-size:0.9rem;line-height:1.72">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column">
+
+<!-- wp:quote {"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(1.6rem,2.8vw,2.3rem)","fontWeight":"300","fontStyle":"italic"},"color":{"text":"#ece3cb"}}} -->
+<blockquote class="wp-block-quote" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(1.6rem,2.8vw,2.3rem);font-weight:300;font-style:italic;color:#ece3cb"><p>Habiter un espace de jeu partagé — entre deux corps, entre un corps et un instrument.</p><cite style="color:#7f7463;font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;font-style:normal">Poivre &amp; Sens · Note d'intention</cite></blockquote>
+<!-- /wp:quote -->
+
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"align":"full","style":{"color":{"background":"#080705"},"spacing":{"padding":{"top":"80px","bottom":"80px","left":"80px","right":"80px"}}}} -->
+<div class="wp-block-group alignfull" style="background-color:#080705;padding:80px">
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"0.68rem","letterSpacing":"0.28em","textTransform":"uppercase"},"color":{"text":"#c28b36"}}} -->
+<p style="color:#c28b36;font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase">Nous rejoindre</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"clamp(2rem,3.5vw,2.8rem)","fontWeight":"300"},"color":{"text":"#ece3cb"}}} -->
+<h2 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:#ece3cb">Contact</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"48px"} -->
+<div style="height:48px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:columns {"style":{"spacing":{"blockGap":"2px"}}} -->
+<div class="wp-block-columns">
+
+<!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"48px","right":"44px","bottom":"48px","left":"44px"}}}} -->
+<div class="wp-block-column" style="background-color:#100e0b;padding:48px 44px">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.2rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.2rem;font-weight:400;color:#ece3cb">La compagnie</h3>
+<!-- /wp:heading -->
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Nom</strong><br/>Poivre &amp; Sens</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Statut</strong><br/>Association loi 1901</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Direction artistique</strong><br/>Ambre Lavignac &amp; Ewen d'Aviau</p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Courriel</strong><br/><a href="mailto:contact@poivretsens.fr" style="color:#ddb868">contact@poivretsens.fr</a></p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,0.8)"},"typography":{"fontSize":"0.78rem","fontStyle":"italic"}}} -->
+<p style="color:rgba(127,116,99,0.8);font-size:0.78rem;font-style:italic">Coordonnées définitives à compléter lors de l'ouverture officielle.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+<!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"48px","right":"44px","bottom":"48px","left":"44px"}}}} -->
+<div class="wp-block-column" style="background-color:#100e0b;padding:48px 44px">
+<!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"Cormorant Garamond, Georgia, serif","fontSize":"1.2rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
+<h3 class="wp-block-heading" style="font-family:Cormorant Garamond,Georgia,serif;font-size:1.2rem;font-weight:400;color:#ece3cb">Les fondateurs</h3>
+<!-- /wp:heading -->
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Ambre Lavignac</strong><br/><a href="mailto:ambre@poivretsens.fr" style="color:#ddb868">ambre@poivretsens.fr</a></p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Ewen d'Aviau</strong><br/><a href="mailto:ewen@poivretsens.fr" style="color:#ddb868">ewen@poivretsens.fr</a></p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"style":{"color":{"text":"#ece3cb"},"typography":{"fontSize":"0.9rem"}}} -->
+<p style="color:#ece3cb;font-size:0.9rem"><strong style="color:#7f7463;font-size:0.67rem;letter-spacing:0.15em;text-transform:uppercase">Siège social</strong><br/>À compléter lors de l'assemblée constitutive</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:column -->
+
+</div>
+<!-- /wp:columns -->
+</div>
+<!-- /wp:group -->

@@ -4,820 +4,702 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Poivre &amp; Sens — Compagnie de danse et musique improvisées</title>
-  <meta name="description" content="Poivre &amp; Sens est une compagnie dédiée à la danse contemporaine, au contact-improvisation et à la musique improvisée, fondée par Ambre Lavignac et Ewen d'Aviau." />
+  <meta name="description" content="Compagnie de danse contemporaine, contact-improvisation et musique improvisée — Ambre Lavignac &amp; Ewen d'Aviau." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ── Variables ─────────────────────────────────────────────────── */
-    :root {
-      --noir:    #1a1814;
-      --brun:    #3b2f2f;
-      --sable:   #c9a96e;
-      --creme:   #f5f0e8;
-      --blanc:   #fdfaf5;
-      --gris:    #6b6460;
-      --gris-cl: #e8e3da;
-      --rouge:   #8b3a3a;
-      --font-titre: 'Georgia', 'Times New Roman', serif;
-      --font-corps: 'Helvetica Neue', Arial, sans-serif;
-      --rayon: 2px;
-      --transition: 0.3s ease;
-    }
 
-    /* ── Reset & base ──────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body {
-      background: var(--blanc);
-      color: var(--noir);
-      font-family: var(--font-corps);
-      line-height: 1.7;
-    }
-    img { max-width: 100%; display: block; }
-    a { color: inherit; text-decoration: none; }
+:root {
+  --noir:   #080705;
+  --noir2:  #100e0b;
+  --noir3:  #181510;
+  --brun:   #221c12;
+  --rouge:  #9e3710;
+  --or:     #c28b36;
+  --orlt:   #ddb868;
+  --creme:  #ece3cb;
+  --gris:   #7f7463;
+  --bord:   rgba(194,139,54,.18);
+  --bord2:  rgba(194,139,54,.28);
+  --fh: 'Cormorant Garamond', Georgia, serif;
+  --fb: 'Inter', system-ui, sans-serif;
+  --ease: cubic-bezier(.25,.46,.45,.94);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--noir);color:var(--creme);font-family:var(--fb);font-weight:300;line-height:1.7;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+ul,ol{list-style:none}
 
-    /* ── Utilitaires ───────────────────────────────────────────────── */
-    .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
-    .section { padding: 80px 0; }
-    .section--sombre { background: var(--noir); color: var(--creme); }
-    .section--creme  { background: var(--creme); }
-    .section--brun   { background: var(--brun);  color: var(--creme); }
+/* utils */
+.lbl{font-size:.68rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:var(--or);margin-bottom:14px}
+.regle{width:40px;height:1px;background:var(--or);margin-top:18px}
+.sec{padding:100px 80px}
+.sec2{background:var(--noir2)}
+.sec3{background:var(--noir3)}
+.sh{font-family:var(--fh);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:var(--creme);line-height:1.1}
 
-    .titre-section {
-      font-family: var(--font-titre);
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      margin-bottom: 12px;
-    }
-    .sous-titre-section {
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--sable);
-      margin-bottom: 32px;
-    }
-    .separateur {
-      width: 48px; height: 2px;
-      background: var(--sable);
-      margin: 20px 0 40px;
-    }
-    .separateur--centre { margin-left: auto; margin-right: auto; }
-    .citation {
-      font-family: var(--font-titre);
-      font-style: italic;
-      font-size: 1.3rem;
-      color: var(--sable);
-      text-align: center;
-      padding: 16px 0;
-    }
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:300;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;transition:background .4s var(--ease),border-color .4s var(--ease);border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(8,7,5,.93);backdrop-filter:blur(14px);border-color:var(--bord)}
+.nav__logo{font-family:var(--fh);font-size:1.2rem;font-weight:400;letter-spacing:.07em;color:var(--creme)}
+.nav__logo b{color:var(--or);font-weight:400}
+.nav__list{display:flex;gap:32px}
+.nav__list a{font-size:.7rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);transition:color .25s}
+.nav__list a:hover{color:var(--creme)}
+.nav__burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav__burger span{display:block;width:22px;height:1.5px;background:var(--creme);transition:transform .3s,opacity .3s}
+.nav__burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav__burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav__burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 
-    /* ── Navigation ────────────────────────────────────────────────── */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(26,24,20,0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(201,169,110,0.2);
-    }
-    .nav__inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      padding: 0 24px;
-      max-width: 1060px;
-      margin: 0 auto;
-    }
-    .nav__logo {
-      font-family: var(--font-titre);
-      font-size: 1.25rem;
-      color: var(--creme);
-      letter-spacing: 0.05em;
-    }
-    .nav__logo span { color: var(--sable); }
-    .nav__liens {
-      display: flex;
-      gap: 28px;
-      list-style: none;
-    }
-    .nav__liens a {
-      font-size: 0.82rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--creme);
-      opacity: 0.8;
-      transition: opacity var(--transition), color var(--transition);
-    }
-    .nav__liens a:hover { opacity: 1; color: var(--sable); }
+/* hero */
+.hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.hero__bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero__bg svg{width:100%;height:100%}
+.hero__g{position:relative;z-index:1;padding:130px 56px 80px 80px;display:flex;flex-direction:column;justify-content:center}
+.hero__sup{font-size:.67rem;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--or);margin-bottom:36px}
+.hero__nom{font-family:var(--fh);font-size:clamp(4.5rem,9.5vw,8rem);font-weight:300;line-height:.92;letter-spacing:-.01em;color:var(--creme)}
+.hero__nom .et{display:block;font-size:.34em;color:var(--or);letter-spacing:.14em;line-height:2.8;padding-left:.1em}
+.hero__disc{margin-top:32px;font-size:.77rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);line-height:2.2}
+.hero__disc strong{display:block;color:var(--orlt);font-weight:400;letter-spacing:.07em;font-size:.85rem;margin-bottom:4px}
+.hero__cta{margin-top:52px;display:inline-flex;align-items:center;gap:14px;font-size:.72rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--creme);border-bottom:1px solid var(--or);padding-bottom:4px;transition:color .25s,gap .3s var(--ease)}
+.hero__cta::after{content:'→';font-size:.9em}
+.hero__cta:hover{color:var(--or);gap:22px}
+.hero__d{position:relative;z-index:1;padding:130px 80px 80px 56px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--bord);min-height:100vh}
+.hero__q{font-family:var(--fh);font-style:italic;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:300;line-height:1.42;color:var(--creme);margin-bottom:36px}
+.hero__q::before{content:'\201C';display:block;font-size:3.8rem;line-height:1;color:var(--or);font-style:normal;margin-bottom:6px}
+.hero__intro{font-size:.92rem;line-height:1.85;color:rgba(236,227,203,.6);max-width:380px}
+.hero__scrl{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(236,227,203,.35)}
+.hero__scrl::after{content:'';display:block;width:1px;height:44px;background:linear-gradient(to bottom,var(--or),transparent);animation:pls 2s ease-in-out infinite}
+@keyframes pls{0%,100%{opacity:.4}55%{opacity:1}}
 
-    /* Menu burger (mobile) */
-    .nav__burger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 4px;
-    }
-    .nav__burger span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--creme);
-      transition: var(--transition);
-    }
+/* galerie */
+.galerie{padding:80px;border-top:1px solid var(--bord)}
+.galerie__hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px}
+.galerie__t{font-family:var(--fh);font-size:clamp(2rem,3.5vw,2.8rem);font-weight:300;color:var(--creme);line-height:1.1}
+.galerie__n{font-size:.78rem;color:var(--gris);line-height:1.6;max-width:320px;text-align:right;padding-bottom:4px}
+.galerie__g{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:260px 260px 220px;gap:4px}
+.photo:nth-child(1){grid-column:1/5;grid-row:1/3}
+.photo:nth-child(2){grid-column:5/9;grid-row:1/2}
+.photo:nth-child(3){grid-column:9/13;grid-row:1/3}
+.photo:nth-child(4){grid-column:5/9;grid-row:2/3}
+.photo:nth-child(5){grid-column:1/7;grid-row:3/4}
+.photo:nth-child(6){grid-column:7/13;grid-row:3/4}
+.photo{position:relative;overflow:hidden;cursor:pointer}
+.photo img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),filter .7s var(--ease);filter:brightness(.85) saturate(.9)}
+.photo:hover img{transform:scale(1.04);filter:brightness(.95) saturate(1.05)}
+.ph{width:100%;height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:filter .5s var(--ease)}
+.photo:hover .ph{filter:brightness(1.15)}
+.ph svg{position:absolute;inset:0;width:100%;height:100%;opacity:.22}
+.phadd{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;transition:opacity .3s,transform .3s var(--ease)}
+.photo:hover .phadd{opacity:1!important;transform:translateY(-4px)}
+.phadd-ic{width:44px;height:44px;border:1px solid var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--or)}
+.phadd-lb{font-size:.67rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--orlt);text-align:center;line-height:1.6}
+.photo:nth-child(1) .ph{background:linear-gradient(155deg,#180d07 0%,#2a1208 45%,#0f0905 100%)}
+.photo:nth-child(2) .ph{background:linear-gradient(135deg,#0c0b09 0%,#1e1a10 55%,#0d0c09 100%)}
+.photo:nth-child(3) .ph{background:linear-gradient(170deg,#100d08 0%,#1c1510 50%,#0a0806 100%)}
+.photo:nth-child(4) .ph{background:linear-gradient(120deg,#160f07 0%,#261808 60%,#100d07 100%)}
+.photo:nth-child(5) .ph{background:linear-gradient(145deg,#0e0d0b 0%,#1a1812 55%,#090807 100%)}
+.photo:nth-child(6) .ph{background:linear-gradient(160deg,#120a08 0%,#201510 50%,#0d0b09 100%)}
+.phcap{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:20px 20px 16px;background:linear-gradient(to top,rgba(8,7,5,.85) 0%,transparent 100%);transform:translateY(100%);transition:transform .4s var(--ease)}
+.photo:hover .phcap{transform:translateY(0)}
+.phcap-t{font-family:var(--fh);font-size:1.1rem;font-weight:400;color:var(--creme);line-height:1.2;margin-bottom:3px}
+.phcap-d{font-size:.72rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--or)}
 
-    /* ── Hero ──────────────────────────────────────────────────────── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 120px 24px 80px;
-      background: var(--noir);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(139,58,58,0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 60% at 75% 65%, rgba(201,169,110,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero__surtitle {
-      font-size: 0.78rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--sable);
-      margin-bottom: 20px;
-    }
-    .hero__titre {
-      font-family: var(--font-titre);
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 400;
-      color: var(--creme);
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-      margin-bottom: 8px;
-    }
-    .hero__titre em {
-      font-style: normal;
-      color: var(--sable);
-    }
-    .hero__soustitre {
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      color: rgba(245,240,232,0.65);
-      letter-spacing: 0.06em;
-      margin-top: 16px;
-      margin-bottom: 48px;
-    }
-    .hero__citation {
-      font-family: var(--font-titre);
-      font-style: italic;
-      font-size: clamp(1rem, 2.2vw, 1.3rem);
-      color: rgba(201,169,110,0.8);
-      max-width: 560px;
-      line-height: 1.5;
-    }
-    .hero__scroll {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: rgba(245,240,232,0.4);
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-    .hero__scroll::after {
-      content: '';
-      display: block;
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, rgba(201,169,110,0.6), transparent);
-      animation: scrollDown 1.8s ease-in-out infinite;
-    }
-    @keyframes scrollDown {
-      0%,100% { opacity: 0.4; transform: scaleY(1); }
-      50% { opacity: 1; }
-    }
+/* manifeste */
+.manifeste{display:flex;gap:80px;align-items:flex-start;padding:100px 80px;border-top:1px solid var(--bord);border-bottom:1px solid var(--bord)}
+.mf-ax{font-size:.67rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:var(--or);writing-mode:vertical-rl;transform:rotate(180deg);flex-shrink:0;padding-top:6px}
+.mf-corps{flex:1}
+.mf-t{font-family:var(--fh);font-size:clamp(2rem,3.8vw,3.2rem);font-weight:300;line-height:1.22;color:var(--creme);margin-bottom:32px}
+.mf-t em{color:var(--or);font-style:italic}
+.mf-tx{font-size:.96rem;line-height:1.88;color:rgba(236,227,203,.65);max-width:700px;columns:2;column-gap:52px}
+.mf-tx p+p{margin-top:1.2em}.mf-tx em{font-style:italic;color:var(--creme)}
 
-    /* ── Projet artistique ─────────────────────────────────────────── */
-    .projet__intro {
-      font-size: 1.15rem;
-      line-height: 1.8;
-      color: var(--brun);
-      margin-bottom: 40px;
-      max-width: 720px;
-    }
-    .axes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; margin-top: 48px; }
-    .axe {
-      padding: 32px 28px;
-      background: var(--blanc);
-      border: 1px solid var(--gris-cl);
-      border-top: 3px solid var(--sable);
-      border-radius: var(--rayon);
-      transition: box-shadow var(--transition), transform var(--transition);
-    }
-    .axe:hover { box-shadow: 0 8px 32px rgba(59,47,47,0.10); transform: translateY(-3px); }
-    .axe__numero {
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--sable);
-      margin-bottom: 8px;
-    }
-    .axe__titre {
-      font-family: var(--font-titre);
-      font-size: 1.2rem;
-      font-weight: 400;
-      color: var(--brun);
-      margin-bottom: 12px;
-    }
-    .axe__texte { font-size: 0.92rem; color: var(--gris); line-height: 1.7; }
+/* axes */
+.axes{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bord);border:1px solid var(--bord)}
+.axe{background:var(--noir);padding:44px 36px;position:relative;overflow:hidden;transition:background .35s var(--ease)}
+.axe:hover{background:var(--brun)}
+.axe::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--rouge),var(--or));transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.axe:hover::after{transform:scaleX(1)}
+.axe__n{font-family:var(--fh);font-size:4rem;font-weight:300;line-height:1;color:rgba(194,139,54,.13);margin-bottom:16px;transition:color .35s}
+.axe:hover .axe__n{color:rgba(194,139,54,.28)}
+.axe__t{font-family:var(--fh);font-size:1.35rem;font-weight:400;color:var(--creme);line-height:1.25;margin-bottom:16px}
+.axe__tx{font-size:.87rem;line-height:1.78;color:var(--gris)}
 
-    /* ── Biographies ───────────────────────────────────────────────── */
-    .bios { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
-    .bio {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(201,169,110,0.2);
-      border-radius: var(--rayon);
-      padding: 40px 36px;
-    }
-    .bio__initiale {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: var(--sable);
-      color: var(--noir);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-titre);
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      flex-shrink: 0;
-    }
-    .bio__nom {
-      font-family: var(--font-titre);
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--creme);
-      margin-bottom: 4px;
-    }
-    .bio__role {
-      font-size: 0.8rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--sable);
-      margin-bottom: 20px;
-    }
-    .bio__texte { font-size: 0.93rem; line-height: 1.75; color: rgba(245,240,232,0.8); }
-    .bio__tags {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin-top: 20px;
-    }
-    .bio__tag {
-      font-size: 0.73rem;
-      letter-spacing: 0.08em;
-      padding: 4px 10px;
-      background: rgba(201,169,110,0.15);
-      border: 1px solid rgba(201,169,110,0.3);
-      border-radius: 100px;
-      color: var(--sable);
-    }
+/* bios */
+.bios{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bord);border:1px solid var(--bord);margin-bottom:56px}
+.bio{background:var(--noir2);padding:52px 48px}
+.bio__hd{display:flex;align-items:center;gap:20px;margin-bottom:28px}
+.bio__mn{width:52px;height:52px;border-radius:50%;border:1px solid var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:1.5rem;font-weight:300;color:var(--or);flex-shrink:0}
+.bio__nom{font-family:var(--fh);font-size:1.6rem;font-weight:400;color:var(--creme);line-height:1.1;margin-bottom:4px}
+.bio__rol{font-size:.68rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:var(--or)}
+.bio__tx{font-size:.9rem;line-height:1.82;color:rgba(236,227,203,.65);margin-bottom:12px}
+.bio__tgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}
+.bio__tg{font-size:.67rem;font-weight:400;letter-spacing:.07em;padding:4px 11px;border:1px solid rgba(194,139,54,.28);color:rgba(194,139,54,.8);transition:background .2s,color .2s}
+.bio__tg:hover{background:rgba(194,139,54,.12);color:var(--orlt)}
 
-    /* ── Influences ────────────────────────────────────────────────── */
-    .influences { columns: 2 240px; gap: 32px; margin-top: 16px; }
-    .influence {
-      break-inside: avoid;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
-    }
-    .influence__nom {
-      font-family: var(--font-titre);
-      font-size: 1rem;
-      color: var(--creme);
-      margin-bottom: 2px;
-    }
-    .influence__desc { font-size: 0.84rem; color: rgba(245,240,232,0.6); }
+/* influences */
+.influences{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bord);border:1px solid var(--bord)}
+.inf{background:var(--noir2);padding:22px 28px}
+.inf__n{font-family:var(--fh);font-size:1.05rem;font-weight:400;color:var(--creme);margin-bottom:4px}
+.inf__d{font-size:.78rem;color:var(--gris)}
 
-    /* ── Activités ─────────────────────────────────────────────────── */
-    .activites { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-    .activite {
-      padding: 28px 24px;
-      background: var(--blanc);
-      border: 1px solid var(--gris-cl);
-      border-radius: var(--rayon);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: border-color var(--transition);
-    }
-    .activite:hover { border-color: var(--sable); }
-    .activite__icone { font-size: 1.8rem; line-height: 1; }
-    .activite__titre {
-      font-family: var(--font-titre);
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: var(--brun);
-    }
-    .activite__texte { font-size: 0.88rem; color: var(--gris); line-height: 1.6; }
+/* activites */
+.act{display:grid;grid-template-columns:60px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid var(--bord);transition:padding-left .3s var(--ease)}
+.act:hover{padding-left:10px}
+.act__n{font-family:var(--fh);font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1}
+.act__t{font-family:var(--fh);font-size:1.4rem;font-weight:400;color:var(--creme);margin-bottom:8px}
+.act__tx{font-size:.87rem;line-height:1.72;color:var(--gris)}
+.act__b{font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--or);padding:5px 12px;border:1px solid var(--bord);align-self:center;white-space:nowrap}
 
-    /* ── Diffusion ─────────────────────────────────────────────────── */
-    .diffusion__liste {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-    .diffusion__liste li {
-      padding: 18px 20px;
-      background: rgba(201,169,110,0.08);
-      border-left: 3px solid var(--sable);
-      font-size: 0.92rem;
-      color: var(--creme);
-      line-height: 1.5;
-    }
+/* diffusion */
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bord);border:1px solid var(--bord);margin-top:64px}
+.diff-i{background:var(--noir2);padding:26px 32px;font-size:.9rem;line-height:1.62;color:rgba(236,227,203,.68);transition:background .3s}
+.diff-i:hover{background:var(--brun)}
+.diff-i::before{content:'—';color:var(--or);margin-right:10px}
 
-    /* ── Esthétique ────────────────────────────────────────────────── */
-    .esthetique__grille {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      border: 1px solid var(--gris-cl);
-      border-radius: var(--rayon);
-      overflow: hidden;
-    }
-    .esthetique__item {
-      padding: 28px 24px;
-      border-right: 1px solid var(--gris-cl);
-      border-bottom: 1px solid var(--gris-cl);
-    }
-    .esthetique__item:nth-child(even) { border-right: none; }
-    .esthetique__item:nth-last-child(-n+2) { border-bottom: none; }
-    .esthetique__label {
-      font-size: 0.78rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--sable);
-      margin-bottom: 6px;
-    }
-    .esthetique__valeur { font-size: 0.92rem; color: var(--gris); line-height: 1.6; }
+/* esthetique */
+.esthet{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.esthet__vals{display:flex;flex-direction:column;gap:30px}
+.val{padding-left:24px;border-left:2px solid var(--bord);transition:border-color .3s}
+.val:hover{border-color:var(--or)}
+.val__l{font-size:.67rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--or);margin-bottom:6px}
+.val__t{font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62)}
+.esthet__cite{position:sticky;top:100px}
+.gcite{font-family:var(--fh);font-style:italic;font-size:clamp(1.6rem,2.8vw,2.3rem);font-weight:300;line-height:1.4;color:var(--creme)}
+.gcite em{color:var(--or);font-style:normal}
+.gcite__src{margin-top:22px;font-size:.72rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
 
-    /* ── Contact ───────────────────────────────────────────────────── */
-    .contact__grille { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .contact__bloc h3 {
-      font-family: var(--font-titre);
-      font-size: 1.15rem;
-      font-weight: 400;
-      color: var(--brun);
-      margin-bottom: 16px;
-    }
-    .contact__ligne {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--gris-cl);
-      font-size: 0.92rem;
-    }
-    .contact__ligne:last-child { border-bottom: none; }
-    .contact__etiquette {
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--gris);
-      width: 100px;
-      flex-shrink: 0;
-    }
-    .contact__valeur { color: var(--brun); }
-    .contact__valeur a { color: var(--rouge); transition: opacity var(--transition); }
-    .contact__valeur a:hover { opacity: 0.75; }
-    .contact__note {
-      font-size: 0.84rem;
-      color: var(--gris);
-      font-style: italic;
-      margin-top: 16px;
-    }
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bord);border:1px solid var(--bord)}
+.co-col{background:var(--noir2);padding:52px 48px}
+.co-h{font-family:var(--fh);font-size:1.2rem;font-weight:400;color:var(--creme);margin-bottom:28px}
+.co-row{display:flex;gap:16px;padding:13px 0;border-bottom:1px solid var(--bord);align-items:baseline}
+.co-row:last-of-type{border-bottom:none}
+.co-k{font-size:.67rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:var(--gris);width:108px;flex-shrink:0}
+.co-v{font-size:.9rem;color:var(--creme)}
+.co-v a{color:var(--orlt);transition:color .2s}
+.co-v a:hover{color:var(--or)}
+.co-note{margin-top:20px;font-size:.78rem;font-style:italic;color:var(--gris);line-height:1.65}
 
-    /* ── Footer ────────────────────────────────────────────────────── */
-    .footer {
-      background: var(--noir);
-      color: rgba(245,240,232,0.5);
-      text-align: center;
-      padding: 40px 24px;
-      font-size: 0.82rem;
-      line-height: 2;
-    }
-    .footer strong { color: var(--sable); font-weight: 400; }
-    .footer a { color: var(--sable); transition: opacity var(--transition); }
-    .footer a:hover { opacity: 0.75; }
+/* footer */
+.footer{padding:44px 80px;background:var(--noir);border-top:1px solid var(--bord);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.footer__br{font-family:var(--fh);font-size:1.1rem;font-weight:300;color:rgba(236,227,203,.45)}
+.footer__br b{color:var(--or);font-weight:400}
+.footer__mt{font-size:.7rem;color:rgba(127,116,99,.5);letter-spacing:.08em;text-align:right;line-height:1.9}
 
-    /* ── Responsive ────────────────────────────────────────────────── */
-    @media (max-width: 720px) {
-      .nav__liens { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: rgba(26,24,20,0.98); padding: 16px 24px 24px; gap: 16px; border-bottom: 1px solid rgba(201,169,110,0.2); }
-      .nav__liens.ouvert { display: flex; }
-      .nav__burger { display: flex; }
-      .esthetique__grille { grid-template-columns: 1fr; }
-      .esthetique__item:nth-child(even) { border-right: 1px solid var(--gris-cl); }
-      .esthetique__item:nth-last-child(-n+2) { border-bottom: 1px solid var(--gris-cl); }
-      .esthetique__item:last-child { border-bottom: none; }
-      .contact__grille { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 500px) {
-      .section { padding: 56px 0; }
-      .hero { padding: 100px 20px 72px; }
-    }
+/* responsive */
+@media(max-width:1100px){.sec,.galerie,.manifeste,.footer{padding-left:56px;padding-right:56px}}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero__d{border-left:none;border-top:1px solid var(--bord);min-height:auto}
+  .hero__g{padding:120px 40px 60px}
+  .hero__d{padding:60px 40px 80px}
+  .manifeste{padding:72px 40px;flex-direction:column;gap:32px}
+  .mf-ax{writing-mode:horizontal-tb;transform:none}
+  .mf-tx{columns:1}
+  .galerie{padding:72px 40px}
+  .galerie__g{grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,200px)}
+  .photo:nth-child(1){grid-column:1/2;grid-row:1/3}
+  .photo:nth-child(2){grid-column:2/3;grid-row:1/2}
+  .photo:nth-child(3){grid-column:2/3;grid-row:2/3}
+  .photo:nth-child(4){grid-column:1/2;grid-row:3/4}
+  .photo:nth-child(5){grid-column:2/3;grid-row:3/4}
+  .photo:nth-child(6){grid-column:1/3;grid-row:4/5}
+  .sec{padding:72px 40px}
+  .axes{grid-template-columns:1fr}
+  .bios{grid-template-columns:1fr}
+  .esthet{grid-template-columns:1fr;gap:48px}
+  .esthet__cite{position:static}
+  .influences{grid-template-columns:1fr 1fr}
+  .contact{grid-template-columns:1fr}
+  .footer{flex-direction:column;text-align:center;padding:40px}
+  .footer__mt{text-align:center}
+}
+@media(max-width:600px){
+  .nav{padding:0 20px}
+  .nav__list{display:none;flex-direction:column;align-items:center;gap:28px;position:fixed;inset:0;top:68px;background:rgba(8,7,5,.97);justify-content:center}
+  .nav__list.open{display:flex}
+  .nav__list.open a{font-size:1.3rem;letter-spacing:.2em}
+  .nav__burger{display:flex}
+  .hero__g{padding:100px 24px 56px}
+  .hero__d{padding:48px 24px 80px}
+  .galerie{padding:64px 20px}
+  .galerie__g{grid-template-columns:1fr;grid-template-rows:repeat(6,220px)}
+  .photo:nth-child(n){grid-column:1/-1;grid-row:auto}
+  .manifeste{padding:64px 24px}
+  .sec{padding:64px 24px}
+  .act{grid-template-columns:44px 1fr}
+  .act__b{display:none}
+  .bio{padding:36px 24px}
+  .co-col{padding:36px 24px}
+  .diff{grid-template-columns:1fr}
+  .influences{grid-template-columns:1fr}
+  .footer{padding:40px 24px}
+}
   </style>
 </head>
 <body>
 
-  <!-- ══ NAVIGATION ══════════════════════════════════════════════════ -->
-  <nav class="nav" role="navigation" aria-label="Navigation principale">
-    <div class="nav__inner">
-      <a href="#accueil" class="nav__logo">Poivre <span>&amp;</span> Sens</a>
-      <ul class="nav__liens" id="nav-liens">
-        <li><a href="#projet">Projet</a></li>
-        <li><a href="#biographies">Artistes</a></li>
-        <li><a href="#activites">Activités</a></li>
-        <li><a href="#esthetique">Esthétique</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <button class="nav__burger" id="nav-burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-liens">
-        <span></span><span></span><span></span>
-      </button>
+<nav class="nav" id="nav" role="navigation" aria-label="Navigation principale">
+  <a href="#accueil" class="nav__logo">Poivre <b>&amp;</b> Sens</a>
+  <ul class="nav__list" id="nav-list" role="list">
+    <li><a href="#galerie"    onclick="closeMenu()">Galerie</a></li>
+    <li><a href="#projet"     onclick="closeMenu()">Projet</a></li>
+    <li><a href="#artistes"   onclick="closeMenu()">Artistes</a></li>
+    <li><a href="#activites"  onclick="closeMenu()">Activités</a></li>
+    <li><a href="#esthetique" onclick="closeMenu()">Esthétique</a></li>
+    <li><a href="#contact"    onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <button class="nav__burger" id="nav-burger" aria-label="Ouvrir le menu"
+          aria-expanded="false" aria-controls="nav-list" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero" id="accueil" aria-label="Accueil">
+  <div class="hero__bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none">
+      <path d="M-80,450 C120,180 320,720 560,380 C780,60 980,620 1200,400 C1330,290 1400,340 1520,310"
+            stroke="rgba(194,139,54,0.07)" stroke-width="1.5"/>
+      <path d="M200,900 C300,600 480,820 640,500 C800,180 960,680 1100,350 C1200,140 1350,240 1520,180"
+            stroke="rgba(158,55,16,0.05)" stroke-width="1"/>
+      <path d="M-120,200 C80,420 260,120 480,360 C700,600 820,200 1060,480 C1240,700 1380,500 1540,600"
+            stroke="rgba(194,139,54,0.05)" stroke-width="2"/>
+      <path d="M0,700 C200,450 500,800 720,420 C920,80 1100,560 1300,320 C1420,200 1480,320 1540,280"
+            stroke="rgba(194,139,54,0.04)" stroke-width="1"/>
+      <ellipse cx="720" cy="450" rx="380" ry="240" stroke="rgba(194,139,54,0.04)" stroke-width="1"/>
+      <ellipse cx="720" cy="450" rx="580" ry="380" stroke="rgba(158,55,16,0.03)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="hero__g">
+    <p class="hero__sup">Compagnie artistique · Association loi 1901</p>
+    <h1 class="hero__nom">
+      Poivre
+      <span class="et">&amp;</span>
+      Sens
+    </h1>
+    <p class="hero__disc">
+      <strong>Ambre Lavignac &amp; Ewen d'Aviau</strong>
+      Danse contemporaine<br/>
+      Contact-improvisation<br/>
+      Musique improvisée<br/>
+      Pratiques somatiques
+    </p>
+    <a href="#projet" class="hero__cta">Découvrir la compagnie</a>
+  </div>
+
+  <div class="hero__d">
+    <blockquote class="hero__q">
+      Le corps sait ce que l'esprit cherche encore.
+    </blockquote>
+    <p class="hero__intro">
+      Née de la rencontre d'un corps et d'un son, d'une main qui écoute
+      et d'une oreille qui se déplace, la compagnie explore les espaces
+      de porosité entre le mouvement et la musique, entre la structure
+      et le lâcher-prise.
+    </p>
+  </div>
+
+  <div class="hero__scrl" aria-hidden="true">Défiler</div>
+</section>
+
+<section class="galerie sec2" id="galerie" aria-labelledby="titre-galerie">
+  <div class="galerie__hdr">
+    <div>
+      <p class="lbl">Galerie</p>
+      <h2 class="galerie__t" id="titre-galerie">Images de la compagnie</h2>
+      <div class="regle"></div>
     </div>
-  </nav>
+    <p class="galerie__n">
+      Remplacez chaque cadre par vos photos.<br/>
+      Format recommandé : JPEG, min. 1200 px.
+    </p>
+  </div>
 
-  <!-- ══ HERO ════════════════════════════════════════════════════════ -->
-  <section class="hero" id="accueil" aria-label="Accueil">
-    <p class="hero__surtitle">Compagnie artistique · Association loi 1901</p>
-    <h1 class="hero__titre">Poivre <em>&amp;</em> Sens</h1>
-    <p class="hero__soustitre">Danse contemporaine · Contact-improvisation · Musique improvisée</p>
-    <p class="hero__citation">« Le corps sait ce que l'esprit cherche encore. »</p>
-    <div class="hero__scroll" aria-hidden="true">Découvrir</div>
-  </section>
+  <div class="galerie__g" role="list">
 
-  <!-- ══ PROJET ARTISTIQUE ═══════════════════════════════════════════ -->
-  <section class="section section--creme" id="projet" aria-labelledby="titre-projet">
-    <div class="container">
-      <p class="sous-titre-section">Note d'intention</p>
-      <h2 class="titre-section" id="titre-projet">Le projet artistique</h2>
-      <div class="separateur"></div>
-      <p class="projet__intro">
-        <strong>Poivre &amp; Sens</strong> est née de la rencontre de deux artistes, d'un corps et d'un son,
-        d'une main qui écoute et d'une oreille qui se déplace. Fondée par Ambre Lavignac et Ewen d'Aviau,
-        la compagnie explore les espaces de porosité entre le mouvement et le son, entre la structure
-        et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu.
-      </p>
-      <p style="color:var(--gris); margin-bottom:40px; max-width:720px;">
-        Ses créations ne cherchent pas à illustrer ni à démontrer, mais à <em>habiter</em> — à faire
-        exister sur scène une qualité de vie partagée. Ce qui unit leurs univers, c'est la qualité de
-        présence : être là, pleinement, dans l'instant d'une rencontre.
-      </p>
-
-      <div class="axes">
-        <div class="axe">
-          <p class="axe__numero">Axe 01</p>
-          <h3 class="axe__titre">Création chorégraphique &amp; musicale</h3>
-          <p class="axe__texte">
-            Des pièces scéniques courtes ou longues, en duo ou avec artistes invités, où la frontière
-            entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace,
-            la danseuse émet, le son se fait matière, le corps se fait résonance.
-          </p>
-        </div>
-        <div class="axe">
-          <p class="axe__numero">Axe 02</p>
-          <h3 class="axe__titre">L'improvisation comme forme</h3>
-          <p class="axe__texte">
-            Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de
-            recherche artistique, performances situées dans des espaces non conventionnels : parcs,
-            friches industrielles, espaces naturels.
-          </p>
-        </div>
-        <div class="axe">
-          <p class="axe__numero">Axe 03</p>
-          <h3 class="axe__titre">La pédagogie du sensible</h3>
-          <p class="axe__texte">
-            L'enseignement est au cœur du projet. Stages de contact-improvisation, ateliers de
-            mouvement somatique, ateliers de musique improvisée, résidences pédagogiques en milieu
-            scolaire, médico-social ou en entreprise.
-          </p>
+    <!-- 1 — Spectacle vivant (grand vertical) -->
+    <figure class="photo" role="listitem" aria-label="Spectacle vivant">
+      <div class="ph">
+        <svg viewBox="0 0 400 520" fill="none" aria-hidden="true">
+          <path d="M200,60 C320,120 360,260 280,380 C220,460 150,490 100,440"
+                stroke="rgba(194,139,54,1)" stroke-width="1.2"/>
+          <path d="M200,60 C90,100 60,240 140,360 C190,430 260,470 310,430"
+                stroke="rgba(158,55,16,.8)" stroke-width=".8"/>
+          <circle cx="200" cy="52" r="16" stroke="rgba(194,139,54,.8)" stroke-width="1"/>
+          <path d="M160,180 C190,160 230,165 250,185" stroke="rgba(194,139,54,.5)" stroke-width=".8"/>
+          <path d="M120,310 L170,290 M280,310 L230,290" stroke="rgba(194,139,54,.4)" stroke-width=".7"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">Spectacle vivant<br/>Ajouter une photo</span>
         </div>
       </div>
+      <div class="phcap">
+        <p class="phcap-t">En scène</p>
+        <p class="phcap-d">Spectacle vivant · Création</p>
+      </div>
+    </figure>
+
+    <!-- 2 — Jam contact (paysage) -->
+    <figure class="photo" role="listitem" aria-label="Jam de contact-improvisation">
+      <div class="ph">
+        <svg viewBox="0 0 400 260" fill="none" aria-hidden="true">
+          <circle cx="160" cy="100" r="22" stroke="rgba(194,139,54,.8)" stroke-width="1"/>
+          <circle cx="240" cy="110" r="22" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
+          <path d="M160,122 C180,160 200,170 240,132" stroke="rgba(194,139,54,.7)" stroke-width="1.2"/>
+          <path d="M138,90 C110,70 100,130 120,160" stroke="rgba(194,139,54,.4)" stroke-width=".8"/>
+          <path d="M262,100 C290,80 300,140 280,165" stroke="rgba(194,139,54,.35)" stroke-width=".8"/>
+          <line x1="50" y1="200" x2="350" y2="200" stroke="rgba(194,139,54,.15)" stroke-width=".5"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">Jam de contact<br/>Ajouter une photo</span>
+        </div>
+      </div>
+      <div class="phcap">
+        <p class="phcap-t">Jam de contact</p>
+        <p class="phcap-d">Contact-improvisation · Rencontre ouverte</p>
+      </div>
+    </figure>
+
+    <!-- 3 — Portrait Ewen (grand vertical) -->
+    <figure class="photo" role="listitem" aria-label="Portrait Ewen d'Aviau">
+      <div class="ph">
+        <svg viewBox="0 0 400 520" fill="none" aria-hidden="true">
+          <line x1="200" y1="40"  x2="200" y2="480" stroke="rgba(194,139,54,.5)" stroke-width=".8"/>
+          <line x1="180" y1="40"  x2="180" y2="480" stroke="rgba(194,139,54,.3)" stroke-width=".6"/>
+          <line x1="160" y1="40"  x2="160" y2="480" stroke="rgba(194,139,54,.2)" stroke-width=".5"/>
+          <line x1="220" y1="40"  x2="220" y2="480" stroke="rgba(194,139,54,.3)" stroke-width=".6"/>
+          <line x1="240" y1="40"  x2="240" y2="480" stroke="rgba(194,139,54,.2)" stroke-width=".5"/>
+          <ellipse cx="200" cy="200" rx="80" ry="120" stroke="rgba(158,55,16,.3)" stroke-width=".8"/>
+          <circle  cx="200" cy="110" r="28" stroke="rgba(194,139,54,.5)" stroke-width="1"/>
+          <path d="M120,340 Q200,310 280,340 Q200,370 120,340Z"
+                fill="rgba(194,139,54,.06)" stroke="rgba(194,139,54,.3)" stroke-width=".8"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">Ewen d'Aviau<br/>Ajouter un portrait</span>
+        </div>
+      </div>
+      <div class="phcap">
+        <p class="phcap-t">Ewen d'Aviau</p>
+        <p class="phcap-d">Luthier · Musicien · Danseur</p>
+      </div>
+    </figure>
+
+    <!-- 4 — Portrait Ambre (paysage) -->
+    <figure class="photo" role="listitem" aria-label="Portrait Ambre Lavignac">
+      <div class="ph">
+        <svg viewBox="0 0 400 260" fill="none" aria-hidden="true">
+          <path d="M60,130 C120,80 200,180 280,100 C340,40 380,110 400,130"
+                stroke="rgba(194,139,54,.6)" stroke-width="1"/>
+          <path d="M0,160 C80,100 160,200 240,130 C310,70 360,140 400,160"
+                stroke="rgba(194,139,54,.35)" stroke-width=".7"/>
+          <path d="M60,80 C140,160 240,60 320,150" stroke="rgba(158,55,16,.4)" stroke-width=".8"/>
+          <circle cx="200" cy="130" r="30" stroke="rgba(194,139,54,.4)" stroke-width="1"/>
+          <circle cx="200" cy="130" r="55" stroke="rgba(194,139,54,.18)" stroke-width=".7"/>
+          <circle cx="200" cy="130" r="80" stroke="rgba(194,139,54,.08)" stroke-width=".6"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">Ambre Lavignac<br/>Ajouter un portrait</span>
+        </div>
+      </div>
+      <div class="phcap">
+        <p class="phcap-t">Ambre Lavignac</p>
+        <p class="phcap-d">Danseuse · Pédagogue · Praticienne</p>
+      </div>
+    </figure>
+
+    <!-- 5 — En résidence (large) -->
+    <figure class="photo" role="listitem" aria-label="Résidence artistique">
+      <div class="ph">
+        <svg viewBox="0 0 700 220" fill="none" aria-hidden="true">
+          <path d="M0,110 C100,60 200,160 350,90 C500,20 600,120 700,80"
+                stroke="rgba(194,139,54,.6)" stroke-width="1.2"/>
+          <path d="M0,150 C120,90 250,190 400,120 C520,60 620,160 700,130"
+                stroke="rgba(194,139,54,.35)" stroke-width=".8"/>
+          <path d="M0,70 C80,130 220,50 380,140 C520,220 640,80 700,110"
+                stroke="rgba(158,55,16,.3)" stroke-width=".8"/>
+          <circle cx="175" cy="95"  r="5" fill="rgba(194,139,54,.5)"/>
+          <circle cx="350" cy="88"  r="7" fill="rgba(194,139,54,.6)"/>
+          <circle cx="525" cy="105" r="5" fill="rgba(194,139,54,.5)"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">En résidence<br/>Ajouter une photo</span>
+        </div>
+      </div>
+      <div class="phcap">
+        <p class="phcap-t">En résidence</p>
+        <p class="phcap-d">Laboratoire artistique · Recherche</p>
+      </div>
+    </figure>
+
+    <!-- 6 — Atelier pédagogique (large) -->
+    <figure class="photo" role="listitem" aria-label="Atelier pédagogique">
+      <div class="ph">
+        <svg viewBox="0 0 700 220" fill="none" aria-hidden="true">
+          <circle cx="350" cy="110" r="60"  stroke="rgba(194,139,54,.3)"  stroke-width="1"/>
+          <circle cx="350" cy="110" r="100" stroke="rgba(194,139,54,.15)" stroke-width=".7"/>
+          <circle cx="290" cy="60"  r="14" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
+          <circle cx="410" cy="60"  r="14" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
+          <circle cx="440" cy="150" r="14" stroke="rgba(194,139,54,.55)" stroke-width="1"/>
+          <circle cx="260" cy="150" r="14" stroke="rgba(194,139,54,.55)" stroke-width="1"/>
+          <circle cx="350" cy="175" r="14" stroke="rgba(194,139,54,.5)"  stroke-width="1"/>
+          <line x1="350" y1="110" x2="290" y2="60"  stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
+          <line x1="350" y1="110" x2="410" y2="60"  stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
+          <line x1="350" y1="110" x2="440" y2="150" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
+          <line x1="350" y1="110" x2="260" y2="150" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
+          <line x1="350" y1="110" x2="350" y2="175" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
+        </svg>
+        <div class="phadd" style="opacity:.55">
+          <div class="phadd-ic">+</div>
+          <span class="phadd-lb">Atelier pédagogique<br/>Ajouter une photo</span>
+        </div>
+      </div>
+      <div class="phcap">
+        <p class="phcap-t">Pédagogie du sensible</p>
+        <p class="phcap-d">Atelier · Stage · Transmission</p>
+      </div>
+    </figure>
+
+  </div>
+</section>
+
+<div class="manifeste sec3" role="region" aria-label="Manifeste">
+  <p class="mf-ax" aria-hidden="true">Manifeste</p>
+  <div class="mf-corps">
+    <h2 class="mf-t">Une rencontre entre <em>le corps</em> et <em>le son</em></h2>
+    <div class="mf-tx">
+      <p>La compagnie explore les espaces de porosité entre le mouvement et le son,
+         entre la structure et le lâcher-prise, entre la transmission d'un savoir
+         et l'ouverture à l'inconnu. Ses créations ne cherchent pas à illustrer ni
+         à démontrer, mais à <em>habiter</em>.</p>
+      <p>Ce qui unit leurs univers, c'est la qualité de présence : être là, pleinement,
+         dans l'instant d'une rencontre — entre deux corps, entre un corps et un instrument,
+         entre une sensation et une image, entre ce qui est attendu et ce qui surgit.</p>
+      <p>Inspirée du Tao, des méridiens, de l'aïkido et de la lutherie, la compagnie
+         croit en l'<em>artisanat du spectacle</em> : chaque geste compte, chaque son
+         est matière, chaque silence est espace.</p>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- ══ BIOGRAPHIES ═════════════════════════════════════════════════ -->
-  <section class="section section--sombre" id="biographies" aria-labelledby="titre-bios">
-    <div class="container">
-      <p class="sous-titre-section">Les fondateurs</p>
-      <h2 class="titre-section" id="titre-bios">Artistes &amp; pédagogues</h2>
-      <div class="separateur"></div>
+<section class="sec" id="projet" aria-labelledby="titre-projet">
+  <div style="margin-bottom:56px">
+    <p class="lbl">Note d'intention</p>
+    <h2 class="sh" id="titre-projet">Le projet artistique</h2>
+    <div class="regle"></div>
+  </div>
+  <div class="axes">
+    <div class="axe">
+      <p class="axe__n">01</p>
+      <h3 class="axe__t">Création chorégraphique &amp; musicale</h3>
+      <p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
+    </div>
+    <div class="axe">
+      <p class="axe__n">02</p>
+      <h3 class="axe__t">L'improvisation comme forme</h3>
+      <p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
+    </div>
+    <div class="axe">
+      <p class="axe__n">03</p>
+      <h3 class="axe__t">La pédagogie du sensible</h3>
+      <p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
+    </div>
+  </div>
+</section>
 
-      <div class="bios">
-        <!-- Ambre -->
-        <div class="bio">
-          <div class="bio__initiale" aria-hidden="true">A</div>
+<section class="sec sec2" id="artistes" aria-labelledby="titre-artistes">
+  <div style="margin-bottom:56px">
+    <p class="lbl">Les fondateurs</p>
+    <h2 class="sh" id="titre-artistes">Artistes &amp; pédagogues</h2>
+    <div class="regle"></div>
+  </div>
+  <div class="bios">
+    <div class="bio">
+      <div class="bio__hd">
+        <div class="bio__mn" aria-hidden="true">A</div>
+        <div>
           <h3 class="bio__nom">Ambre Lavignac</h3>
-          <p class="bio__role">Danseuse · Pédagogue · Praticienne du mouvement</p>
-          <p class="bio__texte">
-            Formée à la danse contemporaine, Ambre Lavignac oriente rapidement sa recherche vers les
-            pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste
-            et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments
-            naturels, les méridiens énergétiques et les qualités de mouvement.
-          </p>
-          <p class="bio__texte" style="margin-top:12px;">
-            Praticienne du massage, elle travaille sur les liens entre le toucher, la conscience
-            corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à
-            l'improvisation comme espace de création vivante : la forme en train de naître, sensible
-            aux présences en jeu, aux espaces traversés et aux relations tissées dans l'instant.
-          </p>
-          <div class="bio__tags">
-            <span class="bio__tag">Danse contemporaine</span>
-            <span class="bio__tag">Improvisation</span>
-            <span class="bio__tag">Somatique</span>
-            <span class="bio__tag">Tao</span>
-            <span class="bio__tag">Méridiens</span>
-            <span class="bio__tag">Massage</span>
-            <span class="bio__tag">Pédagogie</span>
-          </div>
+          <p class="bio__rol">Danseuse · Pédagogue · Praticienne du mouvement</p>
         </div>
-
-        <!-- Ewen -->
-        <div class="bio">
-          <div class="bio__initiale" aria-hidden="true">E</div>
+      </div>
+      <p class="bio__tx">Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.</p>
+      <p class="bio__tx">Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.</p>
+      <div class="bio__tgs">
+        <span class="bio__tg">Danse contemporaine</span>
+        <span class="bio__tg">Improvisation</span>
+        <span class="bio__tg">Somatique</span>
+        <span class="bio__tg">Tao</span>
+        <span class="bio__tg">Méridiens</span>
+        <span class="bio__tg">Massage</span>
+        <span class="bio__tg">Pédagogie</span>
+      </div>
+    </div>
+    <div class="bio">
+      <div class="bio__hd">
+        <div class="bio__mn" aria-hidden="true">E</div>
+        <div>
           <h3 class="bio__nom">Ewen d'Aviau</h3>
-          <p class="bio__role">Luthier-ingénieur · Musicien · Danseur</p>
-          <p class="bio__texte">
-            Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication
-            des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Cette
-            pratique du faire l'amène à concevoir le son comme une matière vivante, façonnable, imprévue.
-          </p>
-          <p class="bio__texte" style="margin-top:12px;">
-            Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le
-            silence et la relation. Danseur, imprégné du contact-improvisation, des pratiques somatiques
-            (Body-Mind Centering, Feldenkrais) et de l'aïkido, il retient l'art de la redirection, du
-            centre de gravité et de la présence active non agressive.
-          </p>
-          <div class="bio__tags">
-            <span class="bio__tag">Lutherie</span>
-            <span class="bio__tag">Musique improvisée</span>
-            <span class="bio__tag">Contact-improvisation</span>
-            <span class="bio__tag">Somatique</span>
-            <span class="bio__tag">Aïkido</span>
-            <span class="bio__tag">Enseignement</span>
-          </div>
+          <p class="bio__rol">Luthier-ingénieur · Musicien · Danseur</p>
         </div>
       </div>
-
-      <!-- Influences -->
-      <div style="margin-top:60px;">
-        <p class="sous-titre-section">Références &amp; influences</p>
-        <div class="separateur"></div>
-        <div class="influences">
-          <div class="influence">
-            <span class="influence__nom">Steve Paxton &amp; Lisa Nelson</span>
-            <span class="influence__desc">Fondateurs du contact-improvisation</span>
-          </div>
-          <div class="influence">
-            <span class="influence__nom">Anna Halprin &amp; Thomas Hanna</span>
-            <span class="influence__desc">Éducation somatique et danse thérapie</span>
-          </div>
-          <div class="influence">
-            <span class="influence__nom">John Cage &amp; Derek Bailey</span>
-            <span class="influence__desc">Improvisation musicale et indétermination</span>
-          </div>
-          <div class="influence">
-            <span class="influence__nom">Huangdi Neijing</span>
-            <span class="influence__desc">Classique de médecine interne — philosophie des méridiens</span>
-          </div>
-          <div class="influence">
-            <span class="influence__nom">Ueshiba Morihei</span>
-            <span class="influence__desc">Fondateur de l'aïkido</span>
-          </div>
-          <div class="influence">
-            <span class="influence__nom">Peter Szendy &amp; Jean-Luc Nancy</span>
-            <span class="influence__desc">Pensée du corps sonore</span>
-          </div>
-        </div>
+      <p class="bio__tx">Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
+      <p class="bio__tx">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation, des pratiques somatiques et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.</p>
+      <div class="bio__tgs">
+        <span class="bio__tg">Lutherie</span>
+        <span class="bio__tg">Musique improvisée</span>
+        <span class="bio__tg">Contact-improvisation</span>
+        <span class="bio__tg">Somatique</span>
+        <span class="bio__tg">Aïkido</span>
+        <span class="bio__tg">Enseignement</span>
       </div>
     </div>
-  </section>
-
-  <!-- ══ ACTIVITÉS ═══════════════════════════════════════════════════ -->
-  <section class="section" id="activites" aria-labelledby="titre-activites">
-    <div class="container">
-      <p class="sous-titre-section">Ce que nous proposons</p>
-      <h2 class="titre-section" id="titre-activites">Nos activités</h2>
-      <div class="separateur"></div>
-
-      <div class="activites">
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🎭</span>
-          <h3 class="activite__titre">Spectacles vivants</h3>
-          <p class="activite__texte">
-            Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse,
-            improvisation et musique live.
-          </p>
-        </div>
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🌀</span>
-          <h3 class="activite__titre">Jams contact</h3>
-          <p class="activite__texte">
-            Sessions d'improvisation ouvertes au public, en contact-improvisation et musique
-            improvisée, dans des lieux variés.
-          </p>
-        </div>
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🎓</span>
-          <h3 class="activite__titre">Stages &amp; ateliers</h3>
-          <p class="activite__texte">
-            Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique
-            improvisée, tous niveaux.
-          </p>
-        </div>
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🔬</span>
-          <h3 class="activite__titre">Laboratoires de recherche</h3>
-          <p class="activite__texte">
-            Espaces d'exploration artistique en résidence, pour chercheurs du mouvement, musiciens
-            et artistes pluridisciplinaires.
-          </p>
-        </div>
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🏫</span>
-          <h3 class="activite__titre">Résidences pédagogiques</h3>
-          <p class="activite__texte">
-            Interventions en milieu scolaire, médico-social ou en entreprise pour une pédagogie
-            du sensible adaptée à tous les publics.
-          </p>
-        </div>
-        <div class="activite">
-          <span class="activite__icone" aria-hidden="true">🎸</span>
-          <h3 class="activite__titre">Lutherie &amp; fabrication</h3>
-          <p class="activite__texte">
-            Conception et modification d'instruments comme geste artistique à part entière,
-            intégré aux créations et aux ateliers.
-          </p>
-        </div>
-      </div>
-
-      <!-- Diffusion -->
-      <div style="margin-top:60px;">
-        <p class="sous-titre-section">Axes de diffusion</p>
-        <div class="separateur"></div>
-        <ul class="diffusion__liste" role="list">
-          <li>Festivals de danse contemporaine, contact-improvisation et musique improvisée (France &amp; Europe)</li>
-          <li>Théâtres et scènes labellisées accueillant les écritures chorégraphiques émergentes</li>
-          <li>Lieux non conventionnels : musées, bibliothèques, espaces naturels, ateliers d'artistes</li>
-          <li>Établissements scolaires et structures socioculturelles pour les ateliers pédagogiques</li>
-        </ul>
-      </div>
+  </div>
+  <div>
+    <p class="lbl" style="margin-top:0">Références &amp; influences</p>
+    <div class="regle" style="margin-bottom:28px"></div>
+    <div class="influences">
+      <div class="inf"><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><p class="inf__d">Fondateurs du contact-improvisation</p></div>
+      <div class="inf"><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><p class="inf__d">Éducation somatique et danse thérapie</p></div>
+      <div class="inf"><p class="inf__n">John Cage &amp; Derek Bailey</p><p class="inf__d">Improvisation musicale et indétermination</p></div>
+      <div class="inf"><p class="inf__n">Huangdi Neijing</p><p class="inf__d">Classique de médecine interne — méridiens</p></div>
+      <div class="inf"><p class="inf__n">Ueshiba Morihei</p><p class="inf__d">Fondateur de l'aïkido</p></div>
+      <div class="inf"><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><p class="inf__d">Pensée du corps sonore</p></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ══ ESTHÉTIQUE ══════════════════════════════════════════════════ -->
-  <section class="section section--creme" id="esthetique" aria-labelledby="titre-esthetique">
-    <div class="container">
-      <p class="sous-titre-section">Identité &amp; valeurs</p>
-      <h2 class="titre-section" id="titre-esthetique">Esthétique de la compagnie</h2>
-      <div class="separateur"></div>
-      <p style="color:var(--gris); max-width:720px; margin-bottom:40px;">
-        Les créations de la compagnie privilégient la <strong>sobriété scénographique</strong> :
-        peu d'accessoires, une lumière travaillée dans ses qualités de matière, des sons produits
-        en direct. La présence des artistes est mise en premier plan.
-      </p>
-
-      <div class="esthetique__grille">
-        <div class="esthetique__item">
-          <p class="esthetique__label">Scénographie</p>
-          <p class="esthetique__valeur">Sobriété des accessoires, lumière travaillée (diffuse, rasante, traversante), sons produits en direct.</p>
-        </div>
-        <div class="esthetique__item">
-          <p class="esthetique__label">Musique</p>
-          <p class="esthetique__valeur">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel.</p>
-        </div>
-        <div class="esthetique__item">
-          <p class="esthetique__label">Mouvement</p>
-          <p class="esthetique__valeur">Qualité de présence, écoute du poids, circulation de l'énergie. Inscrit dans les pratiques somatiques.</p>
-        </div>
-        <div class="esthetique__item">
-          <p class="esthetique__label">Artisanat</p>
-          <p class="esthetique__valeur">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p>
-        </div>
-        <div class="esthetique__item">
-          <p class="esthetique__label">Philosophie</p>
-          <p class="esthetique__valeur">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité.</p>
-        </div>
-        <div class="esthetique__item">
-          <p class="esthetique__label">Relation</p>
-          <p class="esthetique__valeur">L'autre comme partenaire de création, qu'il soit danseur, musicien ou spectateur engagé.</p>
-        </div>
-      </div>
-
-      <p class="citation" style="margin-top:48px;">« Habiter un espace de jeu partagé — entre deux corps, entre un corps et un instrument. »</p>
+<section class="sec" id="activites" aria-labelledby="titre-activites">
+  <div style="margin-bottom:56px">
+    <p class="lbl">Ce que nous proposons</p>
+    <h2 class="sh" id="titre-activites">Nos activités</h2>
+    <div class="regle"></div>
+  </div>
+  <ul role="list">
+    <li class="act"><span class="act__n" aria-hidden="true">01</span><div><h3 class="act__t">Spectacles vivants</h3><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p></div><span class="act__b">Scène</span></li>
+    <li class="act"><span class="act__n" aria-hidden="true">02</span><div><h3 class="act__t">Jams contact-improvisation</h3><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p></div><span class="act__b">Jam</span></li>
+    <li class="act"><span class="act__n" aria-hidden="true">03</span><div><h3 class="act__t">Stages &amp; ateliers</h3><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p></div><span class="act__b">Pédagogie</span></li>
+    <li class="act"><span class="act__n" aria-hidden="true">04</span><div><h3 class="act__t">Résidences de recherche</h3><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p></div><span class="act__b">Résidence</span></li>
+    <li class="act"><span class="act__n" aria-hidden="true">05</span><div><h3 class="act__t">Résidences pédagogiques</h3><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics et tous les contextes.</p></div><span class="act__b">Médiation</span></li>
+    <li class="act"><span class="act__n" aria-hidden="true">06</span><div><h3 class="act__t">Lutherie &amp; fabrication</h3><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore et démonstrations.</p></div><span class="act__b">Artisanat</span></li>
+  </ul>
+  <div>
+    <p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+    <div class="regle" style="margin-bottom:28px"></div>
+    <div class="diff">
+      <div class="diff-i">Festivals de danse contemporaine, contact-improvisation et musique improvisée — France &amp; Europe</div>
+      <div class="diff-i">Théâtres et scènes labellisées accueillant les écritures chorégraphiques émergentes</div>
+      <div class="diff-i">Lieux non conventionnels : musées, bibliothèques, espaces naturels, ateliers d'artistes</div>
+      <div class="diff-i">Établissements scolaires et structures socioculturelles pour les ateliers pédagogiques</div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ══ CONTACT ═════════════════════════════════════════════════════ -->
-  <section class="section" id="contact" aria-labelledby="titre-contact">
-    <div class="container">
-      <p class="sous-titre-section">Nous rejoindre</p>
-      <h2 class="titre-section" id="titre-contact">Contact</h2>
-      <div class="separateur"></div>
-
-      <div class="contact__grille">
-        <div class="contact__bloc">
-          <h3>La compagnie</h3>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Nom</span>
-            <span class="contact__valeur">Poivre &amp; Sens</span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Statut</span>
-            <span class="contact__valeur">Association loi 1901</span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Disciplines</span>
-            <span class="contact__valeur">Danse contemporaine, contact-improvisation, musique improvisée, pratiques somatiques</span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Courriel</span>
-            <span class="contact__valeur"><a href="mailto:contact@poivretsens.fr">contact@poivretsens.fr</a></span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Site web</span>
-            <span class="contact__valeur"><a href="https://www.poivretsens.fr">www.poivretsens.fr</a></span>
-          </div>
-          <p class="contact__note">Adresse email et site à compléter lors de l'ouverture officielle.</p>
-        </div>
-
-        <div class="contact__bloc">
-          <h3>Les fondateurs</h3>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Ambre L.</span>
-            <span class="contact__valeur"><a href="mailto:ambre@poivretsens.fr">ambre@poivretsens.fr</a></span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Ewen d'A.</span>
-            <span class="contact__valeur"><a href="mailto:ewen@poivretsens.fr">ewen@poivretsens.fr</a></span>
-          </div>
-          <div class="contact__ligne">
-            <span class="contact__etiquette">Siège</span>
-            <span class="contact__valeur">À compléter lors de l'assemblée constitutive</span>
-          </div>
-
-          <h3 style="margin-top:28px;">Nous suivre</h3>
-          <p style="font-size:0.92rem; color:var(--gris); line-height:1.7; margin-top:8px;">
-            Retrouvez la compagnie sur les réseaux sociaux et dans les réseaux professionnels
-            du spectacle vivant pour suivre nos prochaines dates, résidences et jams ouvertes.
-          </p>
-        </div>
-      </div>
+<section class="sec sec2" id="esthetique" aria-labelledby="titre-esthetique">
+  <div style="margin-bottom:56px">
+    <p class="lbl">Identité &amp; valeurs</p>
+    <h2 class="sh" id="titre-esthetique">Esthétique de la compagnie</h2>
+    <div class="regle"></div>
+  </div>
+  <div class="esthet">
+    <div class="esthet__vals">
+      <div class="val"><p class="val__l">Scénographie</p><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p></div>
+      <div class="val"><p class="val__l">Musique</p><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p></div>
+      <div class="val"><p class="val__l">Mouvement</p><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p></div>
+      <div class="val"><p class="val__l">Artisanat</p><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle. Le faire comme geste artistique.</p></div>
+      <div class="val"><p class="val__l">Philosophie</p><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p></div>
     </div>
-  </section>
+    <div class="esthet__cite">
+      <blockquote class="gcite">
+        Habiter un espace de jeu partagé —<br/>entre deux corps,<br/>entre <em>un corps</em> et <em>un instrument</em>.
+      </blockquote>
+      <p class="gcite__src">Poivre &amp; Sens · Note d'intention</p>
+    </div>
+  </div>
+</section>
 
-  <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
-  <footer class="footer" role="contentinfo">
-    <p>
-      <strong>Poivre &amp; Sens</strong> — Compagnie de danse et musique improvisées<br />
-      Association loi 1901 · Direction artistique : Ambre Lavignac &amp; Ewen d'Aviau
-    </p>
-    <p style="margin-top:12px;">
-      Danse contemporaine · Contact-improvisation · Musique improvisée · Pratiques somatiques
-    </p>
-    <p style="margin-top:12px; font-size:0.76rem; opacity:0.5;">
-      © 2026 Poivre &amp; Sens · Tous droits réservés
-    </p>
-  </footer>
+<section class="sec" id="contact" aria-labelledby="titre-contact">
+  <div style="margin-bottom:56px">
+    <p class="lbl">Nous rejoindre</p>
+    <h2 class="sh" id="titre-contact">Contact</h2>
+    <div class="regle"></div>
+  </div>
+  <div class="contact">
+    <div class="co-col">
+      <p class="co-h">La compagnie</p>
+      <div class="co-row"><span class="co-k">Nom</span><span class="co-v">Poivre &amp; Sens</span></div>
+      <div class="co-row"><span class="co-k">Statut</span><span class="co-v">Association loi 1901</span></div>
+      <div class="co-row"><span class="co-k">Direction</span><span class="co-v">Ambre Lavignac &amp; Ewen d'Aviau</span></div>
+      <div class="co-row"><span class="co-k">Disciplines</span><span class="co-v">Danse · Contact-improvisation · Musique · Somatique</span></div>
+      <div class="co-row"><span class="co-k">Courriel</span><span class="co-v"><a href="mailto:contact@poivretsens.fr">contact@poivretsens.fr</a></span></div>
+      <div class="co-row"><span class="co-k">Site</span><span class="co-v"><a href="https://www.poivretsens.fr">www.poivretsens.fr</a></span></div>
+      <p class="co-note">Coordonnées définitives à compléter lors de l'ouverture officielle.</p>
+    </div>
+    <div class="co-col">
+      <p class="co-h">Les fondateurs</p>
+      <div class="co-row"><span class="co-k">Ambre L.</span><span class="co-v"><a href="mailto:ambre@poivretsens.fr">ambre@poivretsens.fr</a></span></div>
+      <div class="co-row"><span class="co-k">Ewen d'A.</span><span class="co-v"><a href="mailto:ewen@poivretsens.fr">ewen@poivretsens.fr</a></span></div>
+      <div class="co-row"><span class="co-k">Siège</span><span class="co-v">À compléter lors de l'assemblée constitutive</span></div>
+      <p class="co-h" style="margin-top:32px">Suivre la compagnie</p>
+      <p style="font-size:.88rem;line-height:1.75;color:rgba(236,227,203,.55);margin-top:8px">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe. Abonnez-vous à notre liste de diffusion pour recevoir les prochaines dates.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- ══ SCRIPT ══════════════════════════════════════════════════════ -->
-  <script>
-    // Menu burger (mobile)
-    const burger = document.getElementById('nav-burger');
-    const liens  = document.getElementById('nav-liens');
-    burger.addEventListener('click', () => {
-      const ouvert = liens.classList.toggle('ouvert');
-      burger.setAttribute('aria-expanded', ouvert);
-    });
-    // Fermer le menu au clic sur un lien
-    liens.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        liens.classList.remove('ouvert');
-        burger.setAttribute('aria-expanded', 'false');
+<footer class="footer" role="contentinfo">
+  <p class="footer__br">Poivre <b>&amp;</b> Sens</p>
+  <p class="footer__mt">
+    Compagnie de danse et musique improvisées · Association loi 1901<br/>
+    Direction artistique : Ambre Lavignac &amp; Ewen d'Aviau<br/>
+    &copy; 2026 Poivre &amp; Sens · Tous droits réservés
+  </p>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  },{passive:true});
+
+  var burger = document.getElementById('nav-burger');
+  var list   = document.getElementById('nav-list');
+  window.toggleMenu = function(){
+    var open = list.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  window.closeMenu = function(){
+    list.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  };
+
+  if('IntersectionObserver' in window){
+    var s = document.createElement('style');
+    s.textContent='.rv{opacity:0;transform:translateY(26px);transition:opacity .65s .05s cubic-bezier(.25,.46,.45,.94),transform .65s .05s cubic-bezier(.25,.46,.45,.94)}.rv.vis{opacity:1;transform:none}';
+    document.head.appendChild(s);
+    var els = document.querySelectorAll('.axe,.bio,.act,.val,.inf,.diff-i,.photo');
+    els.forEach(function(el){el.classList.add('rv')});
+    var ob = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){e.target.classList.add('vis');ob.unobserve(e.target)}
       });
-    });
-  </script>
+    },{threshold:0.1});
+    els.forEach(function(el){ob.observe(el)});
+  }
+}());
+</script>
+
 </body>
 </html>

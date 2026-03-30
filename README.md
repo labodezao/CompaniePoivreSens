@@ -7,6 +7,17 @@ Ce dépôt contient l'ensemble des documents nécessaires à la création et au 
 - **Ambre Lavignac** — Professeure de danse contemporaine, praticienne du massage, inspirée par le Tao, les méridiens et les pratiques somatiques.
 - **Ewen d'Aviau** — Ingénieur luthier, musicien, danseur contact-improvisation, enseignant, imprégné des pratiques somatiques et de l'aïkido.
 
+## Site web
+
+| Fichier | Description |
+|---|---|
+| [`site/index.html`](site/index.html) | Site web complet — une page, HTML + CSS + JS intégrés, responsive, prêt à l'emploi |
+| [`site/gutenberg-import.txt`](site/gutenberg-import.txt) | Import natif WordPress Gutenberg — coller dans l'éditeur de code pour obtenir la page complète éditable visuellement |
+
+> **Utiliser le fichier Gutenberg :** dans WordPress, créez une page, ouvrez les trois points (⋮) → *Éditeur de code*, sélectionnez tout, collez le contenu du fichier `.txt`, puis repassez en *Éditeur visuel* pour modifier librement textes, photos et couleurs.
+
+---
+
 ## Documents disponibles
 
 Chaque document est disponible en deux formats :

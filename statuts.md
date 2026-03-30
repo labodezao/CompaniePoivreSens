@@ -16,10 +16,10 @@ Il est fondé entre les adhérentes et adhérents aux présents statuts une asso
 
 L'association a pour objet :
 
-- La création, la production et la diffusion de spectacles vivants mêlant danse contemporaine, danse contact-improvisation et musique improvisée.
-- L'enseignement et la transmission des pratiques du mouvement improvisé, du contact-improvisation, des arts somatiques et de la musique improvisée.
+- La création, la production et la diffusion de spectacles vivants.
+- L'enseignement et la transmission des pratiques du mouvement, de la musique et de tout art.
 - L'organisation de stages, ateliers, résidences, laboratoires de recherche artistique et rencontres publiques.
-- La mise en réseau d'artistes, pédagogues et praticiens du mouvement et du son, en France et à l'international.
+- La mise en réseau d'artistes, pédagogues et praticiens, en France et à l'international.
 - Toute action favorisant l'accès à ces pratiques artistiques et corporelles pour tous les publics.
 
 ### Article 3 — Siège social
