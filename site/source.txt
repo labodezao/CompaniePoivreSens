@@ -87,7 +87,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 </style>
 
 <link rel='stylesheet' id='google-fonts-css' href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&#038;family=Inter:wght@300;400;500&#038;display=swap' media='all' />
-<link rel='stylesheet' id='poivre-sens-theme-css' href='https://cie.poivresens.fr/wp-content/themes/poivre-sens/assets/css/theme.css?ver=1.0.0' media='all' />
+<link rel='stylesheet' id='poivre-sens-theme-css' href='https://cie.poivresens.fr/wp-content/themes/poivre-sens/assets/css/theme.css?ver=1774988735' media='all' />
 <style id='akismet-widget-style-inline-css'>
 
 			.a-stats {
@@ -592,16 +592,16 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 
 
 <section id="contact" class="wp-block-group sec"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
-<div class="wp-block-group" style="margin-bottom:56px"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
-
+<div class="wp-block-group"><div class="wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow">
 <p class="lbl">Nous rejoindre</p>
+
 
 
 <h2 class="wp-block-heading sh">Contact</h2>
 
 
-<hr class="wp-block-separator regle"/>
 
+<hr class="wp-block-separator has-css-opacity regle"/>
 </div></div>
 
 
@@ -722,7 +722,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 var PS = {"ajax_url":"https://cie.poivresens.fr/wp-admin/admin-ajax.php","nonce":"0c2888bb0b"};
 //# sourceURL=poivre-sens-theme-js-extra
 </script>
-<script src="https://cie.poivresens.fr/wp-content/themes/poivre-sens/assets/js/theme.js?ver=1.0.0" id="poivre-sens-theme-js"></script>
+<script src="https://cie.poivresens.fr/wp-content/themes/poivre-sens/assets/js/theme.js?ver=1774975464" id="poivre-sens-theme-js"></script>
 <script id="wp-emoji-settings" type="application/json">
 {"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"https://cie.poivresens.fr/wp-includes/js/wp-emoji-release.min.js?ver=6.9.4"}}
 </script>
