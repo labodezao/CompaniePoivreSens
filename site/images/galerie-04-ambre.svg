@@ -1,57 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
   <defs>
-    <filter id="glow">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow"/>
-      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
-    <filter id="blur2"><feGaussianBlur stdDeviation="12"/></filter>
-  </defs>
-  
-  <defs>
-    <linearGradient id="bg4" x1="30%" y1="0%" x2="70%" y2="100%">
-      <stop offset="0%" stop-color="#160f07"/>
-      <stop offset="60%" stop-color="#261808"/>
-      <stop offset="100%" stop-color="#100d07"/>
+    <linearGradient id="bg" x1="6.7%" y1="25.0%" x2="93.3%" y2="75.0%">
+    <stop offset="0%" stop-color="#160f07"/>
+    <stop offset="60%" stop-color="#261808"/>
+    <stop offset="100%" stop-color="#100d07"/>
     </linearGradient>
-    <radialGradient id="glow4" cx="55%" cy="40%" r="50%">
-      <stop offset="0%" stop-color="rgba(194,139,54,0.12)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
   </defs>
-  <rect width="800" height="520" fill="url(#bg4)"/>
-  <rect width="800" height="520" fill="url(#glow4)"/>
 
-  <!-- Floor -->
-  <line x1="0" y1="440" x2="800" y2="440" stroke="rgba(194,139,54,0.10)" stroke-width="1"/>
+  <!-- background -->
+  <rect width="800" height="520" fill="url(#bg)"/>
 
-  <!-- Dancer in arabesque / grand battement — flowing movement -->
-  <!-- Head -->
-  <circle cx="440" cy="140" r="30" fill="rgba(194,139,54,0.06)" stroke="rgba(194,139,54,0.35)" stroke-width="1"/>
-  <!-- Torso — leaning -->
-  <path d="M440,170 C438,230 432,270 425,310" stroke="rgba(194,139,54,0.32)" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <!-- Extended arm forward and up -->
-  <path d="M432,200 C400,180 360,165 310,150" stroke="rgba(194,139,54,0.45)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-  <circle cx="308" cy="149" r="4" fill="rgba(194,139,54,0.4)"/>
-  <!-- Back arm -->
-  <path d="M445,200 C490,195 530,200 560,215" stroke="rgba(194,139,54,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Standing leg -->
-  <path d="M425,310 C420,370 415,430 415,440" stroke="rgba(194,139,54,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <ellipse cx="415" cy="441" rx="9" ry="3" fill="rgba(194,139,54,0.35)"/>
-  <!-- Arabesque leg — extended back/up -->
-  <path d="M425,310 C460,300 530,265 600,220" stroke="rgba(194,139,54,0.45)" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <circle cx="603" cy="219" r="5" fill="rgba(194,139,54,0.35)"/>
+  <!-- circle -->
+  <circle cx="400" cy="260" r="47" fill="none" stroke="rgba(194,139,54,0.8)" stroke-width="1.5"/>
 
-  <!-- Movement trail — flowing curves suggesting motion -->
-  <path d="M200,350 C250,280 320,250 380,240 C440,230 490,250 520,290" stroke="rgba(194,139,54,0.08)" stroke-width="1.5" fill="none"/>
-  <path d="M150,320 C220,260 310,240 390,235" stroke="rgba(194,139,54,0.05)" stroke-width="1" fill="none"/>
+  <!-- cross — horizontal bar -->
+  <line x1="381" y1="260" x2="419" y2="260"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- cross — vertical bar -->
+  <line x1="400" y1="241" x2="400" y2="279"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Soft light -->
-  <circle cx="440" cy="280" r="150" fill="rgba(194,139,54,0.04)" filter="url(#blur2)"/>
-
-  <!-- Label -->
-  <text x="400" y="475" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="300" letter-spacing="4" fill="rgba(194,139,54,0.6)" font-style="italic">Ambre Lavignac</text>
-  <text x="400" y="494" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" letter-spacing="3" fill="rgba(194,139,54,0.32)">DANSEUSE · PÉDAGOGUE · PRATICIENNE</text>
-
+  <!-- label -->
+  <text x="400" y="329" text-anchor="middle"
+        font-family="Arial,sans-serif" font-size="11" font-weight="400"
+        letter-spacing="2" fill="rgba(194,139,54,0.7)">Ambre Lavignac</text>
+  <text x="400" y="345" text-anchor="middle"
+        font-family="Arial,sans-serif" font-size="9" font-weight="300"
+        letter-spacing="3" fill="rgba(194,139,54,0.45)">Ajouter un portrait</text>
 </svg>

@@ -1,71 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 440" width="1400" height="440">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 440">
   <defs>
-    <filter id="glow">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
-      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow"/>
-      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
-    <filter id="blur2"><feGaussianBlur stdDeviation="12"/></filter>
-  </defs>
-  
-  <defs>
-    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0e0d0b"/>
-      <stop offset="50%" stop-color="#1a1812"/>
-      <stop offset="100%" stop-color="#090807"/>
+    <linearGradient id="bg" x1="21.3%" y1="9.0%" x2="78.7%" y2="91.0%">
+    <stop offset="0%" stop-color="#0e0d0b"/>
+    <stop offset="55%" stop-color="#1a1812"/>
+    <stop offset="100%" stop-color="#090807"/>
     </linearGradient>
-    <radialGradient id="win5" cx="50%" cy="30%" r="35%">
-      <stop offset="0%" stop-color="rgba(194,139,54,0.10)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </radialGradient>
   </defs>
-  <rect width="1400" height="440" fill="url(#bg5)"/>
-  <rect width="1400" height="440" fill="url(#win5)"/>
 
-  <!-- Studio floor perspective -->
-  <line x1="0" y1="370" x2="1400" y2="370" stroke="rgba(194,139,54,0.12)" stroke-width="1"/>
-  <!-- Floor reflection lines (parquet) -->
-  <line x1="200" y1="370" x2="300" y2="440" stroke="rgba(194,139,54,0.04)" stroke-width="0.5"/>
-  <line x1="400" y1="370" x2="580" y2="440" stroke="rgba(194,139,54,0.04)" stroke-width="0.5"/>
-  <line x1="700" y1="370" x2="700" y2="440" stroke="rgba(194,139,54,0.04)" stroke-width="0.5"/>
-  <line x1="1000" y1="370" x2="820" y2="440" stroke="rgba(194,139,54,0.04)" stroke-width="0.5"/>
-  <line x1="1200" y1="370" x2="1100" y2="440" stroke="rgba(194,139,54,0.04)" stroke-width="0.5"/>
+  <!-- background -->
+  <rect width="1400" height="440" fill="url(#bg)"/>
 
-  <!-- Studio walls — high windows suggestion -->
-  <rect x="200" y="40" width="80" height="200" fill="none" stroke="rgba(194,139,54,0.08)" stroke-width="1"/>
-  <rect x="310" y="40" width="80" height="200" fill="none" stroke="rgba(194,139,54,0.08)" stroke-width="1"/>
-  <rect x="1010" y="40" width="80" height="200" fill="none" stroke="rgba(194,139,54,0.08)" stroke-width="1"/>
-  <rect x="1120" y="40" width="80" height="200" fill="none" stroke="rgba(194,139,54,0.08)" stroke-width="1"/>
-  <!-- Window light bars -->
-  <rect x="200" y="40" width="80" height="200" fill="rgba(194,139,54,0.03)"/>
-  <rect x="310" y="40" width="80" height="200" fill="rgba(194,139,54,0.02)"/>
+  <!-- circle -->
+  <circle cx="700" cy="220" r="40" fill="none" stroke="rgba(194,139,54,0.8)" stroke-width="1.5"/>
 
-  <!-- Two figures in studio — one working, one observing -->
-  <!-- Figure 1 — center (movement exploration) -->
-  <circle cx="620" cy="225" r="22" fill="rgba(194,139,54,0.06)" stroke="rgba(194,139,54,0.3)" stroke-width="1"/>
-  <ellipse cx="622" cy="295" rx="18" ry="55" fill="rgba(194,139,54,0.04)" stroke="rgba(194,139,54,0.22)" stroke-width="0.9"/>
-  <path d="M608,255 C580,235 550,225 520,230" stroke="rgba(194,139,54,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <path d="M635,258 C665,255 690,265 710,280" stroke="rgba(194,139,54,0.3)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-  <path d="M616,348 C610,365 605,370 600,371" stroke="rgba(194,139,54,0.35)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-  <path d="M628,348 C638,365 645,370 648,371" stroke="rgba(194,139,54,0.32)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <!-- cross — horizontal bar -->
+  <line x1="684" y1="220" x2="716" y2="220"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- cross — vertical bar -->
+  <line x1="700" y1="204" x2="700" y2="236"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Figure 2 — watching, slightly right -->
-  <circle cx="820" cy="230" r="19" fill="rgba(158,55,16,0.05)" stroke="rgba(158,55,16,0.25)" stroke-width="0.9"/>
-  <ellipse cx="820" cy="295" rx="15" ry="52" fill="rgba(158,55,16,0.04)" stroke="rgba(158,55,16,0.18)" stroke-width="0.9"/>
-  <path d="M808,265 C790,260 775,262 760,270" stroke="rgba(158,55,16,0.28)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-  <path d="M832,265 C845,262 858,265 865,272" stroke="rgba(158,55,16,0.22)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-
-  <!-- Notes / score on floor — suggestion -->
-  <line x1="500" y1="395" x2="620" y2="395" stroke="rgba(194,139,54,0.12)" stroke-width="0.5"/>
-  <line x1="500" y1="400" x2="620" y2="400" stroke="rgba(194,139,54,0.10)" stroke-width="0.5"/>
-  <line x1="500" y1="405" x2="620" y2="405" stroke="rgba(194,139,54,0.08)" stroke-width="0.5"/>
-
-  <!-- Atmospheric haze -->
-  <circle cx="700" cy="200" r="200" fill="rgba(194,139,54,0.03)" filter="url(#blur2)"/>
-
-  <!-- Label -->
-  <text x="700" y="415" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="300" letter-spacing="4" fill="rgba(194,139,54,0.55)" font-style="italic">En résidence</text>
-  <text x="700" y="432" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" letter-spacing="3" fill="rgba(194,139,54,0.3)">LABORATOIRE ARTISTIQUE · RECHERCHE</text>
-
+  <!-- label -->
+  <text x="700" y="282" text-anchor="middle"
+        font-family="Arial,sans-serif" font-size="11" font-weight="400"
+        letter-spacing="2" fill="rgba(194,139,54,0.7)">En résidence</text>
+  <text x="700" y="298" text-anchor="middle"
+        font-family="Arial,sans-serif" font-size="9" font-weight="300"
+        letter-spacing="3" fill="rgba(194,139,54,0.45)">Ajouter une photo</text>
 </svg>
