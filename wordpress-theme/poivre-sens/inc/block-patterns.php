@@ -2,17 +2,23 @@
 /**
  * Poivre & Sens — Shortcodes & Patterns Gutenberg
  *
- * Remplace admin-options.php. Le contenu de la page d'accueil est
- * désormais édité directement dans l'éditeur Gutenberg.
+ * Le contenu de la page d'accueil est édité directement dans
+ * l'éditeur Gutenberg. Insérez le pattern « Page d'accueil complète »
+ * pour démarrer, puis éditez chaque section en place.
  *
- * Shortcodes disponibles (à insérer via un bloc « Shortcode ») :
- *   [ps_galerie]     — galerie photos (CPT)
- *   [ps_evenements]  — prochains événements (CPT)
+ * Sections entièrement éditables (blocs Gutenberg natifs) :
+ *   Hero · Manifeste · Artistes · Références/influences
+ *   Projet artistique · Nos activités · Esthétique · Contact
+ *
+ * Shortcodes dynamiques (contenu chargé depuis les CPT/formulaire) :
+ *   [ps_galerie]     — galerie photos (CPT « Photo »)
+ *   [ps_evenements]  — prochains événements (CPT « Événement »)
  *   [ps_newsletter]  — formulaire d'inscription newsletter
- *   [ps_projet]      — section projet artistique (axes)
- *   [ps_influences]  — références & influences
- *   [ps_activites]   — nos activités + axes de diffusion
- *   [ps_valeurs]     — valeurs esthétiques (colonne gauche)
+ *
+ * Patterns disponibles dans Blocs › Patterns › Poivre & Sens :
+ *   ① Hero, ② Manifeste, ③ Artistes, ④ Projet artistique,
+ *   ⑤ Nos activités, ⑥ Événements, ⑦ Esthétique, ⑧ Contact,
+ *      Page d'accueil complète
  */
 defined('ABSPATH') || exit;
 
@@ -288,7 +294,7 @@ add_action('init', function () {
         'categories'  => ['poivre-sens'],
         'content'     => _ps_pat_hero() . _ps_pat_galerie_sc()
                        . _ps_pat_manifeste() . _ps_pat_artistes()
-                       . _ps_pat_projet_sc() . _ps_pat_activites_sc()
+                       . _ps_pat_projet() . _ps_pat_activites()
                        . _ps_pat_evenements_sc() . _ps_pat_esthetique()
                        . _ps_pat_newsletter_sc() . _ps_pat_contact(),
     ]);
@@ -311,14 +317,33 @@ add_action('init', function () {
         'content'    => _ps_pat_artistes(),
     ]);
 
+    register_block_pattern('poivre-sens/projet', [
+        'title'      => '④ Projet artistique',
+        'categories' => ['poivre-sens'],
+        'content'    => _ps_pat_projet(),
+    ]);
+
+    register_block_pattern('poivre-sens/activites', [
+        'title'      => '⑤ Nos activités',
+        'categories' => ['poivre-sens'],
+        'content'    => _ps_pat_activites(),
+    ]);
+
+    register_block_pattern('poivre-sens/evenements', [
+        'title'       => '⑥ Événements à venir',
+        'description' => 'Liste dynamique des prochains événements. Alimentée via Événements › Ajouter.',
+        'categories'  => ['poivre-sens'],
+        'content'     => _ps_pat_evenements_sc(),
+    ]);
+
     register_block_pattern('poivre-sens/esthetique', [
-        'title'      => '④ Esthétique &amp; citation',
+        'title'      => '⑦ Esthétique &amp; citation',
         'categories' => ['poivre-sens'],
         'content'    => _ps_pat_esthetique(),
     ]);
 
     register_block_pattern('poivre-sens/contact', [
-        'title'      => '⑤ Contact',
+        'title'      => '⑧ Contact',
         'categories' => ['poivre-sens'],
         'content'    => _ps_pat_contact(),
     ]);
@@ -333,8 +358,6 @@ function _ps_sc(string $tag): string {
     return "\n<!-- wp:shortcode -->\n[{$tag}]\n<!-- /wp:shortcode -->\n";
 }
 function _ps_pat_galerie_sc(): string    { return _ps_sc('ps_galerie'); }
-function _ps_pat_projet_sc(): string     { return _ps_sc('ps_projet'); }
-function _ps_pat_activites_sc(): string  { return _ps_sc('ps_activites'); }
 function _ps_pat_evenements_sc(): string { return _ps_sc('ps_evenements'); }
 function _ps_pat_newsletter_sc(): string { return _ps_sc('ps_newsletter'); }
 
@@ -434,7 +457,7 @@ BLOCK;
 
 /* ── ③ Artistes ────────────────────────────────────────────── */
 function _ps_pat_artistes(): string {
-    return <<<'BLOCK'
+    $opening = <<<'BLOCK'
 
 <!-- wp:group {"tagName":"section","className":"sec sec2","anchor":"artistes","layout":{"type":"default"}} -->
 <section class="wp-block-group sec sec2" id="artistes">
@@ -529,19 +552,19 @@ function _ps_pat_artistes(): string {
 </div>
 <!-- /wp:group -->
 
-<!-- wp:shortcode -->
-[ps_influences]
-<!-- /wp:shortcode -->
+BLOCK;
+    $closing = <<<'BLOCK'
 
 </section>
 <!-- /wp:group -->
 
 BLOCK;
+    return $opening . _ps_pat_influences() . $closing;
 }
 
-/* ── ④ Esthétique ──────────────────────────────────────────── */
+/* ── ⑦ Esthétique ──────────────────────────────────────────── */
 function _ps_pat_esthetique(): string {
-    return <<<'BLOCK'
+    $before = <<<'BLOCK'
 
 <!-- wp:group {"tagName":"section","className":"sec","anchor":"esthetique","layout":{"type":"default"}} -->
 <section class="wp-block-group sec" id="esthetique">
@@ -563,9 +586,8 @@ function _ps_pat_esthetique(): string {
 <!-- wp:group {"className":"esthet","layout":{"type":"default"}} -->
 <div class="wp-block-group esthet">
 
-<!-- wp:shortcode -->
-[ps_valeurs]
-<!-- /wp:shortcode -->
+BLOCK;
+    $after = <<<'BLOCK'
 
 <!-- wp:group {"className":"esthet__cite","layout":{"type":"default"}} -->
 <div class="wp-block-group esthet__cite">
@@ -582,6 +604,7 @@ function _ps_pat_esthetique(): string {
 <!-- /wp:group -->
 
 BLOCK;
+    return $before . _ps_pat_valeurs() . $after;
 }
 
 /* ── ⑤ Contact ─────────────────────────────────────────────── */
@@ -675,6 +698,318 @@ function _ps_pat_contact(): string {
 <!-- wp:paragraph {"className":"co-note"} -->
 <p class="co-note">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.</p>
 <!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+</section>
+<!-- /wp:group -->
+
+BLOCK;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. NOUVELLES FONCTIONS — Blocs Gutenberg natifs (éditables)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Références & influences ───────────────────────────────── */
+function _ps_pat_influences(): string {
+    return <<<'BLOCK'
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group">
+
+<!-- wp:paragraph {"className":"lbl"} -->
+<p class="lbl" style="margin-top:0">Références &amp; influences</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"className":"regle"} -->
+<hr class="wp-block-separator regle"/>
+<!-- /wp:separator -->
+
+<!-- wp:group {"className":"influences","layout":{"type":"default"}} -->
+<div class="wp-block-group influences">
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateurs du contact-improvisation</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Éducation somatique et danse thérapie</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">John Cage &amp; Derek Bailey</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Improvisation musicale et indétermination</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Huangdi Neijing</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Classique de médecine interne — méridiens</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Ueshiba Morihei</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateur de l'aïkido</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Pensée du corps sonore</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+BLOCK;
+}
+
+/* ── Valeurs esthétiques ───────────────────────────────────── */
+function _ps_pat_valeurs(): string {
+    return <<<'BLOCK'
+
+<!-- wp:group {"className":"esthet__vals","layout":{"type":"default"}} -->
+<div class="wp-block-group esthet__vals">
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Scénographie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Musique</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Mouvement</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Artisanat</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Philosophie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+BLOCK;
+}
+
+/* ── ④ Projet artistique ───────────────────────────────────── */
+function _ps_pat_projet(): string {
+    return <<<'BLOCK'
+
+<!-- wp:group {"tagName":"section","className":"sec","anchor":"projet","layout":{"type":"default"}} -->
+<section class="wp-block-group sec" id="projet">
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="margin-bottom:56px">
+<!-- wp:paragraph {"className":"lbl"} -->
+<p class="lbl">Note d'intention</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading {"level":2,"className":"sh"} -->
+<h2 class="wp-block-heading sh">Le projet artistique</h2>
+<!-- /wp:heading -->
+<!-- wp:separator {"className":"regle"} -->
+<hr class="wp-block-separator regle"/>
+<!-- /wp:separator -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"axes","layout":{"type":"default"}} -->
+<div class="wp-block-group axes">
+
+<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
+<div class="wp-block-group axe">
+<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">01</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"axe__t"} -->
+<h3 class="wp-block-heading axe__t">Création chorégraphique &amp; musicale</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"className":"axe__tx"} -->
+<p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
+<div class="wp-block-group axe">
+<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">02</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"axe__t"} -->
+<h3 class="wp-block-heading axe__t">L'improvisation comme forme</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"className":"axe__tx"} -->
+<p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
+<div class="wp-block-group axe">
+<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">03</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"axe__t"} -->
+<h3 class="wp-block-heading axe__t">La pédagogie du sensible</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"className":"axe__tx"} -->
+<p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+</section>
+<!-- /wp:group -->
+
+BLOCK;
+}
+
+/* ── ⑤ Nos activités ───────────────────────────────────────── */
+function _ps_pat_activites(): string {
+    return <<<'BLOCK'
+
+<!-- wp:group {"tagName":"section","className":"sec","anchor":"activites","layout":{"type":"default"}} -->
+<section class="wp-block-group sec" id="activites">
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="margin-bottom:56px">
+<!-- wp:paragraph {"className":"lbl"} -->
+<p class="lbl">Ce que nous proposons</p>
+<!-- /wp:paragraph -->
+<!-- wp:heading {"level":2,"className":"sh"} -->
+<h2 class="wp-block-heading sh">Nos activités</h2>
+<!-- /wp:heading -->
+<!-- wp:separator {"className":"regle"} -->
+<hr class="wp-block-separator regle"/>
+<!-- /wp:separator -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group">
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">01</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Spectacles vivants</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Scène</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">02</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Jams contact-improvisation</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Jam</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">03</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Stages &amp; ateliers</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Pédagogie</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">04</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences de recherche</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Résidence</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">05</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences pédagogiques</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Médiation</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">06</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Lutherie &amp; fabrication</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Artisanat</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group">
+
+<!-- wp:paragraph {"className":"lbl"} -->
+<p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"className":"regle"} -->
+<hr class="wp-block-separator regle"/>
+<!-- /wp:separator -->
+
+<!-- wp:group {"className":"diff","layout":{"type":"default"}} -->
+<div class="wp-block-group diff">
+<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Festivals de danse contemporaine, contact-improvisation et musique improvisée — France &amp; Europe</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Théâtres et scènes labellisées accueillant les écritures chorégraphiques émergentes</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Lieux non conventionnels : musées, bibliothèques, espaces naturels, ateliers d'artistes</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Établissements scolaires et structures socioculturelles pour les ateliers pédagogiques</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 

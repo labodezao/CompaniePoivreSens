@@ -6,12 +6,14 @@
  * Pour démarrer, ouvrez la page et insérez le pattern :
  *   Blocs › Patterns › Poivre & Sens › Page d'accueil complète
  *
- * Sections éditables directement (blocs Gutenberg) :
- *   Hero · Manifeste · Artistes · Esthétique citation · Contact
+ * Toutes les sections sont des blocs Gutenberg natifs éditables :
+ *   Hero · Manifeste · Artistes · Références/influences
+ *   Projet artistique · Nos activités · Esthétique · Contact
  *
- * Sections dynamiques (shortcodes inclus dans le pattern) :
- *   [ps_galerie]  [ps_evenements]  [ps_newsletter]
- *   [ps_projet]   [ps_activites]   [ps_influences]  [ps_valeurs]
+ * Les shortcodes suivants restent dynamiques (ne pas supprimer) :
+ *   [ps_galerie]     — galerie depuis le CPT « Photo »
+ *   [ps_evenements]  — agenda depuis le CPT « Événement »
+ *   [ps_newsletter]  — formulaire d'abonnement
  */
 get_header();
 

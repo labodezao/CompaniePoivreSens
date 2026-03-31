@@ -80,38 +80,66 @@ Affectez-le à l'emplacement **Menu principal**.
 
 ## ✏️ Modifier le contenu du site
 
-Tout se passe dans **Réglages › 🌶 Contenu du site**. Une seule page, un seul bouton Enregistrer.
+Tout le contenu de la page d'accueil est édité directement dans **l'éditeur Gutenberg**.
 
-### Textes de la page d'accueil
+### Accéder à l'éditeur
 
-| Section | Ce que vous pouvez modifier |
+1. Admin → **Pages**
+2. Cliquez sur la page **Accueil**
+3. L'éditeur Gutenberg s'ouvre — chaque section est un bloc cliquable
+
+> **Première installation ?** Si la page est vide, cliquez **+** › **Parcourir les patterns** › **Poivre & Sens** › **Page d'accueil complète**. Tous les blocs sont insérés en une fois.
+
+---
+
+### Sections entièrement éditables (cliquez, tapez, enregistrez)
+
+| Pattern | Ce que vous pouvez modifier |
 |---------|---------------------------|
-| **① Hero** | Photo de fond, sur-titre, disciplines, texte du bouton, citation, texte d'intro |
-| **② Manifeste** | Titre, mots en italique dorés, 3 paragraphes |
-| **③ Ambre** | **Photo portrait**, nom, rôle, 2 paragraphes de bio, mots-clés |
-| **④ Ewen** | **Photo portrait**, nom, rôle, 2 paragraphes de bio, mots-clés |
-| **⑤ Citation** | 3 lignes de la citation esthétique + source |
-| **⑥ Contact** | Nom, statut, emails, site, note réseaux |
-| **⑦ Footer** | 2 lignes du pied de page |
+| **① Hero** | Sur-titre, nom, disciplines, texte bouton, citation, texte d'intro |
+| **② Manifeste** | Titre (avec _italiques_), 3 paragraphes |
+| **③ Artistes** | Biographies, rôles, mots-clés, initiales |
+| **Références & influences** | Noms et descriptions des 6 influences |
+| **④ Projet artistique** | Titre, 3 axes (numéro, titre, texte) |
+| **⑤ Nos activités** | 6 activités (numéro, titre, texte, badge) + 4 axes de diffusion |
+| **⑦ Esthétique** | 5 valeurs (label, texte) + citation |
+| **⑧ Contact** | Informations compagnie, emails, note réseaux |
 
-### Choisir ou changer une photo
+> **Comment modifier un texte** : cliquez sur le paragraphe ou le titre → modifiez directement → **Mettre à jour** (bouton bleu en haut à droite).
 
-1. Dans la section concernée, cliquez **📷 Choisir une image**
-2. La médiathèque WordPress s'ouvre — glissez votre photo ou cliquez "Téléverser"
-3. Sélectionnez la photo, cliquez **Utiliser cette image**
-4. Cliquez **💾 Enregistrer les réglages** — c'est tout
+---
 
-> **Photos recommandées :**
-> - **Fond hero** : paysage, 1920 × 1080 px minimum
-> - **Portraits** : carrée ou portrait, 400 × 400 px minimum
+### Insérer un pattern individuel
+
+Si vous souhaitez refaire une section depuis zéro :
+
+1. Cliquez sur **+** pour ajouter un bloc
+2. Cherchez **Patterns** › **Poivre & Sens**
+3. Les patterns disponibles sont :  
+   ① Hero · ② Manifeste · ③ Artistes · ④ Projet artistique  
+   ⑤ Nos activités · ⑥ Événements · ⑦ Esthétique · ⑧ Contact
+
+---
+
+### Sections dynamiques (ne pas supprimer les blocs Shortcode)
+
+Ces sections se remplissent automatiquement depuis les menus de l'admin :
+
+| Shortcode dans l'éditeur | Géré via | Ce qu'il affiche |
+|--------------------------|----------|-----------------|
+| `[ps_galerie]` | **Galerie › Ajouter** | 6 photos en grille |
+| `[ps_evenements]` | **Événements › Ajouter** | 3 prochains événements |
+| `[ps_newsletter]` | Automatique | Formulaire d'inscription |
+
+> ⚠️ Ne supprimez pas ces blocs Shortcode dans l'éditeur — ils relient les sections dynamiques.
+
+---
 
 ### Galerie photos et Événements
 
 Ces sections se gèrent séparément (elles affichent un contenu dynamique) :
 - **Galerie** → menu **Galerie › Ajouter** — ajoutez un titre, une image à la une, un sous-titre
 - **Événements** → menu **Événements › Ajouter**
-
-La page d'options contient des liens directs vers ces deux sections.
 
 ---
 
