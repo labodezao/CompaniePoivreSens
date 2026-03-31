@@ -69,6 +69,8 @@ $hero_discs      = ps_mod('hero_disciplines', "Danse contemporaine\nContact-impr
 $hero_cta        = ps_mod('hero_cta_label',   'Découvrir la compagnie');
 $hero_quote      = ps_mod('hero_quote',       "Le corps sait ce que l'esprit cherche encore.");
 $hero_intro      = ps_mod('hero_intro',       "Née de la rencontre d'un corps et d'un son, d'une main qui écoute et d'une oreille qui se déplace, la compagnie explore les espaces de porosité entre le mouvement et la musique.");
+$hero_bg_id      = (int) ps_mod('hero_bg_id', '0');
+$hero_bg_url     = $hero_bg_id ? wp_get_attachment_image_url($hero_bg_id, 'full') : '';
 
 $mf_titre        = ps_mod('manifeste_titre',    "Une rencontre entre le corps et le son");
 $mf_em1          = ps_mod('manifeste_titre_em1','le corps');
@@ -91,6 +93,8 @@ $ambre_init     = ps_mod('ambre_initiale', 'A');
 $ambre_bio1     = ps_mod('ambre_bio1',     "Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.");
 $ambre_bio2     = ps_mod('ambre_bio2',     "Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.");
 $ambre_tags_raw = ps_mod('ambre_tags',     'Danse contemporaine,Improvisation,Somatique,Tao,Méridiens,Massage,Pédagogie');
+$ambre_photo_id = (int) ps_mod('ambre_photo_id', '0');
+$ambre_photo_url = $ambre_photo_id ? wp_get_attachment_image_url($ambre_photo_id, 'thumbnail') : '';
 
 $ewen_nom       = ps_mod('ewen_nom',       "Ewen d'Aviau");
 $ewen_role      = ps_mod('ewen_role',      "Luthier-ingénieur · Musicien · Danseur");
@@ -98,6 +102,8 @@ $ewen_init      = ps_mod('ewen_initiale',  'E');
 $ewen_bio1      = ps_mod('ewen_bio1',      "Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.");
 $ewen_bio2      = ps_mod('ewen_bio2',      "Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.");
 $ewen_tags_raw  = ps_mod('ewen_tags',      "Lutherie,Musique improvisée,Contact-improvisation,Somatique,Aïkido,Enseignement");
+$ewen_photo_id  = (int) ps_mod('ewen_photo_id', '0');
+$ewen_photo_url = $ewen_photo_id ? wp_get_attachment_image_url($ewen_photo_id, 'thumbnail') : '';
 
 $ec_l1          = ps_mod('esthet_cite_ligne1', "Habiter un espace de jeu partagé —");
 $ec_l2          = ps_mod('esthet_cite_ligne2', 'entre deux corps,');
@@ -133,6 +139,9 @@ function ps_render_disciplines(string $raw): string {
 <!-- ═══════════════════════════ HERO ════════════════════════ -->
 <section class="hero" id="accueil" aria-label="Accueil">
   <div class="hero__bg" aria-hidden="true">
+    <?php if ($hero_bg_url): ?>
+    <img src="<?php echo esc_url($hero_bg_url); ?>" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;">
+    <?php endif; ?>
     <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" fill="none">
       <path d="M-80,450 C120,180 320,720 560,380 C780,60 980,620 1200,400 C1330,290 1400,340 1520,310" stroke="rgba(194,139,54,0.07)" stroke-width="1.5"/>
       <path d="M200,900 C300,600 480,820 640,500 C800,180 960,680 1100,350 C1200,140 1350,240 1520,180" stroke="rgba(158,55,16,0.05)" stroke-width="1"/>
@@ -220,7 +229,7 @@ function ps_render_disciplines(string $raw): string {
     <!-- Ambre -->
     <div class="bio">
       <div class="bio__hd">
-        <div class="bio__mn" aria-hidden="true"><?php echo esc_html($ambre_init); ?></div>
+        <div class="bio__mn" aria-hidden="true"><?php if ($ambre_photo_url): ?><img src="<?php echo esc_url($ambre_photo_url); ?>" alt="<?php echo esc_attr($ambre_nom); ?>"><?php else: echo esc_html($ambre_init); endif; ?></div>
         <div>
           <h3 class="bio__nom"><?php echo esc_html($ambre_nom); ?></h3>
           <p class="bio__rol"><?php echo esc_html($ambre_role); ?></p>
@@ -233,7 +242,7 @@ function ps_render_disciplines(string $raw): string {
     <!-- Ewen -->
     <div class="bio">
       <div class="bio__hd">
-        <div class="bio__mn" aria-hidden="true"><?php echo esc_html($ewen_init); ?></div>
+        <div class="bio__mn" aria-hidden="true"><?php if ($ewen_photo_url): ?><img src="<?php echo esc_url($ewen_photo_url); ?>" alt="<?php echo esc_attr($ewen_nom); ?>"><?php else: echo esc_html($ewen_init); endif; ?></div>
         <div>
           <h3 class="bio__nom"><?php echo esc_html($ewen_nom); ?></h3>
           <p class="bio__rol"><?php echo esc_html($ewen_role); ?></p>

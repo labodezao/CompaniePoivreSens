@@ -78,22 +78,40 @@ Affectez-le à l'emplacement **Menu principal**.
 
 ---
 
-## ✏️ Modifier le contenu de la page d'accueil
+## ✏️ Modifier le contenu du site
 
-Allez dans **Réglages › 🌶 Contenu du site**. Vous trouverez sur une seule page tous les textes éditables, organisés par section. Modifiez ce que vous voulez, puis cliquez **Enregistrer les réglages** — c'est tout.
+Tout se passe dans **Réglages › 🌶 Contenu du site**. Une seule page, un seul bouton Enregistrer.
+
+### Textes de la page d'accueil
 
 | Section | Ce que vous pouvez modifier |
 |---------|---------------------------|
-| **① Hero** | Sur-titre, disciplines, texte du bouton, citation, texte d'intro |
+| **① Hero** | Photo de fond, sur-titre, disciplines, texte du bouton, citation, texte d'intro |
 | **② Manifeste** | Titre, mots en italique dorés, 3 paragraphes |
-| **③ Ambre** | Nom, rôle, initiale, 2 paragraphes de bio, mots-clés |
-| **④ Ewen** | Nom, rôle, initiale, 2 paragraphes de bio, mots-clés |
-| **⑤ Citation** | 3 lignes de la citation + source |
-| **⑥ Contact** | Nom compagnie, statut, direction, emails, site, note réseaux |
+| **③ Ambre** | **Photo portrait**, nom, rôle, 2 paragraphes de bio, mots-clés |
+| **④ Ewen** | **Photo portrait**, nom, rôle, 2 paragraphes de bio, mots-clés |
+| **⑤ Citation** | 3 lignes de la citation esthétique + source |
+| **⑥ Contact** | Nom, statut, emails, site, note réseaux |
 | **⑦ Footer** | 2 lignes du pied de page |
 
-> **Galerie et Événements** se gèrent séparément via leurs menus dédiés dans l'admin
-> (la page d'options contient des liens directs vers ces sections).
+### Choisir ou changer une photo
+
+1. Dans la section concernée, cliquez **📷 Choisir une image**
+2. La médiathèque WordPress s'ouvre — glissez votre photo ou cliquez "Téléverser"
+3. Sélectionnez la photo, cliquez **Utiliser cette image**
+4. Cliquez **💾 Enregistrer les réglages** — c'est tout
+
+> **Photos recommandées :**
+> - **Fond hero** : paysage, 1920 × 1080 px minimum
+> - **Portraits** : carrée ou portrait, 400 × 400 px minimum
+
+### Galerie photos et Événements
+
+Ces sections se gèrent séparément (elles affichent un contenu dynamique) :
+- **Galerie** → menu **Galerie › Ajouter** — ajoutez un titre, une image à la une, un sous-titre
+- **Événements** → menu **Événements › Ajouter**
+
+La page d'options contient des liens directs vers ces deux sections.
 
 ---
 

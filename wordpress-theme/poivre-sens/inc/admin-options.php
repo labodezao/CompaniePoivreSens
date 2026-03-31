@@ -24,8 +24,11 @@ function ps_sanitize_options(array $input): array {
         'ewen_bio1',  'ewen_bio2',
         'contact_note_reseaux',
     ];
+    $image_id_keys = ['hero_bg_id', 'ambre_photo_id', 'ewen_photo_id'];
     foreach ($input as $key => $val) {
-        if (in_array($key, $textarea_keys, true)) {
+        if (in_array($key, $image_id_keys, true)) {
+            $clean[$key] = absint($val);
+        } elseif (in_array($key, $textarea_keys, true)) {
             $clean[$key] = wp_kses_post(wp_unslash($val));
         } else {
             $clean[$key] = sanitize_text_field(wp_unslash($val));
@@ -46,6 +49,11 @@ add_action('admin_menu', function () {
 });
 
 /* ── Styles inline pour la page ─────────────────────────────── */
+add_action('admin_enqueue_scripts', function (string $hook) {
+    if ($hook !== 'settings_page_ps-options') return;
+    wp_enqueue_media();
+});
+
 add_action('admin_head', function () {
     $screen = get_current_screen();
     if (!$screen || $screen->id !== 'settings_page_ps-options') return;
@@ -71,6 +79,10 @@ add_action('admin_head', function () {
 .ps-row input[type=text]:focus, .ps-row textarea:focus {
     border-color:#2271b1; box-shadow:0 0 0 1px #2271b1; outline:none; }
 .ps-row textarea { min-height:80px; resize:vertical; line-height:1.6; }
+.ps-img-preview { margin-bottom:8px; min-height:32px; }
+.ps-img-preview img { max-width:200px; max-height:120px; border-radius:4px;
+    border:1px solid #c3c4c7; display:block; object-fit:cover; }
+.ps-img-btns { display:flex; gap:8px; flex-wrap:wrap; }
 .ps-sticky { position:sticky; top:32px; }
 .ps-save { background:#2271b1; color:#fff; border:none; border-radius:3px;
     padding:10px 24px; font-size:14px; font-weight:600; cursor:pointer; width:100%;
@@ -82,6 +94,7 @@ add_action('admin_head', function () {
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    /* ── Accordéon ── */
     document.querySelectorAll('.ps-section h2').forEach(function (h2) {
         h2.addEventListener('click', function () {
             var body = h2.closest('.ps-section').querySelector('.ps-section-body');
@@ -89,6 +102,63 @@ document.addEventListener('DOMContentLoaded', function () {
             var hidden = body.classList.toggle('ps-hidden');
             tog.textContent = hidden ? '▶ Afficher' : '▼ Masquer';
         });
+    });
+
+    /* ── Upload média ── */
+    document.querySelectorAll('.ps-img-field').forEach(function (field) {
+        var hiddenInput = field.querySelector('input[type=hidden]');
+        var preview     = field.querySelector('.ps-img-preview');
+        var btns        = field.querySelector('.ps-img-btns');
+        var btnSelect   = field.querySelector('.ps-img-select');
+        var frame;
+
+        function addRemoveBtn() {
+            if (btns.querySelector('.ps-img-remove')) return;
+            var rm = document.createElement('button');
+            rm.type = 'button';
+            rm.className = 'button ps-img-remove';
+            rm.textContent = '✕ Supprimer';
+            rm.addEventListener('click', function (e) {
+                e.preventDefault();
+                hiddenInput.value = '';
+                preview.innerHTML = '';
+                btnSelect.textContent = '📷 Choisir une image';
+                rm.remove();
+            });
+            btns.appendChild(rm);
+        }
+
+        btnSelect.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (!frame) {
+                frame = wp.media({
+                    title: 'Choisir une image',
+                    button: { text: 'Utiliser cette image' },
+                    multiple: false,
+                    library: { type: 'image' }
+                });
+                frame.on('select', function () {
+                    var att  = frame.state().get('selection').first().toJSON();
+                    var thumb = (att.sizes && att.sizes.medium) ? att.sizes.medium.url : att.url;
+                    hiddenInput.value = att.id;
+                    preview.innerHTML = '<img src="' + thumb + '" alt="">';
+                    btnSelect.textContent = '🔄 Changer l\'image';
+                    addRemoveBtn();
+                });
+            }
+            frame.open();
+        });
+
+        var existing = btns.querySelector('.ps-img-remove');
+        if (existing) {
+            existing.addEventListener('click', function (e) {
+                e.preventDefault();
+                hiddenInput.value = '';
+                preview.innerHTML = '';
+                btnSelect.textContent = '📷 Choisir une image';
+                existing.remove();
+            });
+        }
     });
 });
 </script>
@@ -121,6 +191,7 @@ function ps_render_options_page(): void {
 <!-- ①  HERO ─────────────────────────────────────────── -->
 <?php ps_section('hero', '① Hero — En-tête de la page'); ?>
 <div class="ps-section-body">
+<?php ps_field_image('hero_bg_id',  'Image de fond (optionnelle)', (int)$v('hero_bg_id'), 'Photo affichée en arrière-plan du bandeau. Sans image, fond abstrait (lignes dorées).'); ?>
 <?php ps_field('text',     'hero_surtitle',   'Sur-titre',                    $v('hero_surtitle',   'Compagnie artistique · Association loi 1901')); ?>
 <?php ps_field('textarea', 'hero_disciplines','Disciplines (une par ligne)',   $v('hero_disciplines',"Danse contemporaine\nContact-improvisation\nMusique improvisée\nPratiques somatiques"), 'Chaque ligne = une discipline affichée'); ?>
 <?php ps_field('text',     'hero_cta_label',  'Texte du bouton',              $v('hero_cta_label',  'Découvrir la compagnie')); ?>
@@ -142,6 +213,7 @@ function ps_render_options_page(): void {
 <!-- ③  ARTISTE AMBRE ────────────────────────────────── -->
 <?php ps_section('ambre', '③ Artiste — Ambre Lavignac'); ?>
 <div class="ps-section-body">
+<?php ps_field_image('ambre_photo_id', 'Photo portrait', (int)$v('ambre_photo_id'), 'Affiché en cercle. Photo carrée recommandée.'); ?>
 <?php ps_field('text',     'ambre_nom',     'Nom',                         $v('ambre_nom',     'Ambre Lavignac')); ?>
 <?php ps_field('text',     'ambre_role',    'Rôle / Titre',                $v('ambre_role',    'Danseuse · Pédagogue · Praticienne du mouvement')); ?>
 <?php ps_field('text',     'ambre_initiale','Initiale (bulle avatar)',     $v('ambre_initiale','A'), 'Lettre affichée dans le cercle'); ?>
@@ -153,6 +225,7 @@ function ps_render_options_page(): void {
 <!-- ④  ARTISTE EWEN ─────────────────────────────────── -->
 <?php ps_section('ewen', "④ Artiste — Ewen d'Aviau"); ?>
 <div class="ps-section-body">
+<?php ps_field_image('ewen_photo_id', 'Photo portrait', (int)$v('ewen_photo_id'), 'Affiché en cercle. Photo carrée recommandée.'); ?>
 <?php ps_field('text',     'ewen_nom',      'Nom',                        $v('ewen_nom',      "Ewen d'Aviau")); ?>
 <?php ps_field('text',     'ewen_role',     'Rôle / Titre',               $v('ewen_role',     "Luthier-ingénieur · Musicien · Danseur")); ?>
 <?php ps_field('text',     'ewen_initiale', 'Initiale (bulle avatar)',    $v('ewen_initiale', 'E')); ?>
@@ -238,5 +311,29 @@ function ps_field(string $type, string $key, string $label, string $value, strin
         echo '<input type="text" id="' . esc_attr($id) . '" name="ps_options[' . esc_attr($key) . ']" value="'
             . esc_attr($value) . '">';
     }
+    echo '</div></div>';
+}
+
+function ps_field_image(string $key, string $label, int $attachment_id, string $hint = ''): void {
+    $id      = 'ps_opt_' . $key;
+    $preview = $attachment_id ? wp_get_attachment_image_url($attachment_id, 'medium') : '';
+    echo '<div class="ps-row">';
+    echo '<div><label>' . esc_html($label) . '</label>';
+    if ($hint) echo '<p class="ps-hint">' . esc_html($hint) . '</p>';
+    echo '</div>';
+    echo '<div class="ps-img-field">';
+    echo '<input type="hidden" id="' . esc_attr($id) . '" name="ps_options[' . esc_attr($key) . ']" value="' . esc_attr($attachment_id ?: '') . '">';
+    echo '<div class="ps-img-preview">';
+    if ($preview) {
+        echo '<img src="' . esc_url($preview) . '" alt="">';
+    }
+    echo '</div>';
+    echo '<div class="ps-img-btns">';
+    $btn_label = $preview ? '🔄 Changer l\'image' : '📷 Choisir une image';
+    echo '<button type="button" class="button ps-img-select">' . esc_html($btn_label) . '</button>';
+    if ($preview) {
+        echo ' <button type="button" class="button ps-img-remove">✕ Supprimer</button>';
+    }
+    echo '</div>';
     echo '</div></div>';
 }
