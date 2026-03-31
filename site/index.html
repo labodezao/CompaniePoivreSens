@@ -88,22 +88,9 @@ ul,ol{list-style:none}
 .photo:nth-child(4){grid-column:5/9;grid-row:2/3}
 .photo:nth-child(5){grid-column:1/7;grid-row:3/4}
 .photo:nth-child(6){grid-column:7/13;grid-row:3/4}
-.photo{position:relative;overflow:hidden;cursor:pointer}
-.photo img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),filter .7s var(--ease);filter:brightness(.85) saturate(.9)}
+.photo{position:relative;overflow:hidden;cursor:pointer;margin:0}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),filter .7s var(--ease);filter:brightness(.85) saturate(.9)}
 .photo:hover img{transform:scale(1.04);filter:brightness(.95) saturate(1.05)}
-.ph{width:100%;height:100%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:filter .5s var(--ease)}
-.photo:hover .ph{filter:brightness(1.15)}
-.ph svg{position:absolute;inset:0;width:100%;height:100%;opacity:.22}
-.phadd{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;transition:opacity .3s,transform .3s var(--ease)}
-.photo:hover .phadd{opacity:1!important;transform:translateY(-4px)}
-.phadd-ic{width:44px;height:44px;border:1px solid var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--or)}
-.phadd-lb{font-size:.67rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--orlt);text-align:center;line-height:1.6}
-.photo:nth-child(1) .ph{background:linear-gradient(155deg,#180d07 0%,#2a1208 45%,#0f0905 100%)}
-.photo:nth-child(2) .ph{background:linear-gradient(135deg,#0c0b09 0%,#1e1a10 55%,#0d0c09 100%)}
-.photo:nth-child(3) .ph{background:linear-gradient(170deg,#100d08 0%,#1c1510 50%,#0a0806 100%)}
-.photo:nth-child(4) .ph{background:linear-gradient(120deg,#160f07 0%,#261808 60%,#100d07 100%)}
-.photo:nth-child(5) .ph{background:linear-gradient(145deg,#0e0d0b 0%,#1a1812 55%,#090807 100%)}
-.photo:nth-child(6) .ph{background:linear-gradient(160deg,#120a08 0%,#201510 50%,#0d0b09 100%)}
 .phcap{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:20px 20px 16px;background:linear-gradient(to top,rgba(8,7,5,.85) 0%,transparent 100%);transform:translateY(100%);transition:transform .4s var(--ease)}
 .photo:hover .phcap{transform:translateY(0)}
 .phcap-t{font-family:var(--fh);font-size:1.1rem;font-weight:400;color:var(--creme);line-height:1.2;margin-bottom:3px}
@@ -316,8 +303,8 @@ ul,ol{list-style:none}
       <div class="regle"></div>
     </div>
     <p class="galerie__n">
-      Remplacez chaque cadre par vos photos.<br/>
-      Format recommandé : JPEG, min. 1200 px.
+      Photos de la compagnie — remplacez ces images<br/>
+      par vos propres clichés (JPEG, min. 1200 px).
     </p>
   </div>
 
@@ -325,21 +312,7 @@ ul,ol{list-style:none}
 
     <!-- 1 — Spectacle vivant (grand vertical) -->
     <figure class="photo" role="listitem" aria-label="Spectacle vivant">
-      <div class="ph">
-        <svg viewBox="0 0 400 520" fill="none" aria-hidden="true">
-          <path d="M200,60 C320,120 360,260 280,380 C220,460 150,490 100,440"
-                stroke="rgba(194,139,54,1)" stroke-width="1.2"/>
-          <path d="M200,60 C90,100 60,240 140,360 C190,430 260,470 310,430"
-                stroke="rgba(158,55,16,.8)" stroke-width=".8"/>
-          <circle cx="200" cy="52" r="16" stroke="rgba(194,139,54,.8)" stroke-width="1"/>
-          <path d="M160,180 C190,160 230,165 250,185" stroke="rgba(194,139,54,.5)" stroke-width=".8"/>
-          <path d="M120,310 L170,290 M280,310 L230,290" stroke="rgba(194,139,54,.4)" stroke-width=".7"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">Spectacle vivant<br/>Ajouter une photo</span>
-        </div>
-      </div>
+      <img src="images/galerie-01-spectacle.svg" alt="En scène — spectacle vivant de la Compagnie Poivre &amp; Sens" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">En scène</p>
         <p class="phcap-d">Spectacle vivant · Création</p>
@@ -348,20 +321,7 @@ ul,ol{list-style:none}
 
     <!-- 2 — Jam contact (paysage) -->
     <figure class="photo" role="listitem" aria-label="Jam de contact-improvisation">
-      <div class="ph">
-        <svg viewBox="0 0 400 260" fill="none" aria-hidden="true">
-          <circle cx="160" cy="100" r="22" stroke="rgba(194,139,54,.8)" stroke-width="1"/>
-          <circle cx="240" cy="110" r="22" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
-          <path d="M160,122 C180,160 200,170 240,132" stroke="rgba(194,139,54,.7)" stroke-width="1.2"/>
-          <path d="M138,90 C110,70 100,130 120,160" stroke="rgba(194,139,54,.4)" stroke-width=".8"/>
-          <path d="M262,100 C290,80 300,140 280,165" stroke="rgba(194,139,54,.35)" stroke-width=".8"/>
-          <line x1="50" y1="200" x2="350" y2="200" stroke="rgba(194,139,54,.15)" stroke-width=".5"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">Jam de contact<br/>Ajouter une photo</span>
-        </div>
-      </div>
+      <img src="images/galerie-02-jam.svg" alt="Jam de contact-improvisation — Compagnie Poivre &amp; Sens" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">Jam de contact</p>
         <p class="phcap-d">Contact-improvisation · Rencontre ouverte</p>
@@ -370,23 +330,7 @@ ul,ol{list-style:none}
 
     <!-- 3 — Portrait Ewen (grand vertical) -->
     <figure class="photo" role="listitem" aria-label="Portrait Ewen d'Aviau">
-      <div class="ph">
-        <svg viewBox="0 0 400 520" fill="none" aria-hidden="true">
-          <line x1="200" y1="40"  x2="200" y2="480" stroke="rgba(194,139,54,.5)" stroke-width=".8"/>
-          <line x1="180" y1="40"  x2="180" y2="480" stroke="rgba(194,139,54,.3)" stroke-width=".6"/>
-          <line x1="160" y1="40"  x2="160" y2="480" stroke="rgba(194,139,54,.2)" stroke-width=".5"/>
-          <line x1="220" y1="40"  x2="220" y2="480" stroke="rgba(194,139,54,.3)" stroke-width=".6"/>
-          <line x1="240" y1="40"  x2="240" y2="480" stroke="rgba(194,139,54,.2)" stroke-width=".5"/>
-          <ellipse cx="200" cy="200" rx="80" ry="120" stroke="rgba(158,55,16,.3)" stroke-width=".8"/>
-          <circle  cx="200" cy="110" r="28" stroke="rgba(194,139,54,.5)" stroke-width="1"/>
-          <path d="M120,340 Q200,310 280,340 Q200,370 120,340Z"
-                fill="rgba(194,139,54,.06)" stroke="rgba(194,139,54,.3)" stroke-width=".8"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">Ewen d'Aviau<br/>Ajouter un portrait</span>
-        </div>
-      </div>
+      <img src="images/galerie-03-ewen.svg" alt="Ewen d'Aviau — luthier, musicien, danseur" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">Ewen d'Aviau</p>
         <p class="phcap-d">Luthier · Musicien · Danseur</p>
@@ -395,22 +339,7 @@ ul,ol{list-style:none}
 
     <!-- 4 — Portrait Ambre (paysage) -->
     <figure class="photo" role="listitem" aria-label="Portrait Ambre Lavignac">
-      <div class="ph">
-        <svg viewBox="0 0 400 260" fill="none" aria-hidden="true">
-          <path d="M60,130 C120,80 200,180 280,100 C340,40 380,110 400,130"
-                stroke="rgba(194,139,54,.6)" stroke-width="1"/>
-          <path d="M0,160 C80,100 160,200 240,130 C310,70 360,140 400,160"
-                stroke="rgba(194,139,54,.35)" stroke-width=".7"/>
-          <path d="M60,80 C140,160 240,60 320,150" stroke="rgba(158,55,16,.4)" stroke-width=".8"/>
-          <circle cx="200" cy="130" r="30" stroke="rgba(194,139,54,.4)" stroke-width="1"/>
-          <circle cx="200" cy="130" r="55" stroke="rgba(194,139,54,.18)" stroke-width=".7"/>
-          <circle cx="200" cy="130" r="80" stroke="rgba(194,139,54,.08)" stroke-width=".6"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">Ambre Lavignac<br/>Ajouter un portrait</span>
-        </div>
-      </div>
+      <img src="images/galerie-04-ambre.svg" alt="Ambre Lavignac — danseuse, pédagogue, praticienne" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">Ambre Lavignac</p>
         <p class="phcap-d">Danseuse · Pédagogue · Praticienne</p>
@@ -419,23 +348,7 @@ ul,ol{list-style:none}
 
     <!-- 5 — En résidence (large) -->
     <figure class="photo" role="listitem" aria-label="Résidence artistique">
-      <div class="ph">
-        <svg viewBox="0 0 700 220" fill="none" aria-hidden="true">
-          <path d="M0,110 C100,60 200,160 350,90 C500,20 600,120 700,80"
-                stroke="rgba(194,139,54,.6)" stroke-width="1.2"/>
-          <path d="M0,150 C120,90 250,190 400,120 C520,60 620,160 700,130"
-                stroke="rgba(194,139,54,.35)" stroke-width=".8"/>
-          <path d="M0,70 C80,130 220,50 380,140 C520,220 640,80 700,110"
-                stroke="rgba(158,55,16,.3)" stroke-width=".8"/>
-          <circle cx="175" cy="95"  r="5" fill="rgba(194,139,54,.5)"/>
-          <circle cx="350" cy="88"  r="7" fill="rgba(194,139,54,.6)"/>
-          <circle cx="525" cy="105" r="5" fill="rgba(194,139,54,.5)"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">En résidence<br/>Ajouter une photo</span>
-        </div>
-      </div>
+      <img src="images/galerie-05-residence.svg" alt="En résidence — laboratoire artistique Compagnie Poivre &amp; Sens" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">En résidence</p>
         <p class="phcap-d">Laboratoire artistique · Recherche</p>
@@ -444,26 +357,7 @@ ul,ol{list-style:none}
 
     <!-- 6 — Atelier pédagogique (large) -->
     <figure class="photo" role="listitem" aria-label="Atelier pédagogique">
-      <div class="ph">
-        <svg viewBox="0 0 700 220" fill="none" aria-hidden="true">
-          <circle cx="350" cy="110" r="60"  stroke="rgba(194,139,54,.3)"  stroke-width="1"/>
-          <circle cx="350" cy="110" r="100" stroke="rgba(194,139,54,.15)" stroke-width=".7"/>
-          <circle cx="290" cy="60"  r="14" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
-          <circle cx="410" cy="60"  r="14" stroke="rgba(194,139,54,.6)" stroke-width="1"/>
-          <circle cx="440" cy="150" r="14" stroke="rgba(194,139,54,.55)" stroke-width="1"/>
-          <circle cx="260" cy="150" r="14" stroke="rgba(194,139,54,.55)" stroke-width="1"/>
-          <circle cx="350" cy="175" r="14" stroke="rgba(194,139,54,.5)"  stroke-width="1"/>
-          <line x1="350" y1="110" x2="290" y2="60"  stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
-          <line x1="350" y1="110" x2="410" y2="60"  stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
-          <line x1="350" y1="110" x2="440" y2="150" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
-          <line x1="350" y1="110" x2="260" y2="150" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
-          <line x1="350" y1="110" x2="350" y2="175" stroke="rgba(194,139,54,.2)" stroke-width=".6"/>
-        </svg>
-        <div class="phadd" style="opacity:.55">
-          <div class="phadd-ic">+</div>
-          <span class="phadd-lb">Atelier pédagogique<br/>Ajouter une photo</span>
-        </div>
-      </div>
+      <img src="images/galerie-06-atelier.svg" alt="Pédagogie du sensible — atelier, stage, transmission" loading="lazy">
       <div class="phcap">
         <p class="phcap-t">Pédagogie du sensible</p>
         <p class="phcap-d">Atelier · Stage · Transmission</p>

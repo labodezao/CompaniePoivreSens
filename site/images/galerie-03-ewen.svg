@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1040" width="800" height="1040">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="blur2"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="20%" y2="100%">
+      <stop offset="0%" stop-color="#100d08"/>
+      <stop offset="50%" stop-color="#1c1510"/>
+      <stop offset="100%" stop-color="#0a0806"/>
+    </linearGradient>
+    <radialGradient id="light3" cx="50%" cy="30%" r="45%">
+      <stop offset="0%" stop-color="rgba(236,227,203,0.08)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1040" fill="url(#bg3)"/>
+  <rect width="800" height="1040" fill="url(#light3)"/>
+
+  <!-- String lines — luthier reference (vertical harp/cello strings) -->
+  <line x1="300" y1="60" x2="295" y2="900" stroke="rgba(194,139,54,0.22)" stroke-width="1.2"/>
+  <line x1="330" y1="60" x2="328" y2="900" stroke="rgba(194,139,54,0.14)" stroke-width="0.9"/>
+  <line x1="360" y1="60" x2="361" y2="900" stroke="rgba(194,139,54,0.10)" stroke-width="0.8"/>
+  <line x1="440" y1="60" x2="439" y2="900" stroke="rgba(194,139,54,0.22)" stroke-width="1.2"/>
+  <line x1="470" y1="60" x2="472" y2="900" stroke="rgba(194,139,54,0.14)" stroke-width="0.9"/>
+  <line x1="500" y1="60" x2="503" y2="900" stroke="rgba(194,139,54,0.10)" stroke-width="0.8"/>
+
+  <!-- Portrait frame — oval -->
+  <ellipse cx="400" cy="340" rx="160" ry="210" fill="none" stroke="rgba(194,139,54,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+
+  <!-- Face shape — stylized portrait -->
+  <ellipse cx="400" cy="300" rx="85" ry="110" fill="rgba(194,139,54,0.05)" stroke="rgba(194,139,54,0.25)" stroke-width="1.2"/>
+  <!-- Eyes -->
+  <ellipse cx="368" cy="278" rx="12" ry="7" fill="none" stroke="rgba(194,139,54,0.4)" stroke-width="0.9"/>
+  <ellipse cx="432" cy="278" rx="12" ry="7" fill="none" stroke="rgba(194,139,54,0.4)" stroke-width="0.9"/>
+  <circle cx="368" cy="278" r="4" fill="rgba(194,139,54,0.3)"/>
+  <circle cx="432" cy="278" r="4" fill="rgba(194,139,54,0.3)"/>
+  <!-- Nose hint -->
+  <path d="M400,285 L392,315 M408,315 C400,320 392,315 392,315" stroke="rgba(194,139,54,0.2)" stroke-width="0.8" fill="none"/>
+  <!-- Mouth -->
+  <path d="M378,335 Q400,348 422,335" stroke="rgba(194,139,54,0.3)" stroke-width="0.9" fill="none"/>
+
+  <!-- Shoulders / bust -->
+  <path d="M315,410 C340,440 360,460 400,465 C440,460 460,440 485,410" stroke="rgba(194,139,54,0.2)" stroke-width="1.2" fill="none"/>
+
+  <!-- Instrument bow gesture — arm with bow -->
+  <path d="M485,390 C530,370 570,350 620,290" stroke="rgba(194,139,54,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="625" cy="287" r="5" fill="rgba(194,139,54,0.5)"/>
+
+  <!-- Light halo -->
+  <circle cx="400" cy="300" r="180" fill="rgba(194,139,54,0.04)" filter="url(#blur2)"/>
+
+  <!-- Label -->
+  <text x="400" y="960" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="300" letter-spacing="5" fill="rgba(194,139,54,0.65)" font-style="italic">Ewen d'Aviau</text>
+  <text x="400" y="982" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" letter-spacing="3" fill="rgba(194,139,54,0.38)">LUTHIER · MUSICIEN · DANSEUR</text>
+
+</svg>

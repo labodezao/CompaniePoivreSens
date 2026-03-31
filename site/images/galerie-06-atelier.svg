@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 440" width="1400" height="440">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="blur2"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  
+  <defs>
+    <linearGradient id="bg6" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#120a08"/>
+      <stop offset="50%" stop-color="#201510"/>
+      <stop offset="100%" stop-color="#0d0b09"/>
+    </linearGradient>
+    <radialGradient id="center6" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="rgba(158,55,16,0.10)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+  <rect width="1400" height="440" fill="url(#bg6)"/>
+  <rect width="1400" height="440" fill="url(#center6)"/>
+
+  <!-- Floor -->
+  <line x1="0" y1="370" x2="1400" y2="370" stroke="rgba(194,139,54,0.10)" stroke-width="1"/>
+
+  <!-- Circle formation — group of 5 participants + 1 teacher at center -->
+  <!-- Teacher at center -->
+  <circle cx="700" cy="210" r="20" fill="rgba(194,139,54,0.08)" stroke="rgba(194,139,54,0.45)" stroke-width="1.2"/>
+  <ellipse cx="700" cy="280" rx="16" ry="50" fill="rgba(194,139,54,0.05)" stroke="rgba(194,139,54,0.28)" stroke-width="0.9"/>
+  <path d="M686,240 C660,225 635,220 610,225" stroke="rgba(194,139,54,0.5)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M714,240 C740,228 765,222 790,228" stroke="rgba(194,139,54,0.5)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+  <!-- Participant 1 — upper left -->
+  <circle cx="490" cy="135" r="16" fill="rgba(194,139,54,0.05)" stroke="rgba(194,139,54,0.28)" stroke-width="0.9"/>
+  <ellipse cx="490" cy="190" rx="13" ry="42" transform="rotate(10 490 190)" fill="rgba(194,139,54,0.04)" stroke="rgba(194,139,54,0.2)" stroke-width="0.8"/>
+  <line x1="490" y1="155" x2="610" y2="215" stroke="rgba(194,139,54,0.15)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Participant 2 — upper right -->
+  <circle cx="910" cy="135" r="16" fill="rgba(194,139,54,0.05)" stroke="rgba(194,139,54,0.28)" stroke-width="0.9"/>
+  <ellipse cx="910" cy="190" rx="13" ry="42" transform="rotate(-10 910 190)" fill="rgba(194,139,54,0.04)" stroke="rgba(194,139,54,0.2)" stroke-width="0.8"/>
+  <line x1="910" y1="155" x2="790" y2="215" stroke="rgba(194,139,54,0.15)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Participant 3 — left -->
+  <circle cx="400" cy="260" r="15" fill="rgba(158,55,16,0.05)" stroke="rgba(158,55,16,0.25)" stroke-width="0.9"/>
+  <ellipse cx="400" cy="312" rx="12" ry="40" fill="rgba(158,55,16,0.04)" stroke="rgba(158,55,16,0.18)" stroke-width="0.8"/>
+  <line x1="415" y1="260" x2="580" y2="240" stroke="rgba(194,139,54,0.12)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Participant 4 — right -->
+  <circle cx="1000" cy="260" r="15" fill="rgba(158,55,16,0.05)" stroke="rgba(158,55,16,0.25)" stroke-width="0.9"/>
+  <ellipse cx="1000" cy="312" rx="12" ry="40" fill="rgba(158,55,16,0.04)" stroke="rgba(158,55,16,0.18)" stroke-width="0.8"/>
+  <line x1="985" y1="260" x2="820" y2="240" stroke="rgba(194,139,54,0.12)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Participant 5 — lower center-left -->
+  <circle cx="570" cy="340" r="15" fill="rgba(194,139,54,0.04)" stroke="rgba(194,139,54,0.22)" stroke-width="0.8"/>
+  <line x1="576" y1="325" x2="665" y2="295" stroke="rgba(194,139,54,0.12)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Participant 6 — lower center-right -->
+  <circle cx="830" cy="340" r="15" fill="rgba(194,139,54,0.04)" stroke="rgba(194,139,54,0.22)" stroke-width="0.8"/>
+  <line x1="824" y1="325" x2="735" y2="295" stroke="rgba(194,139,54,0.12)" stroke-width="0.6" stroke-dasharray="3 4"/>
+
+  <!-- Circle outline connecting all participants -->
+  <circle cx="700" cy="235" r="225" fill="none" stroke="rgba(194,139,54,0.06)" stroke-width="1" stroke-dasharray="5 8"/>
+
+  <!-- Energy center glow -->
+  <circle cx="700" cy="210" r="80" fill="rgba(194,139,54,0.05)" filter="url(#blur2)"/>
+
+  <!-- Label -->
+  <text x="700" y="413" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="300" letter-spacing="4" fill="rgba(194,139,54,0.55)" font-style="italic">Pédagogie du sensible</text>
+  <text x="700" y="432" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" letter-spacing="3" fill="rgba(194,139,54,0.3)">ATELIER · STAGE · TRANSMISSION</text>
+
+</svg>
