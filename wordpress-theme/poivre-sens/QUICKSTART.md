@@ -78,24 +78,22 @@ Affectez-le à l'emplacement **Menu principal**.
 
 ---
 
-## ✏️ Comment modifier le contenu de la page d'accueil ?
+## ✏️ Modifier le contenu de la page d'accueil
 
-La page d'accueil est une **one-page automatique** construite par le thème. Chaque section se gère depuis un endroit précis de l'admin :
+Allez dans **Réglages › 🌶 Contenu du site**. Vous trouverez sur une seule page tous les textes éditables, organisés par section. Modifiez ce que vous voulez, puis cliquez **Enregistrer les réglages** — c'est tout.
 
-| Section de la page | Où la modifier dans l'admin |
-|--------------------|-----------------------------|
-| **Hero** (titre, citation, texte intro) | Modifiez directement `front-page.php` dans **Apparence › Éditeur de thème** |
-| **Galerie** (6 photos) | **Galerie › Ajouter** — Titre + Image à la une + Sous-titre |
-| **Manifeste** (texte) | Modifiez `front-page.php` dans l'éditeur de thème |
-| **Projet / Activités** | Modifiez `front-page.php` dans l'éditeur de thème |
-| **Artistes** (biographies) | Modifiez `front-page.php` dans l'éditeur de thème |
-| **Événements à venir** | **Événements › Ajouter** — s'affichent automatiquement |
-| **Newsletter** (formulaire) | Toujours présent — gérez les abonnés via **Newsletter** |
-| **Contact** (emails, adresses) | Modifiez `front-page.php` dans l'éditeur de thème |
+| Section | Ce que vous pouvez modifier |
+|---------|---------------------------|
+| **① Hero** | Sur-titre, disciplines, texte du bouton, citation, texte d'intro |
+| **② Manifeste** | Titre, mots en italique dorés, 3 paragraphes |
+| **③ Ambre** | Nom, rôle, initiale, 2 paragraphes de bio, mots-clés |
+| **④ Ewen** | Nom, rôle, initiale, 2 paragraphes de bio, mots-clés |
+| **⑤ Citation** | 3 lignes de la citation + source |
+| **⑥ Contact** | Nom compagnie, statut, direction, emails, site, note réseaux |
+| **⑦ Footer** | 2 lignes du pied de page |
 
-> **Conseil** : pour modifier les textes statiques (hero, biographies, manifeste)
-> sans toucher au code PHP, installez le plugin **Advanced Custom Fields (ACF)**
-> et nous pouvons ajouter des champs éditables pour chaque section sur demande.
+> **Galerie et Événements** se gèrent séparément via leurs menus dédiés dans l'admin
+> (la page d'options contient des liens directs vers ces sections).
 
 ---
 
@@ -253,6 +251,7 @@ poivre-sens/
 ├── images/
 │   └── galerie-0N-xxx.svg      Placeholders galerie
 ├── inc/
+│   ├── admin-options.php           Réglages › Contenu du site (textes éditables)
 │   └── newsletter-admin.php    Interface MailPoet-like complète
 └── template-parts/
     ├── calendar-list.php       Composant calendrier liste

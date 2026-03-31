@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
 require_once get_template_directory() . '/inc/newsletter-admin.php';
 
 // Customizer — édition facile de la page d'accueil
-require_once get_template_directory() . '/inc/customizer.php';
+// Page d'options admin — Réglages › Contenu du site
+require_once get_template_directory() . '/inc/admin-options.php';
 
 /* ═══════════════════════════════════════════════════════════
    1. SUPPORTS & SETUP

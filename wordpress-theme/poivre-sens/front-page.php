@@ -1,13 +1,15 @@
 <?php
 /**
  * front-page.php — Page d'accueil one-page Poivre & Sens
- * Tous les textes sont gérables via Apparence › Personnaliser
+ * Tous les textes sont éditables via Réglages › Contenu du site
  */
 get_header();
 
-/* ── Helpers Customizer ─────────────────────────────────── */
+/* ── Helpers options admin ──────────────────────────────── */
 function ps_mod(string $key, string $default = ''): string {
-    return get_theme_mod('ps_' . $key, $default);
+    static $opts = null;
+    if ($opts === null) $opts = (array) get_option('ps_options', []);
+    return isset($opts[$key]) && $opts[$key] !== '' ? $opts[$key] : $default;
 }
 function ps_e(string $key, string $default = ''): void {
     echo esc_html(ps_mod($key, $default));
