@@ -48,13 +48,13 @@ add_action('wp_enqueue_scripts', function () {
         'poivre-sens-theme',
         get_template_directory_uri() . '/assets/css/theme.css',
         ['google-fonts'],
-        wp_get_theme()->get('Version')
+        filemtime(get_template_directory() . '/assets/css/theme.css')
     );
     wp_enqueue_script(
         'poivre-sens-theme',
         get_template_directory_uri() . '/assets/js/theme.js',
         [],
-        wp_get_theme()->get('Version'),
+        filemtime(get_template_directory() . '/assets/js/theme.js'),
         true
     );
     // Passer les variables AJAX au JS
