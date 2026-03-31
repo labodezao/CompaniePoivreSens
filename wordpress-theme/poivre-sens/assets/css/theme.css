@@ -394,6 +394,72 @@ ul, ol { list-style: none; }
   .single-evt__infos { grid-template-columns:1fr; gap:20px; }
 }
 
+/* ── Compatibilité Gutenberg (front-end) ─────────────────── */
+
+/* Reset général des wp-block-group : on laisse nos classes CSS gérer
+   les layouts — aucun padding ni max-width parasites de Gutenberg */
+.wp-block-group { padding:0 !important; max-width:none !important; }
+
+/* Hero : la grille CSS doit l'emporter sur is-layout-flow */
+.hero.wp-block-group {
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  padding:0 !important;
+}
+.hero__g.wp-block-group,
+.hero__d.wp-block-group { padding:0 !important; max-width:none !important; }
+
+/* Manifeste : flexbox horizontal depuis le CSS */
+.manifeste.wp-block-group { padding:0 !important; max-width:none !important; }
+.mf-corps.wp-block-group,
+.mf-tx.wp-block-group    { padding:0 !important; max-width:none !important; }
+
+/* Sections génériques */
+.sec.wp-block-group     { max-width:none !important; }
+.bios.wp-block-group    { padding:0 !important; max-width:none !important; }
+.bio.wp-block-group     { max-width:none !important; }
+.bio__hd.wp-block-group { padding:0 !important; max-width:none !important; margin-bottom:28px; }
+.bio__mn.wp-block-group {
+  padding:0 !important;
+  max-width:52px !important; min-width:52px;
+  height:52px; overflow:hidden;
+}
+.bio__mn.wp-block-group > .wp-block-paragraph { margin:0; }
+
+/* Contact */
+.contact.wp-block-group  { padding:0 !important; max-width:none !important; }
+.co-col.wp-block-group   { max-width:none !important; }
+.co-row.wp-block-group   { padding:0 !important; max-width:none !important; }
+.co-row.wp-block-group > .wp-block-paragraph { margin:0; }
+
+/* Esthétique */
+.esthet.wp-block-group       { padding:0 !important; max-width:none !important; }
+.esthet__cite.wp-block-group { padding:0 !important; max-width:none !important; }
+
+/* Séparateur → règle dorée */
+.wp-block-separator.regle {
+  border:none !important; height:1px; background:var(--or) !important;
+  color:var(--or) !important; width:40px !important;
+  margin-top:18px; margin-bottom:0; max-width:none !important; opacity:1;
+}
+.wp-block-separator.regle::before,
+.wp-block-separator.regle::after { display:none; }
+
+/* Citation esthétique */
+.wp-block-quote.gcite {
+  padding:0; border:none; margin:0;
+  font-family:var(--fh); font-style:italic;
+  font-size:clamp(1.6rem,2.8vw,2.3rem); font-weight:300;
+  line-height:1.4; color:var(--creme);
+}
+.wp-block-quote.gcite em { color:var(--or); font-style:normal; }
+.wp-block-quote.gcite cite,
+.wp-block-quote.gcite .wp-block-quote__citation {
+  font-size:.72rem; font-weight:400; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--gris);
+  margin-top:22px; display:block; font-style:normal;
+}
+
 /* ── Calendrier liste ────────────────────────────────────── */
 .cal-list__empty{padding:60px 0;text-align:center;color:var(--gris);font-size:.9rem}
 .cal-list__add-btn{display:inline-block;margin-top:16px;color:var(--or);border-bottom:1px solid var(--bord);padding-bottom:2px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}

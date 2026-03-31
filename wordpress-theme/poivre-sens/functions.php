@@ -6,12 +6,11 @@
 
 defined('ABSPATH') || exit;
 
-// Interface newsletter MailPoet-like
+// Interface newsletter
 require_once get_template_directory() . '/inc/newsletter-admin.php';
 
-// Customizer — édition facile de la page d'accueil
-// Page d'options admin — Réglages › Contenu du site
-require_once get_template_directory() . '/inc/admin-options.php';
+// Shortcodes & patterns Gutenberg — édition WYSIWYG de la page d'accueil
+require_once get_template_directory() . '/inc/block-patterns.php';
 
 /* ═══════════════════════════════════════════════════════════
    1. SUPPORTS & SETUP
@@ -23,6 +22,7 @@ add_action('after_setup_theme', function () {
     add_theme_support('editor-styles');
     add_theme_support('wp-block-styles');
     add_theme_support('responsive-embeds');
+    add_editor_style('assets/css/editor.css');
 
     register_nav_menus([
         'primary' => __('Menu principal', 'poivre-sens'),
