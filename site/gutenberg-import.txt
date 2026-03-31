@@ -34,10 +34,57 @@
   --ps-ease:   cubic-bezier(.25,.46,.45,.94);
 }
 
-/* ── Reset thème ──────────────────────────────────────────────── */
+/* ── Reset thème — fond page ─────────────────────────────────── */
+/* Le thème Savoy met body{background:#fff} — on force le fond    sombre pour éviter le blanc "laiteux" visible derrière le header
+   transparent et dans les wrappers du template blank.           */
+html, body {
+  background: var(--ps-noir) !important;
+}
+.nm-page-wrap, .nm-page-wrap-inner, .nm-page-blank {
+  background: var(--ps-noir) !important;
+}
 .entry-title { display:none !important; }
-body.page .nm-header { background:rgba(8,7,5,.92) !important; }
-body.page .nm-header a, body.page .nm-header { color:var(--ps-creme) !important; }
+
+/* ── Header Savoy — override complet ────────────────────────── */
+/* Couvre : initial, on-scroll, home, mobile-open, hover         */
+.nm-header,
+.home .nm-header,
+.header-on-scroll .nm-header,
+.home.header-transparency.header-on-scroll .nm-header,
+.mobile-menu-open .nm-header,
+body.page .nm-header {
+  background: rgba(8,7,5,.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid rgba(194,139,54,.18) !important;
+}
+/* No-touch hover keep dark (Savoy resets to transparent) */
+.no-touch .header-transparency-light:not(.mobile-menu-open) .nm-header:hover,
+.no-touch .header-transparency-dark:not(.mobile-menu-open) .nm-header:hover {
+  background: rgba(8,7,5,.92) !important;
+}
+
+/* Liens nav — clairs sur fond sombre */
+.nm-header a,
+.nm-menu li a,
+#nm-main-menu-ul > li > a,
+#nm-right-menu-ul > li > a {
+  color: var(--ps-creme) !important;
+}
+.nm-menu li a:hover,
+#nm-main-menu-ul > li > a:hover,
+#nm-right-menu-ul > li > a:hover {
+  color: var(--ps-orlt) !important;
+}
+
+/* Logo texte */
+.nm-header-logo a,
+.nm-header-logo span {
+  color: var(--ps-creme) !important;
+}
+
+/* Placeholder : 0 pour que le hero 100vh parte du haut de page  */
+.nm-header-placeholder { height: 0 !important; overflow: hidden !important; }
 
 /* ── Bouton WordPress ─────────────────────────────────────────── */
 .ps-btn .wp-block-button__link {
