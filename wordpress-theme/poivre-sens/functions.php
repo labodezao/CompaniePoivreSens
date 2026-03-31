@@ -6,6 +6,9 @@
 
 defined('ABSPATH') || exit;
 
+// Interface newsletter MailPoet-like
+require_once get_template_directory() . '/inc/newsletter-admin.php';
+
 /* ═══════════════════════════════════════════════════════════
    1. SUPPORTS & SETUP
    ═══════════════════════════════════════════════════════════ */
