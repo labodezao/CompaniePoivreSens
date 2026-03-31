@@ -402,8 +402,9 @@ ul, ol { list-style: none; }
    grid/flex du parent (hero, manifeste, bios, contact…). */
 .wp-block-group__inner-container { display: contents; }
 
-/* Supprime padding/max-width injectés par WP sur les groupes */
-.wp-block-group { padding:0 !important; max-width:none !important; }
+/* Supprime padding/max-width injectés par WP sur les groupes.
+   :where() = spécificité 0 → nos classes (.hero__g, .sec, .galerie…) restent prioritaires. */
+:where(.wp-block-group) { padding:0; max-width:none; }
 
 /* Paragraphes à l'intérieur des groupes layout → pas de marge auto WP */
 .wp-block-group p { margin-block-start:0; margin-block-end:0; }
