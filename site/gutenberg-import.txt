@@ -213,6 +213,41 @@ body.page .nm-header a, body.page .nm-header { color:var(--ps-creme) !important;
 .ps-creme { color:var(--ps-creme) !important; }
 .ps-gris  { color:var(--ps-gris) !important; }
 
+/* ── Citation — override thème Savoy ────────────────────────── */
+/* Le thème Savoy force blockquote,blockquote p{color:#282828}
+   sur fond sombre → quasi-invisible. On surcharge ici. */
+.ps-gcite {
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  font-size:clamp(1.6rem,2.8vw,2.3rem);
+  font-weight:300;
+  line-height:1.4;
+  color:var(--ps-creme);
+  margin:0 0 24px;
+  padding:0;
+  border:none !important;
+  border-left:none !important;
+}
+.ps-gcite em {
+  color:var(--ps-or) !important;
+  font-style:normal !important;
+}
+.ps-gcite-src {
+  margin-top:22px !important;
+  font-size:.72rem !important;
+  font-weight:400 !important;
+  letter-spacing:.16em !important;
+  text-transform:uppercase !important;
+  color:var(--ps-gris) !important;
+  font-family:Inter,sans-serif !important;
+}
+/* Sécurité : couvre aussi si WP ajoute la classe wp-block-quote */
+.wp-block-quote.ps-gcite,
+.wp-block-quote.ps-gcite p {
+  color:var(--ps-creme) !important;
+}
+.wp-block-quote.ps-gcite em { color:var(--ps-or) !important; font-style:normal !important; }
+
 /* ── Separateur doré ─────────────────────────────────────────── */
 .ps-sep { width:40px; height:1px; background:var(--ps-or); margin:16px 0 32px; }
 
@@ -926,12 +961,14 @@ body.page .nm-header a, body.page .nm-header { color:var(--ps-creme) !important;
 <!-- wp:column -->
 <div class="wp-block-column">
 
-<!-- wp:quote {"style":{"typography":{"fontFamily":"'Cormorant Garamond', Georgia, serif","fontSize":"clamp(1.6rem,2.8vw,2.3rem)","fontWeight":"300","fontStyle":"italic"},"color":{"text":"#ece3cb"},"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}}}} -->
-<blockquote class="wp-block-quote" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(1.6rem,2.8vw,2.3rem);font-weight:300;font-style:italic;color:#ece3cb;padding:0;border:none">
-<p>Habiter un espace de jeu partagé — entre deux corps, entre <em>un corps</em> et <em>un instrument</em>.</p>
-<cite style="color:#7f7463;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-style:normal;font-family:Inter,sans-serif;display:block;margin-top:20px">Poivre &amp; Sens · Note d'intention</cite>
+<!-- wp:html -->
+<blockquote class="ps-gcite">
+  Habiter un espace de jeu partagé —<br/>
+  entre deux corps,<br/>
+  entre <em>un corps</em> et <em>un instrument</em>.
 </blockquote>
-<!-- /wp:quote -->
+<p class="ps-gcite-src">Poivre &amp; Sens · Note d'intention</p>
+<!-- /wp:html -->
 
 </div>
 <!-- /wp:column -->
