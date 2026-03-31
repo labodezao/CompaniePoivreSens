@@ -16,6 +16,23 @@
 
 ---
 
+## ❓ Dois-je utiliser le fichier `gutenberg-import.txt` ?
+
+**Non**, si vous installez le thème **Poivre & Sens** (ce dossier).
+
+Le fichier `site/gutenberg-import.txt` existe pour deux situations différentes :
+
+| Situation | Ce qu'il faut faire |
+|-----------|---------------------|
+| ✅ **Vous utilisez le thème `poivre-sens`** | **N'importez rien.** La page d'accueil est gérée automatiquement par `front-page.php`. Créez juste une page vide intitulée `Accueil` et définissez-la comme page statique (étape 3 ci-dessous). |
+| 🔄 **Vous utilisez un autre thème WordPress** (Savoy, Kadence, Blocksy…) | Utilisez `gutenberg-import.txt` pour recréer le design manuellement dans l'éditeur Gutenberg. Collez son contenu dans l'éditeur de code d'une page vierge. |
+
+> **En résumé avec notre thème :** vous gérez le contenu via les menus de l'admin —
+> **Galerie**, **Événements**, **Newsletter** — et le thème construit la page automatiquement.
+> Pas besoin de toucher à l'éditeur de la page "Accueil".
+
+---
+
 ## 🚀 Installation en 5 minutes
 
 ### 1. Uploader le thème
@@ -39,8 +56,13 @@ Puis cliquez **Enregistrer les modifications** pour activer `/evenements/`.
 ### 3. Créer la page d'accueil
 
 1. **Pages › Ajouter** → titre : `Accueil`
-2. **Réglages › Lecture** → définir `Accueil` comme **Page statique**
-3. Le thème utilise automatiquement `front-page.php`
+2. **Laissez le contenu vide** — ne collez rien dans l'éditeur
+3. **Réglages › Lecture** → sélectionnez **Une page statique** → choisissez `Accueil`
+4. Le thème charge automatiquement `front-page.php` qui construit toute la page
+
+> 💡 Le contenu de la page d'accueil est entièrement géré par le thème via les CPT
+> (Galerie, Événements) et les options de l'admin. Vous n'avez **pas** à coller
+> le fichier `gutenberg-import.txt` ici.
 
 ---
 
@@ -53,6 +75,27 @@ Puis cliquez **Enregistrer les modifications** pour activer `/evenements/`.
 - Contact (`#contact`)
 
 Affectez-le à l'emplacement **Menu principal**.
+
+---
+
+## ✏️ Comment modifier le contenu de la page d'accueil ?
+
+La page d'accueil est une **one-page automatique** construite par le thème. Chaque section se gère depuis un endroit précis de l'admin :
+
+| Section de la page | Où la modifier dans l'admin |
+|--------------------|-----------------------------|
+| **Hero** (titre, citation, texte intro) | Modifiez directement `front-page.php` dans **Apparence › Éditeur de thème** |
+| **Galerie** (6 photos) | **Galerie › Ajouter** — Titre + Image à la une + Sous-titre |
+| **Manifeste** (texte) | Modifiez `front-page.php` dans l'éditeur de thème |
+| **Projet / Activités** | Modifiez `front-page.php` dans l'éditeur de thème |
+| **Artistes** (biographies) | Modifiez `front-page.php` dans l'éditeur de thème |
+| **Événements à venir** | **Événements › Ajouter** — s'affichent automatiquement |
+| **Newsletter** (formulaire) | Toujours présent — gérez les abonnés via **Newsletter** |
+| **Contact** (emails, adresses) | Modifiez `front-page.php` dans l'éditeur de thème |
+
+> **Conseil** : pour modifier les textes statiques (hero, biographies, manifeste)
+> sans toucher au code PHP, installez le plugin **Advanced Custom Fields (ACF)**
+> et nous pouvons ajouter des champs éditables pour chaque section sur demande.
 
 ---
 

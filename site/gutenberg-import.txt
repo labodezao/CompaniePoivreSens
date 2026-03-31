@@ -1,18 +1,36 @@
 <!-- ====================================================================
-     POIVRE & SENS — Import Gutenberg WordPress (version optimisée)
+     POIVRE & SENS — Import Gutenberg WordPress (version statique)
      ====================================================================
-     Comment utiliser ce fichier :
-     1. Dans WordPress, créez une nouvelle page (ex. "Accueil")
-     2. Cliquez sur les trois points (⋮) → "Éditeur de code"
-     3. Sélectionnez tout (Ctrl+A) et collez ce contenu
-     4. Cliquez sur "Éditeur visuel" pour modifier textes et images
-     5. Dans chaque bloc Image / Galerie, cliquez pour ajouter vos photos
-     6. Dans Apparence → Personnaliser → CSS additionnel, ajoutez la
-        règle ".entry-title { display:none; }" pour masquer le titre
-        automatique de la page WordPress si nécessaire.
 
-     Fonts nécessaires : Cormorant Garamond + Inter (chargées ci-dessous)
-     Thème testé      : Savoy (Nimble Themes) — WordPress 6.x
+     ⚠️  DOIS-JE UTILISER CE FICHIER ?
+     ══════════════════════════════════
+     ➤  AVEC le thème "poivre-sens" (dossier wordpress-theme/poivre-sens/)
+        → NON. La page d'accueil est générée AUTOMATIQUEMENT par front-page.php.
+          Créez juste une page vide "Accueil" et définissez-la comme page
+          statique dans Réglages › Lecture. N'importez rien ici.
+          Le contenu se gère via les menus : Galerie, Événements, Newsletter.
+
+     ➤  AVEC un autre thème WordPress (Savoy, Kadence, Blocksy, etc.)
+        → OUI. Utilisez ce fichier pour recréer le design manuellement.
+          Suivez les instructions ci-dessous.
+
+     ══════════════════════════════════════════════════════════════════
+     INSTRUCTIONS (uniquement si vous n'utilisez PAS le thème poivre-sens)
+     ══════════════════════════════════════════════════════════════════
+     1. Dans WordPress, créez une nouvelle page intitulée "Accueil"
+     2. Cliquez sur les trois points (⋮) en haut à droite → "Éditeur de code"
+     3. Sélectionnez TOUT le contenu existant (Ctrl+A) et supprimez-le
+     4. Collez tout le contenu de ce fichier (Ctrl+V)
+     5. Cliquez sur "Éditeur visuel" pour modifier textes et images
+     6. Dans chaque bloc Image, cliquez pour remplacer par vos propres photos
+     7. Allez dans Réglages › Lecture → sélectionnez "Page statique" → "Accueil"
+     8. Optionnel : dans Apparence › Personnaliser › CSS additionnel, ajoutez
+        ".entry-title { display:none; }" pour masquer le titre de la page.
+
+     Fonts nécessaires : Cormorant Garamond + Inter (chargées automatiquement)
+     Thème testé       : Savoy (Nimble Themes) — WordPress 6.x
+     Domaine           : cie.poivresens.fr
+     Contact           : contact@cie.poivresens.fr
 ==================================================================== -->
 
 <!-- wp:html -->
