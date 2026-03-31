@@ -698,7 +698,7 @@ h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-backg
 
 
 
-<p><p class="co-h" style="margin-top:32px">Suivre la compagnie</p></p>
+<h4 class="wp-block-heading co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
 
 
 
