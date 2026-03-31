@@ -669,9 +669,9 @@ function _ps_pat_contact(): string {
 <!-- wp:paragraph {"className":"co-v"} --><p class="co-v"><a href="mailto:ewen@cie.poivresens.fr">ewen@cie.poivresens.fr</a></p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
-<!-- wp:paragraph {"className":"co-h"} -->
-<p class="co-h" style="margin-top:32px">Suivre la compagnie</p>
-<!-- /wp:paragraph -->
+<!-- wp:heading {"level":4,"className":"co-h","style":{"spacing":{"margin":{"top":"32px","bottom":"28px"}}}} -->
+<h4 class="co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
+<!-- /wp:heading -->
 <!-- wp:paragraph {"className":"co-note"} -->
 <p class="co-note">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.</p>
 <!-- /wp:paragraph -->
