@@ -75,9 +75,9 @@ add_action('customize_register', function ( \WP_Customize_Manager $wp_customize 
     ]);
 
     $wp_customize->add_setting('color_scheme', [
-        'default'           => 'nuit',
+        'default'           => 'lumiere',
         'sanitize_callback' => function ( $val ) {
-            return array_key_exists($val, ps_color_schemes()) ? $val : 'nuit';
+            return array_key_exists($val, ps_color_schemes()) ? $val : 'lumiere';
         },
         'transport'         => 'postMessage', // mise à jour live sans rechargement
     ]);
