@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?> data-theme="<?php echo esc_attr(get_theme_mod('color_scheme', 'lumiere')); ?>">
+<html <?php language_attributes(); ?><?php $ps_scheme = get_theme_mod('color_scheme', ''); if ( $ps_scheme ) { echo ' data-theme="' . esc_attr($ps_scheme) . '"'; } ?>>
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

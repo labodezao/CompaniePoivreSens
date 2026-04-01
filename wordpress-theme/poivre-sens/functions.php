@@ -75,23 +75,24 @@ add_action('customize_register', function ( \WP_Customize_Manager $wp_customize 
     ]);
 
     $wp_customize->add_setting('color_scheme', [
-        'default'           => 'lumiere',
+        'default'           => '',
         'sanitize_callback' => function ( $val ) {
-            return array_key_exists($val, ps_color_schemes()) ? $val : 'lumiere';
+            return ( '' === $val || array_key_exists($val, ps_color_schemes()) ) ? $val : '';
         },
         'transport'         => 'postMessage', // mise à jour live sans rechargement
     ]);
 
-    $choices = [];
+    $choices = [ '' => __('— Par défaut (Nuit) —', 'poivre-sens') ];
     foreach ( ps_color_schemes() as $key => $data ) {
         $choices[ $key ] = $data['label'];
     }
 
     $wp_customize->add_control('color_scheme', [
-        'label'   => __('Thème de couleurs', 'poivre-sens'),
-        'section' => 'ps_charte',
-        'type'    => 'radio',
-        'choices' => $choices,
+        'label'       => __('Thème de couleurs', 'poivre-sens'),
+        'description' => __('Laisser sur « Par défaut » pour utiliser le thème sombre d\'origine.', 'poivre-sens'),
+        'section'     => 'ps_charte',
+        'type'        => 'select',
+        'choices'     => $choices,
     ]);
 });
 
@@ -101,7 +102,11 @@ add_action('customize_preview_init', function () {
         'customize-preview',
         "wp.customize('color_scheme', function(value){
             value.bind(function(newVal){
-                document.documentElement.setAttribute('data-theme', newVal);
+                if(newVal){
+                    document.documentElement.setAttribute('data-theme', newVal);
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
             });
         });"
     );
