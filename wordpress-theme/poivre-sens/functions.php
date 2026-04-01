@@ -54,14 +54,14 @@ function ps_color_schemes(): array {
             'accent' => '#d49820',
         ],
         'foret'   => [
-            'label'  => __('🌿 Forêt — vert profond, fraîcheur végétale', 'poivre-sens'),
-            'bg'     => '#0a1510',
-            'accent' => '#6abf84',
+            'label'  => __('🌿 Forêt claire — sauge, respiration et profondeur', 'poivre-sens'),
+            'bg'     => '#e7efe7',
+            'accent' => '#6d8f70',
         ],
         'lumiere' => [
-            'label'  => __('☀️ Lumière — fond crème, clarté et ouverture', 'poivre-sens'),
-            'bg'     => '#f5ede0',
-            'accent' => '#a86c10',
+            'label'  => __('☀️ Clair — ivoire nocturne, plus lumineux', 'poivre-sens'),
+            'bg'     => '#f1e9dd',
+            'accent' => '#b68952',
         ],
     ];
 }
