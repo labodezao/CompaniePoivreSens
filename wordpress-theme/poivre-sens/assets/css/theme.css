@@ -526,3 +526,91 @@ h4.co-h {
   .nl-form-submit-row{flex-direction:column;align-items:flex-start}
   .cal-list__filter-row{flex-direction:column;align-items:flex-start}
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Vie & Joie — Palette complémentaire & sections lumineuses
+   Garde le professionnalisme, apporte chaleur, élan et vie.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Nouvelles variables ──────────────────────────────────────── */
+:root {
+  --terre:     #c4622d;   /* Terracotta vivante — corps, chaleur, élan    */
+  --sauge:     #5a9470;   /* Vert sauge — nature, croissance, somatique   */
+  --aurore:    #f2e8d5;   /* Fond clair aurore — lumière, jour, ouverture */
+  --aurore-tx: #261a0c;   /* Texte sur fond aurore                        */
+}
+
+/* Section Manifeste — tranche lumineuse ───────────────────── */
+/* Une respiration lumineuse entre le hero sombre et la suite. */
+.manifeste {
+  background:           var(--aurore);
+  border-top-color:     rgba(196,98,45,.15);
+  border-bottom-color:  rgba(196,98,45,.15);
+}
+.manifeste .mf-ax    { color: var(--terre); }
+.manifeste .mf-t     { color: var(--aurore-tx); }
+.manifeste .mf-t em  { color: var(--terre); }
+.manifeste .mf-tx    { color: rgba(38,26,12,.62); }
+.manifeste .mf-tx em { color: var(--aurore-tx); }
+.manifeste .regle    { background: var(--terre); }
+
+/* Gradients d'accent — terracotta vivant (remplace rouge brique) */
+.axe::after       { background: linear-gradient(90deg,   var(--terre), var(--or)); }
+.evt-card::before { background: linear-gradient(to bottom, var(--terre), var(--or)); }
+
+/* Labels & règles des sections Projet & Activités — vert sauge */
+#projet    .lbl,
+#activites .lbl   { color: var(--sauge); }
+#projet    .regle,
+#activites .regle { background: var(--sauge); }
+
+/* Badges des activités — palette alternée ─────────────────── */
+.act:nth-child(2n) .act__b { color: var(--terre); border-color: rgba(196,98,45,.28); }
+.act:nth-child(3n) .act__b { color: var(--sauge); border-color: rgba(90,148,112,.28); }
+
+/* Labels des valeurs esthétiques — alternés ───────────────── */
+.esthet__vals .val:nth-child(2n) .val__l { color: var(--terre); }
+.esthet__vals .val:nth-child(3n) .val__l { color: var(--sauge); }
+
+/* Tags biographies — couleur par artiste ─────────────────── */
+/* Ambre : vert sauge (nature, somatique, tao) */
+.bios .bio:first-child .bio__tg {
+  border-color: rgba(90,148,112,.3);
+  color:        rgba(90,148,112,.85);
+}
+.bios .bio:first-child .bio__tg:hover {
+  background: rgba(90,148,112,.12);
+  color:      var(--sauge);
+}
+/* Ewen : terracotta (lutherie, corps sonore, aïkido) */
+.bios .bio:last-child .bio__tg {
+  border-color: rgba(196,98,45,.32);
+  color:        rgba(196,98,45,.85);
+}
+.bios .bio:last-child .bio__tg:hover {
+  background: rgba(196,98,45,.12);
+  color:      var(--terre);
+}
+
+/* Références/influences — couleur alternée ────────────────── */
+.influences .inf:nth-child(2n) .inf__n { color: rgba(90,148,112,.9); }
+.influences .inf:nth-child(3n) .inf__n { color: rgba(196,98,45,.9); }
+
+/* Événement "Complet" — terracotta (moins funèbre) ─────────── */
+.cal-list__complet {
+  color:        var(--terre);
+  border-color: rgba(196,98,45,.35);
+}
+
+/* Classe utilitaire pour sections lumineuses ──────────────── */
+/* Utilisation dans Gutenberg : ajouter la classe CSS "sec--lumiere" */
+.sec--lumiere,
+.wp-block-group.sec--lumiere {
+  background: var(--aurore) !important;
+  color:      var(--aurore-tx);
+}
+.sec--lumiere .lbl      { color:      var(--terre); }
+.sec--lumiere .regle    { background: var(--terre); }
+.sec--lumiere .sh,
+.sec--lumiere h2,
+.sec--lumiere h3        { color:      var(--aurore-tx); }

@@ -1,30 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
   <defs>
-    <linearGradient id="bg" x1="6.7%" y1="25.0%" x2="93.3%" y2="75.0%">
-    <stop offset="0%" stop-color="#160f07"/>
-    <stop offset="60%" stop-color="#261808"/>
-    <stop offset="100%" stop-color="#100d07"/>
+    <linearGradient id="bg" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%"   stop-color="#241508"/>
+      <stop offset="55%"  stop-color="#1a0e07"/>
+      <stop offset="100%" stop-color="#130d08"/>
     </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="46%" r="42%">
+      <stop offset="0%"   stop-color="rgba(196,98,45,0.14)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
   </defs>
 
-  <!-- background -->
   <rect width="800" height="520" fill="url(#bg)"/>
+  <rect width="800" height="520" fill="url(#glow)"/>
 
-  <!-- circle -->
-  <circle cx="400" cy="260" r="47" fill="none" stroke="rgba(194,139,54,0.8)" stroke-width="1.5"/>
+  <!-- Mouvement dansé — courbe élancée du corps en élan (pratiques somatiques) -->
+  <!-- Ligne principale du corps -->
+  <path d="M 255 375 C 288 296, 356 265, 412 246 C 468 227, 525 250, 550 185"
+        fill="none" stroke="rgba(196,98,45,0.75)" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Bras/extension vers le haut -->
+  <path d="M 412 246 C 432 205, 480 192, 505 212"
+        fill="none" stroke="rgba(196,98,45,0.55)" stroke-width="2" stroke-linecap="round"/>
+  <!-- Trace de mouvement passé (sillage en pointillés) -->
+  <path d="M 255 375 C 234 342, 220 308, 238 278"
+        fill="none" stroke="rgba(196,98,45,0.28)" stroke-width="1.5"
+        stroke-dasharray="4 7" stroke-linecap="round"/>
+  <!-- Sol / ancrage -->
+  <line x1="175" y1="390" x2="625" y2="390"
+        stroke="rgba(196,98,45,0.22)" stroke-width="1.5"/>
+  <!-- Point d'ancrage (pied au sol) -->
+  <circle cx="255" cy="378" r="4.5" fill="rgba(196,98,45,0.62)"/>
+  <!-- Pointe tendue -->
+  <circle cx="505" cy="210" r="3" fill="rgba(196,98,45,0.5)"/>
 
-  <!-- cross — horizontal bar -->
-  <line x1="381" y1="260" x2="419" y2="260"
-        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
-  <!-- cross — vertical bar -->
-  <line x1="400" y1="241" x2="400" y2="279"
-        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- label -->
-  <text x="400" y="329" text-anchor="middle"
+  <!-- Label -->
+  <text x="400" y="438" text-anchor="middle"
         font-family="Arial,sans-serif" font-size="11" font-weight="400"
-        letter-spacing="2" fill="rgba(194,139,54,0.7)">Ambre Lavignac</text>
-  <text x="400" y="345" text-anchor="middle"
+        letter-spacing="2" fill="rgba(194,139,54,0.75)">Ambre Lavignac</text>
+  <text x="400" y="458" text-anchor="middle"
         font-family="Arial,sans-serif" font-size="9" font-weight="300"
         letter-spacing="3" fill="rgba(194,139,54,0.45)">Ajouter un portrait</text>
 </svg>
