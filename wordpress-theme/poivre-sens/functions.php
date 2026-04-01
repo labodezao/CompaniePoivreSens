@@ -35,7 +35,80 @@ add_action('after_setup_theme', function () {
 });
 
 /* ═══════════════════════════════════════════════════════════
-   2. ENQUEUE STYLES & SCRIPTS
+   2. CHARTE GRAPHIQUE — Customizer WordPress
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * Chartes disponibles — label + aperçu couleur de fond + accent
+ */
+function ps_color_schemes(): array {
+    return [
+        'nuit'    => [
+            'label'  => __('🌑 Nuit (défaut) — élégance sombre',  'poivre-sens'),
+            'bg'     => '#080705',
+            'accent' => '#c28b36',
+        ],
+        'aurore'  => [
+            'label'  => __('🌅 Aurore — brun ambré, chaleur d\'âtre', 'poivre-sens'),
+            'bg'     => '#1f1008',
+            'accent' => '#d49820',
+        ],
+        'foret'   => [
+            'label'  => __('🌿 Forêt — vert profond, fraîcheur végétale', 'poivre-sens'),
+            'bg'     => '#0a1510',
+            'accent' => '#6abf84',
+        ],
+        'lumiere' => [
+            'label'  => __('☀️ Lumière — fond crème, clarté et ouverture', 'poivre-sens'),
+            'bg'     => '#f5ede0',
+            'accent' => '#a86c10',
+        ],
+    ];
+}
+
+/** Enregistrement Customizer */
+add_action('customize_register', function ( \WP_Customize_Manager $wp_customize ) {
+    $wp_customize->add_section('ps_charte', [
+        'title'       => __('Charte graphique', 'poivre-sens'),
+        'description' => __('Choisissez le thème de couleurs du site. Le changement est immédiat.', 'poivre-sens'),
+        'priority'    => 28,
+    ]);
+
+    $wp_customize->add_setting('color_scheme', [
+        'default'           => 'nuit',
+        'sanitize_callback' => function ( $val ) {
+            return array_key_exists($val, ps_color_schemes()) ? $val : 'nuit';
+        },
+        'transport'         => 'postMessage', // mise à jour live sans rechargement
+    ]);
+
+    $choices = [];
+    foreach ( ps_color_schemes() as $key => $data ) {
+        $choices[ $key ] = $data['label'];
+    }
+
+    $wp_customize->add_control('color_scheme', [
+        'label'   => __('Thème de couleurs', 'poivre-sens'),
+        'section' => 'ps_charte',
+        'type'    => 'radio',
+        'choices' => $choices,
+    ]);
+});
+
+/** JS live-preview Customizer : met à jour data-theme sans rechargement */
+add_action('customize_preview_init', function () {
+    wp_add_inline_script(
+        'customize-preview',
+        "wp.customize('color_scheme', function(value){
+            value.bind(function(newVal){
+                document.documentElement.setAttribute('data-theme', newVal);
+            });
+        });"
+    );
+});
+
+/* ═══════════════════════════════════════════════════════════
+   3. ENQUEUE STYLES & SCRIPTS
    ═══════════════════════════════════════════════════════════ */
 add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style(

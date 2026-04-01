@@ -528,89 +528,209 @@ h4.co-h {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Vie & Joie — Palette complémentaire & sections lumineuses
-   Garde le professionnalisme, apporte chaleur, élan et vie.
+   CHARTES GRAPHIQUES — 4 thèmes sélectionnables
+   Via le Customizer WordPress : Apparence > Charte graphique
+   ══════════════════════════════════════════════════════════════
+
+   Thème actif appliqué via data-theme="..." sur <html>
+   Nuit (défaut) utilise les variables :root ci-dessus.
+
+   Variables redéfinies par thème :
+     --noir  → fond principal (body, sections)
+     --noir2 → fond secondaire (.sec2, .bio, .co-col…)
+     --noir3 → fond tertiaire (.sec3…)
+     --brun  → fond hover/actif
+     --rouge → accent 1 (gradient bas)
+     --or    → accent 2 (gradient haut, icônes, labels)
+     --orlt  → accent clair (hover dorés)
+     --creme → couleur de texte principale
+     --gris  → couleur de texte secondaire
+     --bord / --bord2 → bordures
    ══════════════════════════════════════════════════════════════ */
 
-/* Nouvelles variables ──────────────────────────────────────── */
-:root {
-  --terre:     #c4622d;   /* Terracotta vivante — corps, chaleur, élan    */
-  --sauge:     #5a9470;   /* Vert sauge — nature, croissance, somatique   */
-  --aurore:    #f2e8d5;   /* Fond clair aurore — lumière, jour, ouverture */
-  --aurore-tx: #261a0c;   /* Texte sur fond aurore                        */
+/* ── 1. AURORE — brun ambré chaud ──────────────────────────── */
+/*  Sombre mais chaleureux, comme un feu de cheminée            */
+[data-theme="aurore"] {
+  --noir:  #1f1008;
+  --noir2: #2a1608;
+  --noir3: #331b0a;
+  --brun:  #3d2010;
+  --rouge: #c4622d;
+  --or:    #d49820;
+  --orlt:  #edb03c;
+  --creme: #f0e0c2;
+  --gris:  #9a7850;
+  --bord:  rgba(212,152,32,.2);
+  --bord2: rgba(212,152,32,.32);
+}
+[data-theme="aurore"] .nav.scrolled       { background: rgba(31,16,8,.93); }
+[data-theme="aurore"] .nav__list          { background: rgba(31,16,8,.97); }
+[data-theme="aurore"] .phcap              { background: linear-gradient(to top,rgba(31,16,8,.85) 0%,transparent 100%); }
+[data-theme="aurore"] .hero__intro        { color: rgba(240,224,194,.6); }
+[data-theme="aurore"] .hero__scrl         { color: rgba(240,224,194,.35); }
+[data-theme="aurore"] .mf-tx              { color: rgba(240,224,194,.65); }
+[data-theme="aurore"] .bio__tx,
+[data-theme="aurore"] .bio__tx.wp-block-paragraph { color: rgba(240,224,194,.65); }
+[data-theme="aurore"] .diff-i             { color: rgba(240,224,194,.68); }
+[data-theme="aurore"] .val__t             { color: rgba(240,224,194,.62); }
+[data-theme="aurore"] .single-evt__corps  { color: rgba(240,224,194,.72); }
+[data-theme="aurore"] .footer__br         { color: rgba(240,224,194,.45); }
+[data-theme="aurore"] .nl-form-desc       { color: rgba(240,224,194,.65); }
+[data-theme="aurore"] .axe__n             { color: rgba(212,152,32,.13); }
+[data-theme="aurore"] .axe:hover .axe__n  { color: rgba(212,152,32,.28); }
+[data-theme="aurore"] .bio__tg            { border-color: rgba(212,152,32,.28); color: rgba(212,152,32,.85); }
+[data-theme="aurore"] .bio__tg:hover      { background: rgba(212,152,32,.12); }
+[data-theme="aurore"] .cal-list__event    { border-bottom-color: rgba(212,152,32,.08); }
+[data-theme="aurore"] .cal-list__event:hover      { background: rgba(212,152,32,.04); }
+[data-theme="aurore"] .cal-list__event--today     { background: rgba(212,152,32,.06); }
+[data-theme="aurore"] .cal-list__type     { color: rgba(212,152,32,.75); border-color: rgba(212,152,32,.22); }
+[data-theme="aurore"] .cal-list__filter-reset     { color: rgba(212,152,32,.6); }
+
+/* ── 2. FORÊT — vert sombre, nature ───────────────────────── */
+/*  Fraîcheur végétale, profondeur des bois                     */
+[data-theme="foret"] {
+  --noir:  #0a1510;
+  --noir2: #0e1c16;
+  --noir3: #12231c;
+  --brun:  #1a3026;
+  --rouge: #3d8c58;
+  --or:    #6abf84;
+  --orlt:  #8ed4a0;
+  --creme: #d6ecd8;
+  --gris:  #5a8065;
+  --bord:  rgba(106,191,132,.18);
+  --bord2: rgba(106,191,132,.28);
+}
+[data-theme="foret"] .nav.scrolled       { background: rgba(10,21,16,.93); }
+[data-theme="foret"] .nav__list          { background: rgba(10,21,16,.97); }
+[data-theme="foret"] .phcap              { background: linear-gradient(to top,rgba(10,21,16,.85) 0%,transparent 100%); }
+[data-theme="foret"] .hero__intro        { color: rgba(214,236,216,.6); }
+[data-theme="foret"] .hero__scrl         { color: rgba(214,236,216,.35); }
+[data-theme="foret"] .mf-tx              { color: rgba(214,236,216,.65); }
+[data-theme="foret"] .bio__tx,
+[data-theme="foret"] .bio__tx.wp-block-paragraph { color: rgba(214,236,216,.65); }
+[data-theme="foret"] .diff-i             { color: rgba(214,236,216,.68); }
+[data-theme="foret"] .val__t             { color: rgba(214,236,216,.62); }
+[data-theme="foret"] .single-evt__corps  { color: rgba(214,236,216,.72); }
+[data-theme="foret"] .footer__br         { color: rgba(214,236,216,.45); }
+[data-theme="foret"] .nl-form-desc       { color: rgba(214,236,216,.65); }
+[data-theme="foret"] .axe__n             { color: rgba(106,191,132,.13); }
+[data-theme="foret"] .axe:hover .axe__n  { color: rgba(106,191,132,.28); }
+[data-theme="foret"] .bio__tg            { border-color: rgba(106,191,132,.28); color: rgba(106,191,132,.85); }
+[data-theme="foret"] .bio__tg:hover      { background: rgba(106,191,132,.12); }
+[data-theme="foret"] .evt-card__type     { color: rgba(106,191,132,.75); border-color: rgba(106,191,132,.25); }
+[data-theme="foret"] .single-evt__type   { color: rgba(106,191,132,.85); border-color: rgba(106,191,132,.28); }
+[data-theme="foret"] .cal-list__event    { border-bottom-color: rgba(106,191,132,.08); }
+[data-theme="foret"] .cal-list__event:hover      { background: rgba(106,191,132,.04); }
+[data-theme="foret"] .cal-list__event--today     { background: rgba(106,191,132,.06); }
+[data-theme="foret"] .cal-list__event--today .cal-list__day-num { color: var(--or); }
+[data-theme="foret"] .cal-list__line     { background: rgba(106,191,132,.18); }
+[data-theme="foret"] .cal-list__event:hover .cal-list__line { background: var(--or); }
+[data-theme="foret"] .cal-list__type     { color: rgba(106,191,132,.75); border-color: rgba(106,191,132,.22); }
+[data-theme="foret"] .cal-list__filter-reset { color: rgba(106,191,132,.65); }
+[data-theme="foret"] .nl-form-msg--ok    { background: rgba(58,140,88,.18); color: #8ed4a0; border-color: rgba(58,140,88,.35); }
+[data-theme="foret"] .hero__scrl::after  { background: linear-gradient(to bottom,var(--or),transparent); }
+
+/* ── 3. LUMIÈRE — fond crème, texte sombre ─────────────────── */
+/*  Le héros reste dramatiquement sombre, le contenu s'ouvre   */
+/*  à la lumière — contraste élégant nuit/jour                 */
+[data-theme="lumiere"] {
+  --noir:  #f5ede0;
+  --noir2: #ede0cc;
+  --noir3: #e6d4ba;
+  --brun:  #d8c9a8;
+  --rouge: #8c2e0c;
+  --or:    #a86c10;
+  --orlt:  #c88c28;
+  --creme: #1a1008;
+  --gris:  #5c4830;
+  --bord:  rgba(26,16,8,.12);
+  --bord2: rgba(26,16,8,.22);
 }
 
-/* Section Manifeste — tranche lumineuse ───────────────────── */
-/* Une respiration lumineuse entre le hero sombre et la suite. */
-.manifeste {
-  background:           var(--aurore);
-  border-top-color:     rgba(196,98,45,.15);
-  border-bottom-color:  rgba(196,98,45,.15);
+/* Nav transparente sur le héros sombre : garder texte clair */
+[data-theme="lumiere"] .nav:not(.scrolled) .nav__logo         { color: #ece3cb; }
+[data-theme="lumiere"] .nav:not(.scrolled) .nav__logo b       { color: #c28b36; }
+[data-theme="lumiere"] .nav:not(.scrolled) .nav__list a       { color: #7f7463; }
+[data-theme="lumiere"] .nav:not(.scrolled) .nav__list a:hover { color: #ece3cb; }
+[data-theme="lumiere"] .nav:not(.scrolled) .nav__burger span  { background: #ece3cb; }
+/* Nav scrollée (sur contenu clair) */
+[data-theme="lumiere"] .nav.scrolled  {
+  background:   rgba(242,235,218,.96);
+  border-color: rgba(168,108,16,.18);
 }
-.manifeste .mf-ax    { color: var(--terre); }
-.manifeste .mf-t     { color: var(--aurore-tx); }
-.manifeste .mf-t em  { color: var(--terre); }
-.manifeste .mf-tx    { color: rgba(38,26,12,.62); }
-.manifeste .mf-tx em { color: var(--aurore-tx); }
-.manifeste .regle    { background: var(--terre); }
+/* Mobile menu sur fond clair */
+[data-theme="lumiere"] .nav__list     { background: rgba(242,235,218,.98); }
+[data-theme="lumiere"] .nav__list a   { color: var(--gris); }
 
-/* Gradients d'accent — terracotta vivant (remplace rouge brique) */
-.axe::after       { background: linear-gradient(90deg,   var(--terre), var(--or)); }
-.evt-card::before { background: linear-gradient(to bottom, var(--terre), var(--or)); }
+/* Héros : garder texte clair (SVG sombre en arrière-plan) */
+[data-theme="lumiere"] .hero__sup         { color: #c28b36; }
+[data-theme="lumiere"] .hero__nom         { color: #ece3cb; }
+[data-theme="lumiere"] .hero__nom .et     { color: #c28b36; }
+[data-theme="lumiere"] .hero__disc        { color: #7f7463; }
+[data-theme="lumiere"] .hero__disc strong { color: #ddb868; }
+[data-theme="lumiere"] .hero__cta         { color: #ece3cb; border-bottom-color: #c28b36; }
+[data-theme="lumiere"] .hero__cta:hover   { color: #c28b36; }
+[data-theme="lumiere"] .hero__q           { color: #ece3cb; }
+[data-theme="lumiere"] .hero__q::before   { color: #c28b36; }
+[data-theme="lumiere"] .hero__intro       { color: rgba(236,227,203,.6); }
+[data-theme="lumiere"] .hero__scrl        { color: rgba(236,227,203,.35); }
+[data-theme="lumiere"] .hero__scrl::after { background: linear-gradient(to bottom,#c28b36,transparent); }
+[data-theme="lumiere"] .hero__d           { border-left-color: rgba(194,139,54,.18); }
 
-/* Labels & règles des sections Projet & Activités — vert sauge */
-#projet    .lbl,
-#activites .lbl   { color: var(--sauge); }
-#projet    .regle,
-#activites .regle { background: var(--sauge); }
+/* Galerie : remplacer le dégradé de caption sombre */
+[data-theme="lumiere"] .phcap            { background: linear-gradient(to top,rgba(242,235,218,.92) 0%,transparent 100%); }
+[data-theme="lumiere"] .phcap-t          { color: #1a1008; }
+[data-theme="lumiere"] .phcap-d          { color: #a86c10; }
 
-/* Badges des activités — palette alternée ─────────────────── */
-.act:nth-child(2n) .act__b { color: var(--terre); border-color: rgba(196,98,45,.28); }
-.act:nth-child(3n) .act__b { color: var(--sauge); border-color: rgba(90,148,112,.28); }
-
-/* Labels des valeurs esthétiques — alternés ───────────────── */
-.esthet__vals .val:nth-child(2n) .val__l { color: var(--terre); }
-.esthet__vals .val:nth-child(3n) .val__l { color: var(--sauge); }
-
-/* Tags biographies — couleur par artiste ─────────────────── */
-/* Ambre : vert sauge (nature, somatique, tao) */
-.bios .bio:first-child .bio__tg {
-  border-color: rgba(90,148,112,.3);
-  color:        rgba(90,148,112,.85);
+/* Textes semi-transparents (codés en dur) → version sombre */
+[data-theme="lumiere"] .mf-tx            { color: rgba(26,16,8,.65); }
+[data-theme="lumiere"] .mf-tx em         { color: #1a1008; }
+[data-theme="lumiere"] .bio__tx,
+[data-theme="lumiere"] .bio__tx.wp-block-paragraph { color: rgba(26,16,8,.68); }
+[data-theme="lumiere"] .diff-i           { color: rgba(26,16,8,.70); }
+[data-theme="lumiere"] .val__t           { color: rgba(26,16,8,.65); }
+[data-theme="lumiere"] .single-evt__corps { color: rgba(26,16,8,.72); }
+[data-theme="lumiere"] .footer__br       { color: rgba(26,16,8,.45); }
+[data-theme="lumiere"] .footer__mt       { color: rgba(92,72,48,.55); }
+[data-theme="lumiere"] .nl-form-desc     { color: rgba(26,16,8,.65); }
+[data-theme="lumiere"] .nl-form input::placeholder { color: rgba(92,72,48,.45); }
+[data-theme="lumiere"] .nl-form-privacy  { color: rgba(92,72,48,.55); }
+[data-theme="lumiere"] .nl-form input[type="text"],
+[data-theme="lumiere"] .nl-form input[type="email"] {
+  background:   rgba(0,0,0,.04);
+  border-color: rgba(26,16,8,.14);
+  color:        #1a1008;
 }
-.bios .bio:first-child .bio__tg:hover {
-  background: rgba(90,148,112,.12);
-  color:      var(--sauge);
+[data-theme="lumiere"] .nl-form input:focus {
+  border-color: var(--or);
+  background:   rgba(0,0,0,.07);
 }
-/* Ewen : terracotta (lutherie, corps sonore, aïkido) */
-.bios .bio:last-child .bio__tg {
-  border-color: rgba(196,98,45,.32);
-  color:        rgba(196,98,45,.85);
-}
-.bios .bio:last-child .bio__tg:hover {
-  background: rgba(196,98,45,.12);
-  color:      var(--terre);
-}
+[data-theme="lumiere"] .nl-form-btn { color: #f5ede0; }
 
-/* Références/influences — couleur alternée ────────────────── */
-.influences .inf:nth-child(2n) .inf__n { color: rgba(90,148,112,.9); }
-.influences .inf:nth-child(3n) .inf__n { color: rgba(196,98,45,.9); }
-
-/* Événement "Complet" — terracotta (moins funèbre) ─────────── */
-.cal-list__complet {
-  color:        var(--terre);
-  border-color: rgba(196,98,45,.35);
+/* Accents dorés sombres sur fond clair */
+[data-theme="lumiere"] .axe__n             { color: rgba(168,108,16,.12); }
+[data-theme="lumiere"] .axe:hover .axe__n  { color: rgba(168,108,16,.25); }
+[data-theme="lumiere"] .bio__tg            { border-color: rgba(168,108,16,.3); color: rgba(168,108,16,.9); }
+[data-theme="lumiere"] .bio__tg:hover      { background: rgba(168,108,16,.1); }
+[data-theme="lumiere"] .evt-card__type     { color: rgba(168,108,16,.8); border-color: rgba(168,108,16,.28); }
+[data-theme="lumiere"] .single-evt__type   { color: rgba(168,108,16,.88); border-color: rgba(168,108,16,.3); }
+[data-theme="lumiere"] .cal-list__event    { border-bottom-color: rgba(26,16,8,.1); }
+[data-theme="lumiere"] .cal-list__event:hover      { background: rgba(168,108,16,.05); }
+[data-theme="lumiere"] .cal-list__event--today     { background: rgba(168,108,16,.08); }
+[data-theme="lumiere"] .cal-list__event--today .cal-list__day-num { color: var(--or); }
+[data-theme="lumiere"] .cal-list__line     { background: rgba(26,16,8,.14); }
+[data-theme="lumiere"] .cal-list__event:hover .cal-list__line { background: var(--or); }
+[data-theme="lumiere"] .cal-list__type     { color: rgba(168,108,16,.8); border-color: rgba(168,108,16,.22); }
+[data-theme="lumiere"] .cal-list__filter-reset { color: rgba(168,108,16,.65); }
+[data-theme="lumiere"] .cal-list__filter-row select {
+  background: rgba(255,255,255,.6);
+  border-color: rgba(26,16,8,.14);
+  color: #1a1008;
 }
-
-/* Classe utilitaire pour sections lumineuses ──────────────── */
-/* Utilisation dans Gutenberg : ajouter la classe CSS "sec--lumiere" */
-.sec--lumiere,
-.wp-block-group.sec--lumiere {
-  background: var(--aurore) !important;
-  color:      var(--aurore-tx);
-}
-.sec--lumiere .lbl      { color:      var(--terre); }
-.sec--lumiere .regle    { background: var(--terre); }
-.sec--lumiere .sh,
-.sec--lumiere h2,
-.sec--lumiere h3        { color:      var(--aurore-tx); }
+[data-theme="lumiere"] .photo img { filter: brightness(1) saturate(1); }
+[data-theme="lumiere"] .photo:hover img { filter: brightness(1.04) saturate(1.08); }
+[data-theme="lumiere"] .evt-card__img { filter: brightness(.95) saturate(.95); }
+[data-theme="lumiere"] .evt-card:hover .evt-card__img { filter: brightness(1) saturate(1); }
+[data-theme="lumiere"] .cal-list__thumb img { filter: brightness(.95) saturate(.95); }
+[data-theme="lumiere"] .cal-list__event:hover .cal-list__thumb img { filter: brightness(1) saturate(1); }

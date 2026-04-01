@@ -1,41 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#291608"/>
-      <stop offset="50%"  stop-color="#1f1009"/>
-      <stop offset="100%" stop-color="#160d09"/>
+    <linearGradient id="bg" x1="14.6%" y1="14.6%" x2="85.4%" y2="85.4%">
+    <stop offset="0%" stop-color="#0c0b09"/>
+    <stop offset="55%" stop-color="#1e1a10"/>
+    <stop offset="100%" stop-color="#0d0c09"/>
     </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="50%" r="44%">
-      <stop offset="0%"   stop-color="rgba(196,98,45,0.15)"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </radialGradient>
   </defs>
 
+  <!-- background -->
   <rect width="800" height="520" fill="url(#bg)"/>
-  <rect width="800" height="520" fill="url(#glow)"/>
 
-  <!-- Contact improvisation : deux corps entrelacés en mouvement continu -->
-  <!-- Corps 1 — courbe terracotta -->
-  <path d="M 188 178 C 242 155, 308 198, 322 248 C 336 298, 306 328, 328 358 C 350 388, 405 374, 418 346"
-        fill="none" stroke="rgba(196,98,45,0.75)" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Corps 2 — courbe dorée (rencontre, dialogue) -->
-  <path d="M 612 342 C 558 365, 492 322, 478 272 C 464 222, 494 192, 472 162 C 450 132, 395 145, 382 174"
-        fill="none" stroke="rgba(194,139,54,0.75)" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Point de contact central -->
-  <circle cx="400" cy="260" r="5.5" fill="rgba(196,98,45,0.75)"/>
-  <!-- Espace partagé — ellipse en pointillés -->
-  <ellipse cx="400" cy="262" rx="94" ry="70"
-           fill="none" stroke="rgba(196,98,45,0.22)" stroke-width="1.5" stroke-dasharray="5 8"/>
+  <!-- circle -->
+  <circle cx="400" cy="260" r="47" fill="none" stroke="rgba(194,139,54,0.8)" stroke-width="1.5"/>
 
-  <!-- Impulsions d'énergie aux extrémités -->
-  <circle cx="188" cy="178" r="4" fill="rgba(196,98,45,0.5)"/>
-  <circle cx="612" cy="342" r="4" fill="rgba(194,139,54,0.5)"/>
+  <!-- cross — horizontal bar -->
+  <line x1="381" y1="260" x2="419" y2="260"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- cross — vertical bar -->
+  <line x1="400" y1="241" x2="400" y2="279"
+        stroke="rgba(194,139,54,0.8)" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Label -->
-  <text x="400" y="406" text-anchor="middle"
+  <!-- label -->
+  <text x="400" y="329" text-anchor="middle"
         font-family="Arial,sans-serif" font-size="11" font-weight="400"
-        letter-spacing="2" fill="rgba(194,139,54,0.75)">Jam de contact</text>
-  <text x="400" y="426" text-anchor="middle"
+        letter-spacing="2" fill="rgba(194,139,54,0.7)">Jam de contact</text>
+  <text x="400" y="345" text-anchor="middle"
         font-family="Arial,sans-serif" font-size="9" font-weight="300"
         letter-spacing="3" fill="rgba(194,139,54,0.45)">Ajouter une photo</text>
 </svg>
