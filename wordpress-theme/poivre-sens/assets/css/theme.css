@@ -606,17 +606,21 @@ h4.co-h {
     radial-gradient(circle at top left, rgba(149,176,146,.08), transparent 35%),
     linear-gradient(135deg, #203127 0%, #101712 56%, #0d120f 100%);
 }
-[data-theme="foret"] .nav:not(.scrolled) .nav__logo         { color: #edf4eb; }
-[data-theme="foret"] .nav:not(.scrolled) .nav__logo b       { color: #95b092; }
-[data-theme="foret"] .nav:not(.scrolled) .nav__list a       { color: rgba(237,244,235,.6); }
-[data-theme="foret"] .nav:not(.scrolled) .nav__list a:hover { color: #edf4eb; }
-[data-theme="foret"] .nav:not(.scrolled) .nav__burger span  { background: #edf4eb; }
-[data-theme="foret"] .nav.scrolled  {
+/* Nav : fond givré permanent — visible sur toutes les pages (fond clair ou hero sombre) */
+[data-theme="foret"] .nav {
+  background:   rgba(231,239,231,.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(20,32,25,.08);
+}
+[data-theme="foret"] .nav.scrolled {
   background:   rgba(231,239,231,.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-color: rgba(53,84,67,.14);
 }
-[data-theme="foret"] .nav__list          { background: rgba(231,239,231,.98); }
-[data-theme="foret"] .nav__list a        { color: var(--gris); }
+[data-theme="foret"] .nav__list { background: rgba(231,239,231,.98); }
+[data-theme="foret"] .nav__list a { color: var(--gris); }
 [data-theme="foret"] .hero__sup          { color: #95b092; }
 [data-theme="foret"] .hero__nom          { color: #edf4eb; }
 [data-theme="foret"] .hero__nom .et      { color: #95b092; }
@@ -704,15 +708,17 @@ h4.co-h {
     linear-gradient(135deg, #2b221d 0%, #191411 56%, #120f0d 100%);
 }
 
-/* Nav transparente sur le héros sombre : garder texte clair */
-[data-theme="lumiere"] .nav:not(.scrolled) .nav__logo         { color: #f3e9dd; }
-[data-theme="lumiere"] .nav:not(.scrolled) .nav__logo b       { color: #d2ae82; }
-[data-theme="lumiere"] .nav:not(.scrolled) .nav__list a       { color: rgba(243,233,221,.62); }
-[data-theme="lumiere"] .nav:not(.scrolled) .nav__list a:hover { color: #f3e9dd; }
-[data-theme="lumiere"] .nav:not(.scrolled) .nav__burger span  { background: #f3e9dd; }
-/* Nav scrollée (sur contenu clair) */
+/* Nav : fond givré permanent — visible sur toutes les pages (fond clair ou hero sombre) */
+[data-theme="lumiere"] .nav {
+  background:   rgba(241,233,221,.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(23,18,15,.08);
+}
 [data-theme="lumiere"] .nav.scrolled  {
   background:   rgba(241,233,221,.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-color: rgba(23,18,15,.12);
 }
 /* Mobile menu sur fond clair */
