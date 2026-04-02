@@ -1,8 +1,24 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?><?php $ps_scheme = get_theme_mod('color_scheme', ''); if ( $ps_scheme ) { echo ' data-theme="' . esc_attr($ps_scheme) . '"'; } ?>>
+<html <?php language_attributes(); ?><?php
+$ps_scheme = get_theme_mod('color_scheme', '');
+if ( $ps_scheme && $ps_scheme !== 'auto' ) {
+    echo ' data-theme="' . esc_attr($ps_scheme) . '"';
+}
+?>>
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?php if ( $ps_scheme === 'auto' ): ?>
+  <script>/* Thème auto — doit s'exécuter avant le CSS pour éviter tout flash */
+  (function(){
+    var h = new Date().getHours();
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches;
+    var t = (h >= 20 || h < 7) ? 'aurore' : (dark ? 'foret' : 'lumiere');
+    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.setAttribute('data-auto-theme', '1');
+  }());
+  </script>
+<?php endif; ?>
   <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

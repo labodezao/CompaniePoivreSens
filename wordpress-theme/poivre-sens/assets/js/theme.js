@@ -1,6 +1,19 @@
 (function () {
   'use strict';
 
+  /* ── Thème automatique : écoute les changements système sombre/clair ─── */
+  if (document.documentElement.getAttribute('data-auto-theme') === '1') {
+    var mql = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)');
+    if (mql && mql.addEventListener) {
+      mql.addEventListener('change', function () {
+        var h    = new Date().getHours();
+        var dark = mql.matches;
+        var t    = (h >= 20 || h < 7) ? 'aurore' : (dark ? 'foret' : 'lumiere');
+        document.documentElement.setAttribute('data-theme', t);
+      });
+    }
+  }
+
   /* ── Fond décoratif du hero (injecté en JS pour garder
         le contenu Gutenberg sans balise HTML brute)  ──────── */
   var hero = document.querySelector('.hero');

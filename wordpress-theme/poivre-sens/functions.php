@@ -77,19 +77,22 @@ add_action('customize_register', function ( \WP_Customize_Manager $wp_customize 
     $wp_customize->add_setting('color_scheme', [
         'default'           => '',
         'sanitize_callback' => function ( $val ) {
-            return ( '' === $val || array_key_exists($val, ps_color_schemes()) ) ? $val : '';
+            return ( '' === $val || 'auto' === $val || array_key_exists($val, ps_color_schemes()) ) ? $val : '';
         },
         'transport'         => 'postMessage', // mise à jour live sans rechargement
     ]);
 
-    $choices = [ '' => __('— Par défaut (Nuit) —', 'poivre-sens') ];
+    $choices = [
+        ''     => __('— Par défaut (Nuit) —', 'poivre-sens'),
+        'auto' => __('🔄 Automatique (heure + système sombre/clair)', 'poivre-sens'),
+    ];
     foreach ( ps_color_schemes() as $key => $data ) {
         $choices[ $key ] = $data['label'];
     }
 
     $wp_customize->add_control('color_scheme', [
         'label'       => __('Thème de couleurs', 'poivre-sens'),
-        'description' => __('Laisser sur « Par défaut » pour utiliser le thème sombre d\'origine.', 'poivre-sens'),
+        'description' => __('« Automatique » choisit le thème selon l\'heure (nuit → Aurore, jour → Forêt ou Lumière) et la préférence sombre/clair de l\'appareil.', 'poivre-sens'),
         'section'     => 'ps_charte',
         'type'        => 'select',
         'choices'     => $choices,
@@ -102,9 +105,17 @@ add_action('customize_preview_init', function () {
         'customize-preview',
         "wp.customize('color_scheme', function(value){
             value.bind(function(newVal){
-                if(newVal){
+                if (newVal === 'auto') {
+                    var h = new Date().getHours();
+                    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches;
+                    var t = (h >= 20 || h < 7) ? 'aurore' : (dark ? 'foret' : 'lumiere');
+                    document.documentElement.setAttribute('data-theme', t);
+                    document.documentElement.setAttribute('data-auto-theme', '1');
+                } else if (newVal) {
+                    document.documentElement.removeAttribute('data-auto-theme');
                     document.documentElement.setAttribute('data-theme', newVal);
                 } else {
+                    document.documentElement.removeAttribute('data-auto-theme');
                     document.documentElement.removeAttribute('data-theme');
                 }
             });
