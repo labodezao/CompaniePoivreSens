@@ -1,0 +1,239 @@
+/* ============================================================
+   Poivre & Sens — Styles éditeur Gutenberg (aperçu WYSIWYG)
+   Chargé via add_editor_style() — scoped .editor-styles-wrapper
+   ============================================================ */
+
+/* ── Variables CSS ────────────────────────────────────────── */
+.editor-styles-wrapper {
+  --noir:  #080705;
+  --noir2: #100e0b;
+  --noir3: #181510;
+  --brun:  #221c12;
+  --rouge: #9e3710;
+  --or:    #c28b36;
+  --orlt:  #ddb868;
+  --creme: #ece3cb;
+  --gris:  #7f7463;
+  --bord:  rgba(194,139,54,.18);
+  --fh:    'Cormorant Garamond', Georgia, serif;
+  --fb:    'Inter', system-ui, sans-serif;
+  background: var(--noir);
+  color: var(--creme);
+  font-family: var(--fb);
+  font-weight: 300;
+  line-height: 1.7;
+  padding: 0 !important;
+}
+
+/* ── Typo générale ────────────────────────────────────────── */
+.editor-styles-wrapper p,
+.editor-styles-wrapper li { color: var(--creme); }
+.editor-styles-wrapper a  { color: var(--orlt); }
+.editor-styles-wrapper em { color: var(--or); font-style: italic; }
+
+/* ── Utilitaires ──────────────────────────────────────────── */
+.editor-styles-wrapper .lbl {
+  font-size:.68rem; font-weight:400; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--or); margin-bottom:14px; display:block;
+}
+.editor-styles-wrapper .sh {
+  font-family:var(--fh); font-size:clamp(2rem,3.5vw,2.8rem);
+  font-weight:300; color:var(--creme); line-height:1.1;
+}
+.editor-styles-wrapper .regle,
+.editor-styles-wrapper .wp-block-separator.regle {
+  width:40px; height:1px; background:var(--or); border:none;
+  margin-top:18px; margin-bottom:0; max-width:none;
+}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.editor-styles-wrapper .hero {
+  background:var(--noir); position:relative; min-height:60vh;
+  display:grid; grid-template-columns:1fr 1fr; overflow:hidden; padding:0;
+}
+.editor-styles-wrapper .hero__g,
+.editor-styles-wrapper .hero__d {
+  padding:80px 56px; display:flex; flex-direction:column; justify-content:center;
+  max-width:none !important;
+}
+.editor-styles-wrapper .hero__d { border-left:1px solid var(--bord); }
+.editor-styles-wrapper .hero__sup {
+  font-size:.67rem; font-weight:400; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--or); margin-bottom:36px;
+}
+.editor-styles-wrapper .hero__nom {
+  font-family:var(--fh); font-size:clamp(4rem,8vw,7rem);
+  font-weight:300; line-height:.92; color:var(--creme);
+}
+.editor-styles-wrapper .hero__nom .et {
+  display:block; font-size:.34em; color:var(--or);
+  letter-spacing:.14em; line-height:2.8; padding-left:.1em;
+}
+.editor-styles-wrapper .hero__disc {
+  margin-top:32px; font-size:.77rem; font-weight:400;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--gris); line-height:2.2;
+}
+.editor-styles-wrapper .hero__disc strong {
+  display:block; color:var(--orlt); font-weight:400;
+  letter-spacing:.07em; font-size:.85rem; margin-bottom:4px;
+}
+.editor-styles-wrapper .hero__cta {
+  display:inline-flex; align-items:center; gap:14px; margin-top:52px;
+  font-size:.72rem; font-weight:400; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--creme) !important; border-bottom:1px solid var(--or); padding-bottom:4px;
+}
+.editor-styles-wrapper .hero__q {
+  font-family:var(--fh); font-style:italic;
+  font-size:clamp(1.5rem,2.6vw,2.1rem); font-weight:300;
+  line-height:1.42; color:var(--creme); margin-bottom:36px;
+}
+.editor-styles-wrapper .hero__q::before {
+  content:'\201C'; display:block; font-size:3.8rem; line-height:1;
+  color:var(--or); font-style:normal; margin-bottom:6px;
+}
+.editor-styles-wrapper .hero__intro {
+  font-size:.92rem; line-height:1.85; color:rgba(236,227,203,.6);
+}
+
+/* ── Manifeste ────────────────────────────────────────────── */
+.editor-styles-wrapper .manifeste {
+  display:flex; gap:80px; align-items:flex-start;
+  padding:100px 80px; border-top:1px solid var(--bord);
+  border-bottom:1px solid var(--bord); max-width:none !important;
+}
+.editor-styles-wrapper .mf-ax {
+  font-size:.67rem; font-weight:400; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--or); writing-mode:vertical-rl; transform:rotate(180deg);
+  flex-shrink:0; padding-top:6px;
+}
+.editor-styles-wrapper .mf-corps { flex:1; max-width:none !important; }
+.editor-styles-wrapper .mf-t {
+  font-family:var(--fh); font-size:clamp(2rem,3.8vw,3.2rem);
+  font-weight:300; line-height:1.22; color:var(--creme); margin-bottom:32px;
+}
+.editor-styles-wrapper .mf-t em { color:var(--or); font-style:italic; }
+.editor-styles-wrapper .mf-tx {
+  font-size:.96rem; line-height:1.88; color:rgba(236,227,203,.65);
+  columns:2; column-gap:52px; max-width:none !important;
+}
+.editor-styles-wrapper .mf-tx p { margin-top:0; }
+.editor-styles-wrapper .mf-tx p + p { margin-top:1.2em; }
+.editor-styles-wrapper .mf-tx em { color:var(--creme); }
+
+/* ── Artistes / Bios ──────────────────────────────────────── */
+.editor-styles-wrapper .sec {
+  padding:100px 80px; max-width:none !important;
+}
+.editor-styles-wrapper .sec2 { background:var(--noir2); }
+.editor-styles-wrapper .sec3 { background:var(--noir3); }
+.editor-styles-wrapper .bios {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--bord); border:1px solid var(--bord);
+  margin-bottom:56px; max-width:none !important;
+}
+.editor-styles-wrapper .bio {
+  background:var(--noir2); padding:52px 48px; max-width:none !important;
+}
+.editor-styles-wrapper .bio__hd {
+  display:flex; align-items:center; gap:20px; margin-bottom:28px;
+  max-width:none !important;
+}
+.editor-styles-wrapper .bio__mn {
+  width:52px; height:52px; min-width:52px; border-radius:50%;
+  border:1px solid var(--or); display:flex; align-items:center;
+  justify-content:center; font-family:var(--fh); font-size:1.5rem;
+  font-weight:300; color:var(--or); flex-shrink:0; overflow:hidden;
+  max-width:52px !important; padding:0 !important;
+}
+.editor-styles-wrapper .bio__mn p { margin:0; color:var(--or); font-size:1.5rem; }
+.editor-styles-wrapper .bio__nom {
+  font-family:var(--fh); font-size:1.6rem; font-weight:400;
+  color:var(--creme); line-height:1.1; margin-bottom:4px;
+}
+.editor-styles-wrapper .bio__rol {
+  font-size:.68rem; font-weight:400; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--or);
+}
+.editor-styles-wrapper .bio__tx {
+  font-size:.9rem; line-height:1.82; color:rgba(236,227,203,.65); margin-bottom:12px;
+}
+.editor-styles-wrapper .bio__tgs { display:flex; flex-wrap:wrap; gap:6px; margin-top:24px; }
+.editor-styles-wrapper .bio__tg {
+  font-size:.67rem; padding:4px 11px; border:1px solid rgba(194,139,54,.28);
+  color:rgba(194,139,54,.8);
+}
+
+/* ── Esthétique ───────────────────────────────────────────── */
+.editor-styles-wrapper .esthet {
+  display:grid; grid-template-columns:1fr 1fr; gap:80px;
+  align-items:start; max-width:none !important;
+}
+.editor-styles-wrapper .esthet__cite { max-width:none !important; }
+.editor-styles-wrapper .gcite,
+.editor-styles-wrapper .wp-block-quote.gcite {
+  font-family:var(--fh); font-style:italic;
+  font-size:clamp(1.6rem,2.8vw,2.3rem); font-weight:300;
+  line-height:1.4; color:var(--creme);
+  padding:0; border:none; margin:0;
+}
+.editor-styles-wrapper .gcite em { color:var(--or); font-style:normal; }
+.editor-styles-wrapper .gcite cite,
+.editor-styles-wrapper .wp-block-quote.gcite cite {
+  font-size:.72rem; font-weight:400; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--gris); margin-top:22px;
+  display:block; font-style:normal;
+}
+
+/* ── Contact ──────────────────────────────────────────────── */
+.editor-styles-wrapper .contact {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--bord); border:1px solid var(--bord);
+  max-width:none !important;
+}
+.editor-styles-wrapper .co-col {
+  background:var(--noir2); padding:52px 48px; max-width:none !important;
+}
+.editor-styles-wrapper .co-h {
+  font-family:var(--fh); font-size:1.2rem; font-weight:400;
+  color:var(--creme); margin-bottom:28px;
+}
+.editor-styles-wrapper .co-row {
+  display:flex; gap:16px; padding:13px 0;
+  border-bottom:1px solid var(--bord); align-items:baseline;
+  max-width:none !important;
+}
+.editor-styles-wrapper .co-row p { margin:0; }
+.editor-styles-wrapper .co-k {
+  font-size:.67rem; font-weight:400; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--gris); width:108px; flex-shrink:0;
+}
+.editor-styles-wrapper .co-v { font-size:.9rem; color:var(--creme); }
+.editor-styles-wrapper .co-v a { color:var(--orlt); }
+.editor-styles-wrapper .co-note {
+  margin-top:20px; font-size:.78rem; font-style:italic;
+  color:var(--gris); line-height:1.65;
+}
+
+/* ── Reset wp-block-group (évite les paddings/max-width parasites) ── */
+.editor-styles-wrapper .wp-block-group { padding:0; max-width:none; }
+.editor-styles-wrapper .wp-block-group__inner-container { display:contents; }
+.editor-styles-wrapper .wp-block-group p { margin-block-start:0; margin-block-end:0; }
+.editor-styles-wrapper .bio__tx { margin-bottom:12px; }
+.editor-styles-wrapper .co-row p,
+.editor-styles-wrapper .bio__mn p { margin:0; }
+.editor-styles-wrapper h4.co-h {
+  font-family:var(--fh); font-size:1.2rem; font-weight:400;
+  color:var(--creme); margin-bottom:28px; margin-top:0;
+}
+.editor-styles-wrapper .wp-block-separator.regle {
+  width:40px !important; height:1px; background:var(--or) !important;
+  border:none !important; margin-top:18px; margin-bottom:0;
+}
+.editor-styles-wrapper .wp-block-separator.regle::before,
+.editor-styles-wrapper .wp-block-separator.regle::after { display:none; }
+.editor-styles-wrapper .wp-block-quote.gcite {
+  padding:0 !important; border:none !important; margin:0 !important;
+}
+.editor-styles-wrapper .wp-block-quote.gcite p {
+  margin:0; font-size:inherit; font-style:inherit; line-height:inherit;
+}

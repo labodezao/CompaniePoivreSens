@@ -1,0 +1,14 @@
+/*
+Theme Name:  Poivre & Sens
+Theme URI:   https://www.poivretsens.fr
+Description: Thème officiel de la Compagnie Poivre & Sens — danse contemporaine, contact-improvisation et musique improvisée. Design sombre one-page avec gestion des événements intégrée.
+Version:     1.1.0
+Author:      Compagnie Poivre & Sens
+Author URI:  https://www.poivretsens.fr
+License:     GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: poivre-sens
+Tags:        dark, one-page, custom-colors, custom-menu, featured-images, full-width-template, translation-ready
+*/
+
+/* Le CSS principal est dans assets/css/theme.css et chargé via functions.php */
