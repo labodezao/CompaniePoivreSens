@@ -6,1053 +6,921 @@
   <title>Flyers A4 — Poivre &amp; Sens</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --noir:   #080705;
-      --noir2:  #100e0b;
-      --brun:   #221c12;
-      --rouge:  #9e3710;
-      --or:     #c28b36;
-      --orlt:   #ddb868;
-      --creme:  #ece3cb;
-      --gris:   #7f7463;
-      --bord:   rgba(194,139,54,.18);
-      --bord2:  rgba(194,139,54,.28);
-      --creme-bg: #f1e9dd;
-      --sable:    #d6c9ad;
-      --or-fonce: #b68952;
+      --noir:     #080705;
+      --brun:     #221c12;
+      --or:       #c28b36;
+      --orlt:     #ddb868;
+      --creme:    #ece3cb;
+      --gris:     #7f7463;
+      --bg-creme: #f1e9dd;
+      --or-f:     #b68952;
+      --bord:     rgba(194,139,54,.22);
     }
 
     body {
-      background: #1a1814;
+      background: #16140f;
       font-family: 'Inter', system-ui, sans-serif;
-      padding: 48px 24px 80px;
+      padding: 40px 24px 80px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 72px;
+      gap: 0;
     }
 
-    /* ── Navigation ─────────────────── */
-    .nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: rgba(8,7,5,.95);
-      border-bottom: 1px solid var(--bord2);
-      padding: 14px 32px;
+    /* ── Toolbar au-dessus de chaque flyer ── */
+    .toolbar {
+      width: 210mm;
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 10px;
+      padding: 28px 0 14px;
     }
-    .nav-brand {
+    .toolbar-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 14pt;
+      font-size: 11pt;
       font-weight: 300;
-      color: var(--creme);
-      letter-spacing: 3px;
-      flex-shrink: 0;
+      color: var(--or);
+      letter-spacing: 1px;
+      margin-right: 4px;
     }
-    .nav-brand span { color: var(--or); font-style: italic; }
-    .nav-links {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .nav-links a {
+    .toolbar-name {
       font-family: 'Inter', sans-serif;
-      font-size: 8pt;
-      font-weight: 400;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gris);
+      flex: 1;
+    }
+    .btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      text-decoration: none;
-      color: var(--gris);
-      padding: 6px 14px;
-      border: 1px solid transparent;
-      transition: all .25s ease;
-    }
-    .nav-links a:hover {
-      color: var(--or);
-      border-color: var(--bord2);
-    }
-    .nav-tip {
-      margin-left: auto;
-      font-family: 'Inter', sans-serif;
-      font-size: 7pt;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gris);
-      opacity: .5;
-      flex-shrink: 0;
-    }
-
-    /* ── Section labels ─────────────── */
-    .section-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin-top: 56px;
-    }
-    .section-label {
+      border: 1px solid;
+      padding: 7px 16px;
+      cursor: pointer;
+      background: transparent;
+      transition: background .18s, color .18s;
       display: flex;
       align-items: center;
-      gap: 20px;
-      width: 210mm;
+      gap: 6px;
     }
-    .section-label::before,
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--bord2);
-    }
-    .section-label span {
-      font-family: 'Inter', sans-serif;
-      font-size: 7pt;
-      font-weight: 400;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--or);
-      white-space: nowrap;
-      padding: 0 8px;
-    }
+    .btn svg { flex-shrink: 0; }
+    .btn-pdf { color: var(--or); border-color: rgba(194,139,54,.45); }
+    .btn-pdf:hover { background: var(--or); color: var(--noir); }
+    .btn-jpg { color: var(--gris); border-color: rgba(127,116,99,.4); }
+    .btn-jpg:hover { background: var(--gris); color: var(--noir); }
+    .btn:disabled { opacity: .38; cursor: default; pointer-events: none; }
 
-    /* ── A4 page base ───────────────── */
+    /* ── A4 ── */
     .page {
       width: 210mm;
       height: 297mm;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
-      box-shadow: 0 24px 80px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+      box-shadow: 0 16px 56px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.4);
     }
 
-    /* ═══════════════════════════════════════════
-       PROPOSITION 1 — NUIT
-       Fond sombre, accents or, typographie elegante
-       ═══════════════════════════════════════════ */
 
+    /* ════════════════════════════════════════
+       01 — NUIT  (fond sombre)
+       ════════════════════════════════════════ */
     .p1 {
       background: var(--noir);
       color: var(--creme);
+      padding: 18mm 17mm 16mm;
       display: flex;
       flex-direction: column;
-      padding: 17mm 17mm 14mm;
     }
 
-    .p1-topline {
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, var(--or) 30%, var(--orlt) 50%, var(--or) 70%, transparent 100%);
-      margin-bottom: 13mm;
+    .p1 .top {
+      margin-bottom: 10mm;
     }
-
-    .p1-brand {
-      margin-bottom: 4mm;
-    }
-
-    .p1-brand-name {
+    .p1 .brand {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 62pt;
+      font-size: 56pt;
       font-weight: 300;
-      letter-spacing: 5px;
+      letter-spacing: 4px;
       line-height: 0.88;
       color: var(--creme);
     }
-
-    .p1-brand-name .amp {
-      color: var(--or);
-      font-style: italic;
-      margin: 0 2mm;
-    }
-
-    .p1-subtitle {
+    .p1 .brand .amp { color: var(--or); font-style: italic; }
+    .p1 .sub {
       font-family: 'Inter', sans-serif;
-      font-size: 7.5pt;
-      font-weight: 300;
-      letter-spacing: 4.5px;
+      font-size: 8.5pt;
+      font-weight: 400;
+      letter-spacing: 3.5px;
       text-transform: uppercase;
       color: var(--gris);
       margin-top: 5mm;
     }
 
-    .p1-divider {
-      width: 100%;
-      height: 1px;
-      background: var(--bord2);
-      margin: 9mm 0;
-    }
+    .p1 .rule { height: 1px; background: var(--bord); margin: 9mm 0; }
 
-    /* Activities grid */
-    .p1-activities {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5mm 12mm;
+    /* Activités */
+    .p1 .acts {
+      display: flex;
+      flex-direction: column;
+      gap: 4.5mm;
       margin-bottom: 9mm;
     }
-
-    .p1-act {
+    .p1 .act {
       display: flex;
-      align-items: flex-start;
-      gap: 5px;
+      align-items: center;
+      gap: 5mm;
     }
-
-    .p1-act-dot {
-      color: var(--or);
-      font-size: 5pt;
-      margin-top: 5px;
+    .p1 .act-dash {
+      width: 6mm;
+      height: 1px;
+      background: var(--or);
       flex-shrink: 0;
-      line-height: 1;
     }
-
-    .p1-act-body {}
-
-    .p1-act-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13pt;
-      font-weight: 400;
-      color: var(--creme);
-      line-height: 1.2;
-    }
-
-    .p1-act-sub {
+    .p1 .act-label {
       font-family: 'Inter', sans-serif;
-      font-size: 7pt;
+      font-size: 11pt;
+      font-weight: 300;
+      color: var(--creme);
+      flex: 1;
+    }
+    .p1 .act-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
       font-weight: 300;
       color: var(--gris);
-      letter-spacing: 0.3px;
-      margin-top: 1mm;
-      line-height: 1.4;
     }
 
-    /* Quote */
-    .p1-quote {
-      text-align: center;
-      padding: 7mm 8mm;
+    /* Citation */
+    .p1 .quote {
       border-top: 1px solid var(--bord);
       border-bottom: 1px solid var(--bord);
-      margin-bottom: 8mm;
-      position: relative;
+      padding: 7mm 4mm;
+      margin-bottom: 9mm;
+      text-align: center;
     }
-
-    .p1-quote-deco {
-      position: absolute;
-      top: -1px; left: 50%; transform: translateX(-50%);
-      width: 40mm;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--or), transparent);
-    }
-
-    .p1-quote-text {
+    .p1 .quote-text {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 15pt;
+      font-size: 17pt;
       font-weight: 300;
       font-style: italic;
       color: var(--creme);
       line-height: 1.5;
     }
-
-    .p1-quote-attr {
+    .p1 .quote-attr {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
+      font-size: 7.5pt;
       font-weight: 400;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
       color: var(--or);
       margin-top: 4mm;
     }
 
-    /* Artists */
-    .p1-artists {
+    /* Artistes */
+    .p1 .artists {
       display: flex;
       gap: 8mm;
-      margin-bottom: 8mm;
+      margin-bottom: auto;
+      padding-bottom: 9mm;
     }
-
-    .p1-artist {
-      flex: 1;
-      padding-left: 4mm;
-      border-left: 1px solid var(--bord2);
-    }
-
-    .p1-artist-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13pt;
-      font-weight: 600;
-      color: var(--creme);
-      margin-bottom: 2mm;
-    }
-
-    .p1-artist-role {
+    .p1 .artist-name {
       font-family: 'Inter', sans-serif;
-      font-size: 7pt;
+      font-size: 10.5pt;
+      font-weight: 500;
+      color: var(--creme);
+      margin-bottom: 1.5mm;
+    }
+    .p1 .artist-role {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
       font-weight: 300;
       color: var(--gris);
-      letter-spacing: 0.3px;
-      line-height: 1.6;
+      line-height: 1.55;
     }
 
-    /* Footer */
-    .p1-footer {
-      margin-top: auto;
-      border-top: 1px solid var(--bord2);
+    /* Pied */
+    .p1 .foot {
+      border-top: 1px solid var(--bord);
       padding-top: 5mm;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
-
-    .p1-contact {
+    .p1 .contact {
       font-family: 'Inter', sans-serif;
-      font-size: 8pt;
+      font-size: 9pt;
       font-weight: 300;
-      color: var(--gris);
+      color: var(--or);
       line-height: 1.9;
     }
-
-    .p1-contact .hl {
-      color: var(--or);
-      letter-spacing: 0.3px;
-    }
-
-    .p1-legal {
+    .p1 .legal {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
+      font-size: 7.5pt;
       font-weight: 300;
-      letter-spacing: 2.5px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: #302a20;
-      text-align: right;
+      color: #282013;
     }
 
 
-    /* ═══════════════════════════════════════════
-       PROPOSITION 2 — LUMIÈRE
-       Fond crème, en-tête sombre, grille d'activités
-       ═══════════════════════════════════════════ */
-
+    /* ════════════════════════════════════════
+       02 — LUMIÈRE  (fond crème)
+       ════════════════════════════════════════ */
     .p2 {
-      background: var(--creme-bg);
+      background: var(--bg-creme);
+      color: var(--brun);
+      padding: 18mm 17mm 16mm;
       display: flex;
       flex-direction: column;
     }
 
-    .p2-header {
-      background: var(--brun);
-      padding: 13mm 18mm 11mm;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Decorative arc */
-    .p2-header-arc {
-      position: absolute;
-      width: 160mm;
-      height: 160mm;
-      border-radius: 50%;
-      border: 1px solid rgba(194,139,54,.12);
-      bottom: -80mm;
-      right: -40mm;
-      pointer-events: none;
-    }
-    .p2-header-arc2 {
-      position: absolute;
-      width: 110mm;
-      height: 110mm;
-      border-radius: 50%;
-      border: 1px solid rgba(194,139,54,.08);
-      bottom: -55mm;
-      right: -20mm;
-      pointer-events: none;
-    }
-
-    .p2-brand {
-      position: relative;
-    }
-
-    .p2-brand-name {
+    .p2 .brand {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 54pt;
+      font-size: 56pt;
       font-weight: 300;
       letter-spacing: 4px;
       line-height: 0.88;
-      color: var(--creme);
+      color: var(--brun);
     }
-
-    .p2-brand-name .amp {
-      color: var(--or);
-      font-style: italic;
-      margin: 0 2mm;
-    }
-
-    .p2-tagline {
+    .p2 .brand .amp { color: var(--or-f); font-style: italic; }
+    .p2 .sub {
       font-family: 'Inter', sans-serif;
-      font-size: 7pt;
-      font-weight: 300;
+      font-size: 8.5pt;
+      font-weight: 400;
       letter-spacing: 3.5px;
       text-transform: uppercase;
       color: var(--gris);
       margin-top: 5mm;
-      position: relative;
     }
 
-    .p2-gold-bar {
-      height: 3px;
-      background: linear-gradient(90deg, var(--rouge), var(--or), var(--orlt), var(--or));
-      flex-shrink: 0;
+    .p2 .gold-rule {
+      height: 2px;
+      background: linear-gradient(90deg, var(--or-f), var(--orlt), var(--or-f));
+      margin: 10mm 0;
     }
 
-    .p2-body {
-      flex: 1;
-      padding: 11mm 18mm 12mm;
+    /* 2 colonnes */
+    .p2 .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10mm;
+      margin-bottom: 10mm;
+    }
+    .p2 .col-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--or-f);
+      margin-bottom: 5mm;
+    }
+    .p2 .intro {
+      font-family: 'Inter', sans-serif;
+      font-size: 10pt;
+      font-weight: 300;
+      color: var(--brun);
+      line-height: 1.72;
+    }
+
+    .p2 .acts {
       display: flex;
       flex-direction: column;
     }
-
-    .p2-intro {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13.5pt;
-      font-weight: 300;
-      color: var(--brun);
-      line-height: 1.65;
-      margin-bottom: 9mm;
-      padding-bottom: 9mm;
-      border-bottom: 1px solid var(--bord2);
+    .p2 .act {
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+      padding: 3mm 0;
+      border-bottom: 1px solid var(--bord);
     }
-
-    .p2-intro em {
-      font-style: normal;
-      font-weight: 600;
-      color: var(--brun);
+    .p2 .act:first-child { border-top: 1px solid var(--bord); }
+    .p2 .act-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--or-f);
+      border-radius: 50%;
+      flex-shrink: 0;
     }
-
-    .p2-section-title {
+    .p2 .act-label {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
-      font-weight: 500;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--or-fonce);
-      margin-bottom: 5mm;
-    }
-
-    .p2-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3.5mm;
-      margin-bottom: 9mm;
-    }
-
-    .p2-card {
-      padding: 5mm 5mm 5.5mm;
-      border: 1px solid var(--bord2);
-      background: rgba(194,139,54,.04);
-    }
-
-    .p2-card-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 9.5pt;
-      font-weight: 300;
-      color: var(--or-fonce);
-      margin-bottom: 2mm;
-      letter-spacing: 1px;
-    }
-
-    .p2-card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11.5pt;
-      font-weight: 600;
+      font-size: 10pt;
+      font-weight: 400;
       color: var(--brun);
-      line-height: 1.25;
     }
 
-    .p2-quote-block {
+    /* Bloc citation */
+    .p2 .quote-block {
       background: var(--brun);
-      padding: 7mm 9mm;
-      margin-bottom: 8mm;
-      position: relative;
+      padding: 7mm 10mm;
+      margin-bottom: 10mm;
     }
-
-    .p2-quote-mark {
+    .p2 .quote-text {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 56pt;
-      color: var(--or);
-      line-height: 0.4;
-      opacity: .3;
-      position: absolute;
-      top: 5mm;
-      left: 6mm;
-    }
-
-    .p2-quote-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 14pt;
+      font-size: 17pt;
       font-weight: 300;
       font-style: italic;
       color: var(--creme);
-      line-height: 1.55;
-      position: relative;
-      padding-left: 12mm;
-    }
-
-    .p2-artists {
-      display: flex;
-      justify-content: space-between;
-      padding: 5mm 0;
-      border-top: 1px solid var(--bord2);
-      border-bottom: 1px solid var(--bord2);
-      margin-bottom: auto;
-    }
-
-    .p2-artist-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 12.5pt;
-      font-weight: 600;
-      color: var(--brun);
-    }
-
-    .p2-artist-role {
-      font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
-      font-weight: 300;
-      color: var(--gris);
-      letter-spacing: 0.3px;
-      margin-top: 1.5mm;
       line-height: 1.5;
     }
 
-    .p2-footer {
+    /* Artistes */
+    .p2 .artists {
+      display: flex;
+      gap: 8mm;
+      padding: 5mm 0;
+      border-top: 1px solid var(--bord);
+      border-bottom: 1px solid var(--bord);
+      margin-bottom: auto;
+    }
+    .p2 .artist-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5pt;
+      font-weight: 500;
+      color: var(--brun);
+      margin-bottom: 1.5mm;
+    }
+    .p2 .artist-role {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 300;
+      color: var(--gris);
+      line-height: 1.55;
+    }
+
+    /* Pied */
+    .p2 .foot {
       margin-top: 8mm;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
-
-    .p2-contact {
+    .p2 .contact {
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      font-weight: 300;
+      color: var(--or-f);
+      line-height: 1.9;
+    }
+    .p2 .legal {
       font-family: 'Inter', sans-serif;
       font-size: 7.5pt;
       font-weight: 300;
-      color: var(--gris);
-      line-height: 1.9;
-    }
-
-    .p2-contact .hl { color: var(--or-fonce); }
-
-    .p2-legal {
-      font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
-      font-weight: 300;
-      letter-spacing: 2.5px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--sable);
-      text-align: right;
+      color: var(--gris);
     }
 
 
-    /* ═══════════════════════════════════════════
-       PROPOSITION 3 — CONTRASTE
-       Moitié sombre / moitié claire, mise en page editoriale
-       ═══════════════════════════════════════════ */
-
+    /* ════════════════════════════════════════
+       03 — MODERNE  (2 colonnes verticales)
+       ════════════════════════════════════════ */
     .p3 {
+      display: grid;
+      grid-template-columns: 74mm 1fr;
+    }
+
+    .p3-left {
+      background: var(--brun);
+      padding: 18mm 13mm 16mm;
       display: flex;
       flex-direction: column;
-    }
-
-    .p3-dark {
-      background: var(--noir2);
-      padding: 15mm 18mm 13mm;
-      position: relative;
+      border-right: 3px solid var(--or);
       overflow: hidden;
-      flex: 0 0 auto;
     }
 
-    /* Concentric arcs decorative */
-    .p3-arc {
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(194,139,54,.09);
-      pointer-events: none;
+    .p3-right {
+      background: var(--bg-creme);
+      padding: 18mm 14mm 16mm;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
-    .p3-arc-1 { width: 200mm; height: 200mm; bottom: -100mm; right: -60mm; }
-    .p3-arc-2 { width: 140mm; height: 140mm; bottom: -70mm; right: -40mm; border-color: rgba(194,139,54,.06); }
-    .p3-arc-3 { width: 80mm;  height: 80mm;  bottom: -40mm; right: -20mm; border-color: rgba(194,139,54,.12); }
 
-    .p3-overline {
+    /* Colonne gauche */
+    .p3-left .over {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
-      font-weight: 400;
-      letter-spacing: 5px;
+      font-size: 7pt;
+      font-weight: 500;
+      letter-spacing: 4.5px;
       text-transform: uppercase;
       color: var(--or);
-      margin-bottom: 5mm;
-      position: relative;
+      margin-bottom: 7mm;
     }
-
-    .p3-brand {
-      position: relative;
-    }
-
-    .p3-brand-name {
+    .p3-left .brand {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 52pt;
+      font-size: 44pt;
       font-weight: 300;
-      line-height: 0.9;
+      line-height: 0.88;
       color: var(--creme);
       letter-spacing: 2px;
     }
-
-    .p3-brand-et {
+    .p3-left .brand .amp {
+      color: var(--or);
+      font-style: italic;
+      font-size: 37pt;
       display: block;
-      color: var(--or);
-      font-style: italic;
-      font-size: 44pt;
-      line-height: 1;
-      margin: 1mm 0;
-      letter-spacing: 0;
+      line-height: 1.15;
     }
 
-    .p3-disciplines {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0;
-      margin-top: 6mm;
-      position: relative;
-    }
-
-    .p3-disc {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 11pt;
+    .p3-left .tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
       font-weight: 300;
-      font-style: italic;
       color: var(--gris);
+      line-height: 1.75;
+      margin-top: 7mm;
     }
 
-    .p3-disc::after {
-      content: '  ·  ';
+    .p3-left .sep {
+      height: 1px;
+      background: rgba(194,139,54,.3);
+      margin: 10mm 0;
+    }
+
+    .p3-left .founders-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      font-weight: 600;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
       color: var(--or);
-      font-style: normal;
+      margin-bottom: 6mm;
     }
-
-    .p3-disc:last-child::after { content: ''; }
-
-    /* The gradient bar separator */
-    .p3-sep {
-      flex-shrink: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--rouge) 0%, var(--or) 40%, var(--orlt) 60%, var(--or) 100%);
-    }
-
-    .p3-light {
-      flex: 1;
-      background: var(--creme-bg);
-      padding: 11mm 18mm 13mm;
-      display: flex;
-      flex-direction: column;
-      gap: 7mm;
-    }
-
-    .p3-section-label {
+    .p3-left .founder { margin-bottom: 6mm; }
+    .p3-left .f-name {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
+      font-size: 10pt;
       font-weight: 500;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--or-fonce);
+      color: var(--creme);
     }
-
-    .p3-acts {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0 10mm;
-    }
-
-    .p3-act {
-      display: flex;
-      align-items: center;
-      gap: 5mm;
-      padding: 3mm 0;
-      border-bottom: 1px solid var(--bord);
-    }
-
-    .p3-act-bar {
-      width: 1px;
-      height: 18px;
-      background: var(--or-fonce);
-      flex-shrink: 0;
-    }
-
-    .p3-act-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 12pt;
-      font-weight: 400;
-      color: var(--brun);
-    }
-
-    .p3-quote {
-      padding: 5mm 7mm;
-      border-left: 2px solid var(--or);
-      background: rgba(194,139,54,.05);
-    }
-
-    .p3-quote-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13.5pt;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--brun);
-      line-height: 1.5;
-    }
-
-    .p3-quote-attr {
+    .p3-left .f-role {
       font-family: 'Inter', sans-serif;
-      font-size: 6pt;
-      letter-spacing: 3px;
+      font-size: 8pt;
+      font-weight: 300;
+      color: var(--gris);
+      margin-top: 1.5mm;
+      line-height: 1.55;
+    }
+
+    .p3-left .contact {
+      margin-top: auto;
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 300;
+      color: var(--or);
+      line-height: 1.9;
+    }
+    .p3-left .legal {
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      font-weight: 300;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--or-fonce);
+      color: #3c2e1a;
       margin-top: 3mm;
     }
 
-    .p3-footer {
-      margin-top: auto;
-      padding-top: 6mm;
-      border-top: 1px solid var(--bord2);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 6mm;
+    /* Colonne droite */
+    .p3-right .sec-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--or-f);
+      margin-bottom: 5mm;
     }
 
-    .p3-artist .name {
+    .p3-right .acts {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 9mm;
+    }
+    .p3-right .act {
+      display: flex;
+      align-items: center;
+      gap: 5mm;
+      padding: 4mm 0;
+      border-bottom: 1px solid var(--bord);
+    }
+    .p3-right .act:first-child { border-top: 1px solid var(--bord); }
+    .p3-right .act-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 12pt;
-      font-weight: 600;
+      font-size: 11pt;
+      font-weight: 300;
+      color: var(--or-f);
+      width: 8mm;
+      flex-shrink: 0;
+    }
+    .p3-right .act-body {}
+    .p3-right .act-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5pt;
+      font-weight: 400;
       color: var(--brun);
     }
-
-    .p3-artist .role {
+    .p3-right .act-note {
       font-family: 'Inter', sans-serif;
-      font-size: 6.5pt;
+      font-size: 8pt;
       font-weight: 300;
       color: var(--gris);
-      letter-spacing: 0.3px;
-      margin-top: 1.5mm;
+      margin-top: 0.5mm;
+    }
+
+    .p3-right .quote {
+      padding: 6mm 0 6mm 6mm;
+      border-left: 2px solid var(--or);
+      margin-bottom: 9mm;
+    }
+    .p3-right .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14.5pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--brun);
       line-height: 1.5;
     }
-
-    .p3-contact {
-      text-align: right;
-    }
-
-    .p3-contact .line {
+    .p3-right .quote-attr {
       font-family: 'Inter', sans-serif;
       font-size: 7.5pt;
       font-weight: 300;
-      color: var(--or-fonce);
-      line-height: 2;
-    }
-
-    .p3-contact .legal {
-      font-family: 'Inter', sans-serif;
-      font-size: 6pt;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: var(--sable);
-      margin-top: 2mm;
+      color: var(--or-f);
+      margin-top: 3mm;
+    }
+
+    .p3-right .tags-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--or-f);
+      margin-top: auto;
+      margin-bottom: 4mm;
+      padding-top: 7mm;
+      border-top: 1px solid var(--bord);
+    }
+    .p3-right .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5mm;
+    }
+    .p3-right .tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 400;
+      color: var(--brun);
+      border: 1px solid var(--bord);
+      padding: 2mm 4mm;
     }
 
 
-    /* ── Print ───────────────────────── */
+    /* ── Impression ── */
     @media print {
       body { background: none; padding: 0; gap: 0; }
-      .nav, .section-wrap > .section-label { display: none; }
-      .section-wrap { margin-top: 0; gap: 0; }
-      .page { box-shadow: none; page-break-after: always; break-after: page; }
+      .toolbar { display: none; }
+      .page { box-shadow: none; }
+
+      body.print-p1 .p2, body.print-p1 .p3,
+      body.print-p2 .p1, body.print-p2 .p3,
+      body.print-p3 .p1, body.print-p3 .p2 { display: none; }
+
+      .page { page-break-after: always; break-after: page; }
       .page:last-child { page-break-after: auto; break-after: auto; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation fixe -->
-  <nav class="nav">
-    <div class="nav-brand">POIVRE <span>&</span> SENS</div>
-    <div class="nav-links">
-      <a href="#p1">01 — Nuit</a>
-      <a href="#p2">02 — Lumière</a>
-      <a href="#p3">03 — Contraste</a>
+  <!-- ══════════════════════════════════
+       01 — NUIT
+       ══════════════════════════════════ -->
+  <div class="toolbar">
+    <span class="toolbar-num">01</span>
+    <span class="toolbar-name">Version Nuit — fond sombre</span>
+    <button class="btn btn-pdf" onclick="exportPDF('p1')">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      PDF
+    </button>
+    <button class="btn btn-jpg" onclick="exportJPG('p1', this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      JPG
+    </button>
+  </div>
+
+  <div class="page p1">
+    <div class="top">
+      <div class="brand">POIVRE <span class="amp">&amp;</span> SENS</div>
+      <div class="sub">Compagnie de danse contemporaine &amp; musique improvisée</div>
     </div>
-    <div class="nav-tip">Imprimer → Ctrl+P · Format A4</div>
-  </nav>
 
+    <div class="rule"></div>
 
-  <!-- ══════════════════════════════════════
-       PROPOSITION 1 — VERSION NUIT
-       ══════════════════════════════════════ -->
-  <div class="section-wrap" id="p1">
-    <div class="section-label"><span>Proposition 01 — Nuit</span></div>
-
-    <div class="page p1">
-      <div class="p1-topline"></div>
-
-      <div class="p1-brand">
-        <div class="p1-brand-name">POIVRE <span class="amp">&amp;</span> SENS</div>
-        <div class="p1-subtitle">Compagnie de danse contemporaine &amp; musique improvisée</div>
+    <div class="acts">
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Spectacles vivants</span>
+        <span class="act-note">Festivals, théâtres, espaces alternatifs</span>
       </div>
-
-      <div class="p1-divider"></div>
-
-      <div class="p1-activities">
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Spectacles vivants</div>
-            <div class="p1-act-sub">Festivals, théâtres, espaces alternatifs</div>
-          </div>
-        </div>
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Jams contact-improvisation</div>
-            <div class="p1-act-sub">Sessions ouvertes, toutes pratiques</div>
-          </div>
-        </div>
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Stages &amp; ateliers</div>
-            <div class="p1-act-sub">Danse somatique, musique improvisée</div>
-          </div>
-        </div>
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Résidences artistiques</div>
-            <div class="p1-act-sub">Recherche, création, transmission</div>
-          </div>
-        </div>
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Résidences pédagogiques</div>
-            <div class="p1-act-sub">Milieux scolaires, sociaux, entreprises</div>
-          </div>
-        </div>
-        <div class="p1-act">
-          <span class="p1-act-dot">◆</span>
-          <div class="p1-act-body">
-            <div class="p1-act-name">Lutherie &amp; fabrication</div>
-            <div class="p1-act-sub">Instruments artisanaux, démonstrations</div>
-          </div>
-        </div>
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Jams contact-improvisation</span>
+        <span class="act-note">Sessions ouvertes, toutes pratiques</span>
       </div>
-
-      <div class="p1-quote">
-        <div class="p1-quote-deco"></div>
-        <div class="p1-quote-text">
-          « Le corps sait ce que l'esprit cherche encore. »
-        </div>
-        <div class="p1-quote-attr">— Manifeste artistique</div>
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Stages &amp; ateliers</span>
+        <span class="act-note">Danse somatique, musique improvisée</span>
       </div>
-
-      <div class="p1-artists">
-        <div class="p1-artist">
-          <div class="p1-artist-name">Ambre Lavignac</div>
-          <div class="p1-artist-role">
-            Danseuse contemporaine · Pédagogue somatique<br>
-            Pratique Taoïste, méridiens &amp; Body-Mind Centering
-          </div>
-        </div>
-        <div class="p1-artist">
-          <div class="p1-artist-name">Ewen d'Aviau</div>
-          <div class="p1-artist-role">
-            Luthier-ingénieur · Musicien &amp; danseur CI<br>
-            Improvisation libre, aïkido &amp; pratiques somatiques
-          </div>
-        </div>
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Résidences artistiques</span>
+        <span class="act-note">Recherche, création, transmission</span>
       </div>
-
-      <div class="p1-footer">
-        <div class="p1-contact">
-          <span class="hl">contact@cie.poivresens.fr</span><br>
-          <span class="hl">cie.poivresens.fr</span>
-        </div>
-        <div class="p1-legal">Association loi 1901</div>
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Résidences pédagogiques</span>
+        <span class="act-note">Milieux scolaires, sociaux, entreprises</span>
       </div>
+      <div class="act">
+        <div class="act-dash"></div>
+        <span class="act-label">Lutherie &amp; fabrication</span>
+        <span class="act-note">Instruments artisanaux, démonstrations</span>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="quote-text">« Le corps sait ce que l'esprit cherche encore. »</div>
+      <div class="quote-attr">— Manifeste artistique</div>
+    </div>
+
+    <div class="artists">
+      <div>
+        <div class="artist-name">Ambre Lavignac</div>
+        <div class="artist-role">Danseuse contemporaine<br>Pédagogue somatique · Praticienne Taoïste</div>
+      </div>
+      <div>
+        <div class="artist-name">Ewen d'Aviau</div>
+        <div class="artist-role">Luthier-ingénieur · Musicien<br>Danseur CI · Aïkido</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="contact">
+        contact@cie.poivresens.fr<br>
+        cie.poivresens.fr
+      </div>
+      <div class="legal">Association loi 1901</div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════
-       PROPOSITION 2 — VERSION LUMIÈRE
-       ══════════════════════════════════════ -->
-  <div class="section-wrap" id="p2">
-    <div class="section-label"><span>Proposition 02 — Lumière</span></div>
+  <!-- ══════════════════════════════════
+       02 — LUMIÈRE
+       ══════════════════════════════════ -->
+  <div class="toolbar">
+    <span class="toolbar-num">02</span>
+    <span class="toolbar-name">Version Lumière — fond crème (impression standard)</span>
+    <button class="btn btn-pdf" onclick="exportPDF('p2')">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      PDF
+    </button>
+    <button class="btn btn-jpg" onclick="exportJPG('p2', this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      JPG
+    </button>
+  </div>
 
-    <div class="page p2">
-      <div class="p2-header">
-        <div class="p2-header-arc"></div>
-        <div class="p2-header-arc2"></div>
-        <div class="p2-brand">
-          <div class="p2-brand-name">POIVRE <span class="amp">&amp;</span> SENS</div>
-          <div class="p2-tagline">Danse contemporaine · Musique improvisée · Contact improvisation</div>
-        </div>
-      </div>
-      <div class="p2-gold-bar"></div>
+  <div class="page p2">
+    <div class="brand">POIVRE <span class="amp">&amp;</span> SENS</div>
+    <div class="sub">Compagnie de danse contemporaine &amp; musique improvisée</div>
 
-      <div class="p2-body">
-        <p class="p2-intro">
-          Une compagnie portée par <em>Ambre Lavignac</em> et <em>Ewen d'Aviau</em> —
-          artistes engagés dans l'exploration du mouvement, de la matière sonore
-          et des pratiques somatiques, là où le corps devient source de connaissance.
+    <div class="gold-rule"></div>
+
+    <div class="cols">
+      <div>
+        <div class="col-title">La compagnie</div>
+        <p class="intro">
+          Poivre &amp; Sens explore les frontières entre mouvement, son et sensorialité.
+          Fondée sur la pratique du contact-improvisation, de la danse somatique
+          et de la musique improvisée, elle développe des formes artistiques hybrides
+          nourries de philosophie Taoïste et de pratiques corporelles.
         </p>
+      </div>
+      <div>
+        <div class="col-title">Activités</div>
+        <div class="acts">
+          <div class="act"><div class="act-dot"></div><span class="act-label">Spectacles vivants</span></div>
+          <div class="act"><div class="act-dot"></div><span class="act-label">Jams contact-improvisation</span></div>
+          <div class="act"><div class="act-dot"></div><span class="act-label">Stages &amp; ateliers</span></div>
+          <div class="act"><div class="act-dot"></div><span class="act-label">Résidences artistiques</span></div>
+          <div class="act"><div class="act-dot"></div><span class="act-label">Résidences pédagogiques</span></div>
+          <div class="act"><div class="act-dot"></div><span class="act-label">Lutherie &amp; fabrication</span></div>
+        </div>
+      </div>
+    </div>
 
-        <div class="p2-section-title">Ce que nous proposons</div>
+    <div class="quote-block">
+      <div class="quote-text">« Le corps sait ce que l'esprit cherche encore. »</div>
+    </div>
 
-        <div class="p2-grid">
-          <div class="p2-card">
-            <div class="p2-card-num">01</div>
-            <div class="p2-card-name">Spectacles<br>vivants</div>
-          </div>
-          <div class="p2-card">
-            <div class="p2-card-num">02</div>
-            <div class="p2-card-name">Jams contact-<br>improvisation</div>
-          </div>
-          <div class="p2-card">
-            <div class="p2-card-num">03</div>
-            <div class="p2-card-name">Stages &amp;<br>ateliers</div>
-          </div>
-          <div class="p2-card">
-            <div class="p2-card-num">04</div>
-            <div class="p2-card-name">Résidences<br>artistiques</div>
-          </div>
-          <div class="p2-card">
-            <div class="p2-card-num">05</div>
-            <div class="p2-card-name">Résidences<br>pédagogiques</div>
-          </div>
-          <div class="p2-card">
-            <div class="p2-card-num">06</div>
-            <div class="p2-card-name">Lutherie &amp;<br>fabrication</div>
+    <div class="artists">
+      <div>
+        <div class="artist-name">Ambre Lavignac</div>
+        <div class="artist-role">Danseuse contemporaine · Pédagogue somatique</div>
+      </div>
+      <div>
+        <div class="artist-name">Ewen d'Aviau</div>
+        <div class="artist-role">Luthier-ingénieur · Musicien · Danseur CI</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="contact">
+        contact@cie.poivresens.fr<br>
+        cie.poivresens.fr
+      </div>
+      <div class="legal">Association loi 1901</div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       03 — MODERNE (2 colonnes)
+       ══════════════════════════════════ -->
+  <div class="toolbar">
+    <span class="toolbar-num">03</span>
+    <span class="toolbar-name">Version Moderne — deux colonnes</span>
+    <button class="btn btn-pdf" onclick="exportPDF('p3')">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      PDF
+    </button>
+    <button class="btn btn-jpg" onclick="exportJPG('p3', this)">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.5L1 3.5h2.5V0h3v3.5H9L5 7.5zM0 9h10v1H0V9z"/></svg>
+      JPG
+    </button>
+  </div>
+
+  <div class="page p3">
+    <!-- Colonne gauche -->
+    <div class="p3-left">
+      <div class="over">Compagnie</div>
+
+      <div class="brand">
+        POIVRE
+        <span class="amp">&amp;</span>
+        SENS
+      </div>
+
+      <div class="tagline">
+        Danse contemporaine<br>
+        Musique improvisée<br>
+        Pratiques somatiques
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="founders-title">Les artistes</div>
+
+      <div class="founder">
+        <div class="f-name">Ambre Lavignac</div>
+        <div class="f-role">Danseuse · Pédagogue<br>somatique · Taoïsme</div>
+      </div>
+      <div class="founder">
+        <div class="f-name">Ewen d'Aviau</div>
+        <div class="f-role">Luthier-ingénieur<br>Musicien · Danseur CI</div>
+      </div>
+
+      <div class="contact">
+        contact@cie.poivresens.fr<br>
+        cie.poivresens.fr
+      </div>
+      <div class="legal">Association loi 1901</div>
+    </div>
+
+    <!-- Colonne droite -->
+    <div class="p3-right">
+      <div class="sec-title">Nos propositions</div>
+
+      <div class="acts">
+        <div class="act">
+          <div class="act-num">01</div>
+          <div class="act-body">
+            <div class="act-name">Spectacles vivants</div>
+            <div class="act-note">Festivals &amp; théâtres</div>
           </div>
         </div>
-
-        <div class="p2-quote-block">
-          <div class="p2-quote-mark">"</div>
-          <div class="p2-quote-text">Le corps sait ce que l'esprit cherche encore.</div>
-        </div>
-
-        <div class="p2-artists">
-          <div>
-            <div class="p2-artist-name">Ambre Lavignac</div>
-            <div class="p2-artist-role">Danseuse · Pédagogue somatique · Praticienne Taoïste</div>
-          </div>
-          <div>
-            <div class="p2-artist-name">Ewen d'Aviau</div>
-            <div class="p2-artist-role">Luthier-ingénieur · Musicien · Danseur CI · Aïkido</div>
+        <div class="act">
+          <div class="act-num">02</div>
+          <div class="act-body">
+            <div class="act-name">Jams contact-impro</div>
+            <div class="act-note">Sessions ouvertes, toutes pratiques</div>
           </div>
         </div>
-
-        <div class="p2-footer">
-          <div class="p2-contact">
-            <span class="hl">contact@cie.poivresens.fr</span><br>
-            <span class="hl">cie.poivresens.fr</span>
+        <div class="act">
+          <div class="act-num">03</div>
+          <div class="act-body">
+            <div class="act-name">Stages &amp; ateliers</div>
+            <div class="act-note">Danse somatique &amp; musique</div>
           </div>
-          <div class="p2-legal">Association loi 1901</div>
         </div>
+        <div class="act">
+          <div class="act-num">04</div>
+          <div class="act-body">
+            <div class="act-name">Résidences artistiques</div>
+            <div class="act-note">Recherche &amp; création</div>
+          </div>
+        </div>
+        <div class="act">
+          <div class="act-num">05</div>
+          <div class="act-body">
+            <div class="act-name">Résidences pédagogiques</div>
+            <div class="act-note">Scolaires, sociales, entreprises</div>
+          </div>
+        </div>
+        <div class="act">
+          <div class="act-num">06</div>
+          <div class="act-body">
+            <div class="act-name">Lutherie &amp; fabrication</div>
+            <div class="act-note">Instruments artisanaux</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote">
+        <div class="quote-text">« Le corps sait ce que l'esprit cherche encore. »</div>
+        <div class="quote-attr">— Manifeste artistique</div>
+      </div>
+
+      <div class="tags-title">Disciplines</div>
+      <div class="tags">
+        <span class="tag">Contact improvisation</span>
+        <span class="tag">Danse somatique</span>
+        <span class="tag">Musique improvisée</span>
+        <span class="tag">Body-Mind Centering</span>
+        <span class="tag">Lutherie</span>
+        <span class="tag">Aïkido</span>
       </div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════
-       PROPOSITION 3 — VERSION CONTRASTE
-       ══════════════════════════════════════ -->
-  <div class="section-wrap" id="p3">
-    <div class="section-label"><span>Proposition 03 — Contraste</span></div>
+  <script>
+    /* ── Export PDF (une seule proposition) ── */
+    function exportPDF(cls) {
+      document.body.className = 'print-' + cls;
+      window.print();
+      setTimeout(() => { document.body.className = ''; }, 200);
+    }
 
-    <div class="page p3">
-      <div class="p3-dark">
-        <div class="p3-arc p3-arc-1"></div>
-        <div class="p3-arc p3-arc-2"></div>
-        <div class="p3-arc p3-arc-3"></div>
+    /* ── Export JPG via html2canvas ── */
+    async function exportJPG(cls, btn) {
+      if (typeof html2canvas === 'undefined') {
+        alert('Bibliothèque non chargée — vérifiez votre connexion et rechargez la page.');
+        return;
+      }
+      const orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.textContent = '…';
 
-        <div class="p3-overline">Compagnie · Association loi 1901</div>
+      try {
+        await document.fonts.ready;
+        const page = document.querySelector('.page.' + cls);
 
-        <div class="p3-brand">
-          <div class="p3-brand-name">
-            POIVRE
-            <span class="p3-brand-et">&amp;</span>
-            SENS
-          </div>
-        </div>
+        /* Couleur de fond selon la proposition */
+        const bgMap = { p1: '#080705', p2: '#f1e9dd', p3: '#f1e9dd' };
 
-        <div class="p3-disciplines">
-          <span class="p3-disc">Danse contemporaine</span>
-          <span class="p3-disc">Musique improvisée</span>
-          <span class="p3-disc">Pratiques somatiques</span>
-        </div>
-      </div>
+        const canvas = await html2canvas(page, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: false,
+          logging: false,
+          backgroundColor: bgMap[cls] || '#ffffff'
+        });
 
-      <div class="p3-sep"></div>
-
-      <div class="p3-light">
-        <div>
-          <div class="p3-section-label">Nos propositions</div>
-          <div class="p3-acts">
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Spectacles vivants</div>
-            </div>
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Jams contact-improvisation</div>
-            </div>
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Stages &amp; ateliers</div>
-            </div>
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Résidences artistiques</div>
-            </div>
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Résidences pédagogiques</div>
-            </div>
-            <div class="p3-act">
-              <div class="p3-act-bar"></div>
-              <div class="p3-act-text">Lutherie &amp; fabrication</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="p3-quote">
-          <div class="p3-quote-text">« Le corps sait ce que l'esprit cherche encore. »</div>
-          <div class="p3-quote-attr">— Manifeste artistique · Poivre &amp; Sens</div>
-        </div>
-
-        <div class="p3-footer">
-          <div class="p3-artist">
-            <div class="name">Ambre Lavignac</div>
-            <div class="role">Danseuse contemporaine<br>Pédagogue somatique · Praticienne Taoïste</div>
-          </div>
-          <div class="p3-artist">
-            <div class="name">Ewen d'Aviau</div>
-            <div class="role">Luthier-ingénieur · Musicien<br>Danseur CI · Aïkido</div>
-          </div>
-          <div class="p3-contact">
-            <div class="line">contact@cie.poivresens.fr</div>
-            <div class="line">cie.poivresens.fr</div>
-            <div class="legal">Association loi 1901</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+        const a = document.createElement('a');
+        a.download = 'flyer-poivresens-' + cls + '.jpg';
+        a.href = canvas.toDataURL('image/jpeg', 0.94);
+        a.click();
+      } catch (err) {
+        console.error(err);
+        alert('Export JPG indisponible dans ce navigateur.\nUtilisez le bouton PDF ou Ctrl+P → Enregistrer en PDF.');
+      } finally {
+        btn.innerHTML = orig;
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
