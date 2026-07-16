@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Éditeur Flyer — Poivre & Sens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,600&family=DM+Sans:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Lato:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brun:     #221c12;
+      --or:       #c28b36;
+      --orlt:     #ddb868;
+      --creme:    #ece3cb;
+      --gris:     #7f7463;
+      --bg:       #f1e9dd;
+      --or-f:     #b68952;
+      --quote-bg: #221c12;
+    }
+
+    body {
+      background: #f2ede4;
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ══ PANNEAU ÉDITEUR ══════════════════════════ */
+    .editor {
+      width: 310px;
+      flex-shrink: 0;
+      background: #e8e0d0;
+      border-right: 1px solid rgba(139,100,50,.22);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .editor-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(139,100,50,.18);
+      background: #dfd6c4;
+      flex-shrink: 0;
+    }
+    .editor-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17pt;
+      font-weight: 300;
+      color: #9a6e30;
+      line-height: 1;
+    }
+    .editor-sub {
+      font-size: 7px;
+      font-weight: 300;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #8a7a65;
+      margin-top: 5px;
+    }
+
+    .editor-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 32px;
+    }
+    .editor-body::-webkit-scrollbar { width: 3px; }
+    .editor-body::-webkit-scrollbar-track { background: transparent; }
+    .editor-body::-webkit-scrollbar-thumb { background: rgba(139,100,50,.3); border-radius: 2px; }
+
+    .section {
+      padding: 14px 18px 16px;
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+    .section-title {
+      font-size: 6.5px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #9a6e30;
+      margin-bottom: 11px;
+    }
+
+    /* champs texte */
+    .field { margin-bottom: 8px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block;
+      font-size: 7px;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6b5e4a;
+      margin-bottom: 3px;
+    }
+    .field input[type="text"],
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(139,100,50,.28);
+      color: #2a1f0e;
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px;
+      font-weight: 300;
+      padding: 6px 9px;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color .15s, background .15s;
+    }
+    .field input[type="text"]:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(139,100,50,.65);
+      background: #fff;
+    }
+    .field textarea { resize: none; height: 50px; line-height: 1.6; }
+    .field select { appearance: none; cursor: pointer; }
+
+    /* rangées activités */
+    .act-row { display: flex; gap: 5px; margin-bottom: 5px; }
+    .act-row:last-child { margin-bottom: 0; }
+    .act-row input {
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(139,100,50,.28);
+      color: #2a1f0e;
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px;
+      font-weight: 300;
+      padding: 6px 7px;
+      outline: none;
+      border-radius: 2px;
+      transition: border-color .15s, background .15s;
+    }
+    .act-row input:focus {
+      border-color: rgba(139,100,50,.65);
+      background: #fff;
+    }
+    .act-row .num { width: 36px; text-align: center; color: #9a6e30; }
+    .act-row .name { flex: 1; }
+
+    /* sliders */
+    .range-field { margin-bottom: 10px; }
+    .range-field:last-child { margin-bottom: 0; }
+    .range-field label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 7px;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6b5e4a;
+      margin-bottom: 5px;
+    }
+    .range-field label span { color: #9a6e30; font-weight: 600; }
+    .range-field input[type="range"] {
+      width: 100%;
+      accent-color: #9a6e30;
+      height: 2px;
+      cursor: pointer;
+    }
+
+    /* couleurs */
+    .color-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+    .color-row:last-child { margin-bottom: 0; }
+    .color-row label {
+      font-size: 7px;
+      font-weight: 400;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6b5e4a;
+      flex: 1;
+    }
+    .color-row input[type="color"] {
+      width: 32px;
+      height: 22px;
+      border: 1px solid rgba(139,100,50,.3);
+      border-radius: 2px;
+      cursor: pointer;
+      padding: 1px 2px;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .color-val {
+      font-size: 8px;
+      font-weight: 300;
+      color: #8a7a65;
+      width: 58px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* reset */
+    .btn-reset {
+      display: block;
+      width: calc(100% - 36px);
+      margin: 14px 18px 0;
+      background: transparent;
+      border: 1px solid rgba(139,100,50,.3);
+      color: #8a7a65;
+      font-family: 'Inter', sans-serif;
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-reset:hover { border-color: rgba(139,100,50,.6); color: #9a6e30; }
+
+    /* ══ ZONE PRÉVISUALISATION ════════════════════ */
+    .preview-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 36px 40px 80px;
+      overflow-y: auto;
+    }
+
+    .preview-bar {
+      width: 105mm;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+    }
+    .preview-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12pt;
+      font-weight: 300;
+      color: #9a6e30;
+      flex: 1;
+    }
+
+    .btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid;
+      padding: 7px 14px;
+      cursor: pointer;
+      background: transparent;
+      transition: background .15s, color .15s;
+    }
+    .btn-pdf { color: var(--or); border-color: rgba(194,139,54,.45); }
+    .btn-pdf:hover { background: var(--or); color: #fff; }
+    .btn-jpg { color: var(--gris); border-color: rgba(127,116,99,.35); }
+    .btn-jpg:hover { background: var(--gris); color: #fff; }
+    .btn:disabled { opacity: .3; cursor: default; pointer-events: none; }
+
+    /* ══ FLYER A6 ═════════════════════════════════ */
+    .page {
+      width: 105mm;
+      height: 148mm;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.1);
+    }
+
+    .flyer {
+      background: var(--bg);
+      width: 100%;
+      height: 100%;
+      padding: 6mm 7mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand { display: flex; flex-direction: column; }
+    .brand-line {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 34pt;
+      font-weight: 300;
+      letter-spacing: 2px;
+      line-height: 0.88;
+      color: var(--brun);
+    }
+    .brand-amp {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28pt;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 2px;
+      line-height: 1.05;
+      color: var(--or-f);
+    }
+
+    .tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 400;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-top: 3mm;
+    }
+
+    .gold-rule {
+      height: 2px;
+      background: linear-gradient(90deg, var(--or-f), var(--or), var(--orlt), var(--or), var(--or-f));
+      margin: 5mm 0;
+      flex-shrink: 0;
+    }
+
+    .acts { display: flex; flex-direction: column; margin-bottom: 5mm; }
+    .act {
+      display: flex;
+      align-items: center;
+      gap: 3.5mm;
+      padding: 1.8mm 0;
+      border-bottom: 1px solid rgba(194,139,54,.2);
+    }
+    .act:first-child { border-top: 1px solid rgba(194,139,54,.2); }
+    .act-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10pt;
+      font-weight: 300;
+      color: var(--or-f);
+      width: 5.5mm;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .act-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 300;
+      color: var(--brun);
+    }
+
+    .quote-block {
+      background: var(--quote-bg);
+      padding: 4mm 5mm;
+      margin-bottom: 5mm;
+      flex-shrink: 0;
+    }
+    .quote-txt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11pt;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--creme);
+      line-height: 1.5;
+    }
+
+    .artists {
+      display: flex;
+      gap: 5mm;
+      padding: 3.5mm 0 4mm;
+      border-top: 1px solid rgba(194,139,54,.45);
+      margin-bottom: auto;
+    }
+    .a-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 500;
+      color: var(--brun);
+      margin-bottom: 1mm;
+    }
+    .a-role {
+      font-family: 'Inter', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 300;
+      color: var(--gris);
+      line-height: 1.5;
+    }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .contact {
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 300;
+      color: var(--or-f);
+      line-height: 1.85;
+    }
+    .legal {
+      font-family: 'Inter', sans-serif;
+      font-size: 5.5pt;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gris);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ PANNEAU ÉDITEUR ══════════════════════════ -->
+  <div class="editor">
+    <div class="editor-head">
+      <div class="editor-logo">Poivre &amp; Sens</div>
+      <div class="editor-sub">Éditeur de flyer A6</div>
+    </div>
+
+    <div class="editor-body">
+
+      <div class="section">
+        <div class="section-title">Identité</div>
+        <div class="field">
+          <label>Nom — ligne 1</label>
+          <input type="text" id="i-brand1" value="CIE POIVRE">
+        </div>
+        <div class="field">
+          <label>Nom — ligne 2</label>
+          <input type="text" id="i-brand2" value="SENS">
+        </div>
+        <div class="field">
+          <label>Symbole central</label>
+          <input type="text" id="i-amp" value="&">
+        </div>
+        <div class="field">
+          <label>Sous-titre</label>
+          <input type="text" id="i-tagline" value="Danse &amp; Musique improvisées">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Activités</div>
+        <div class="act-row">
+          <input class="num" type="text" id="i-a0n" value="01">
+          <input class="name" type="text" id="i-a0v" value="Danse contemporaine, improvisation et contact">
+        </div>
+        <div class="act-row">
+          <input class="num" type="text" id="i-a1n" value="02">
+          <input class="name" type="text" id="i-a1v" value="Ateliers hebdomadaires">
+        </div>
+        <div class="act-row">
+          <input class="num" type="text" id="i-a2n" value="03">
+          <input class="name" type="text" id="i-a2v" value="Stages mensuels">
+        </div>
+        <div class="act-row">
+          <input class="num" type="text" id="i-a3n" value="04">
+          <input class="name" type="text" id="i-a3v" value="Spectacles Vivants">
+        </div>
+        <div class="act-row">
+          <input class="num" type="text" id="i-a4n" value="05">
+          <input class="name" type="text" id="i-a4v" value="Résidences artistiques &amp; pédagogiques">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Citation</div>
+        <div class="field">
+          <textarea id="i-quote">« Au cœur de son essence, le mouvement... »</textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Artistes</div>
+        <div class="field">
+          <label>Artiste 1 — nom</label>
+          <input type="text" id="i-a1name" value="Ambre Lavignac &amp; Ewen d'Aviau">
+        </div>
+        <div class="field">
+          <label>Rôles</label>
+          <input type="text" id="i-a1role" value="Danseurs · Pédagogues · Musiciens">
+        </div>
+        <div class="field" style="display:none">
+          <input type="text" id="i-a2name" value="">
+        </div>
+        <div class="field" style="display:none">
+          <input type="text" id="i-a2role" value="">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Contact</div>
+        <div class="field">
+          <label>Coordonnées</label>
+          <textarea id="i-contact">contact@cie.poivresens.fr / 06 82 45 54 90
+cie.poivresens.fr</textarea>
+        </div>
+        <div class="field">
+          <label>Mention légale</label>
+          <textarea id="i-legal" style="height:38px">Association
+loi 1901</textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Typographie</div>
+
+        <div class="field">
+          <label>Police titre</label>
+          <select id="i-font-title">
+            <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond</option>
+            <option value="'Playfair Display', Georgia, serif">Playfair Display</option>
+            <option value="'Cinzel', Georgia, serif">Cinzel</option>
+            <option value="Georgia, serif">Georgia</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:12px">
+          <label>Police corps</label>
+          <select id="i-font-body">
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'DM Sans', sans-serif">DM Sans</option>
+            <option value="'Lato', sans-serif">Lato</option>
+            <option value="system-ui, sans-serif">Système</option>
+          </select>
+        </div>
+
+        <div class="range-field">
+          <label>Taille titre <span id="v-brand">34</span> pt</label>
+          <input type="range" id="i-brand-size" min="20" max="52" step="0.5" value="34">
+        </div>
+        <div class="range-field">
+          <label>Taille activités <span id="v-acts">8.5</span> pt</label>
+          <input type="range" id="i-acts-size" min="5" max="14" step="0.5" value="8.5">
+        </div>
+        <div class="range-field">
+          <label>Taille citation <span id="v-quote">11</span> pt</label>
+          <input type="range" id="i-quote-size" min="7" max="18" step="0.5" value="11">
+        </div>
+        <div class="range-field">
+          <label>Espacement titre <span id="v-tracking">2</span> px</label>
+          <input type="range" id="i-tracking" min="0" max="10" step="0.5" value="2">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Couleurs</div>
+        <div class="color-row">
+          <label>Fond</label>
+          <input type="color" id="i-c-bg" value="#f1e9dd">
+          <span class="color-val" id="cv-bg">#f1e9dd</span>
+        </div>
+        <div class="color-row">
+          <label>Texte principal</label>
+          <input type="color" id="i-c-brun" value="#221c12">
+          <span class="color-val" id="cv-brun">#221c12</span>
+        </div>
+        <div class="color-row">
+          <label>Accent / or</label>
+          <input type="color" id="i-c-or" value="#b68952">
+          <span class="color-val" id="cv-or">#b68952</span>
+        </div>
+        <div class="color-row">
+          <label>Fond citation</label>
+          <input type="color" id="i-c-qbg" value="#221c12">
+          <span class="color-val" id="cv-qbg">#221c12</span>
+        </div>
+        <div class="color-row">
+          <label>Texte citation</label>
+          <input type="color" id="i-c-qtxt" value="#ece3cb">
+          <span class="color-val" id="cv-qtxt">#ece3cb</span>
+        </div>
+        <div class="color-row">
+          <label>Secondaire / gris</label>
+          <input type="color" id="i-c-gris" value="#7f7463">
+          <span class="color-val" id="cv-gris">#7f7463</span>
+        </div>
+      </div>
+
+    </div><!-- /editor-body -->
+
+    <button class="btn-reset" onclick="resetAll()">↺ Réinitialiser</button>
+
+  </div><!-- /editor -->
+
+
+  <!-- ══ PRÉVISUALISATION ═════════════════════════ -->
+  <div class="preview-area">
+    <div class="preview-bar">
+      <span class="preview-label">Flyer A6 — 105 × 148 mm</span>
+      <button class="btn btn-pdf" onclick="exportPDF(this)">↓ PDF</button>
+      <button class="btn btn-jpg" onclick="exportJPG(this)">↓ JPG</button>
+    </div>
+
+    <div class="page" id="page">
+      <div class="flyer" id="flyer">
+
+        <div class="brand">
+          <div class="brand-line" id="f-brand1">CIE POIVRE</div>
+          <div class="brand-amp"  id="f-amp">&amp;</div>
+          <div class="brand-line" id="f-brand2">SENS</div>
+        </div>
+        <div class="tagline" id="f-tagline">Danse &amp; Musique improvisées</div>
+
+        <div class="gold-rule"></div>
+
+        <div class="acts">
+          <div class="act"><span class="act-num" id="f-a0n">01</span><span class="act-name" id="f-a0v">Danse contemporaine, improvisation et contact</span></div>
+          <div class="act"><span class="act-num" id="f-a1n">02</span><span class="act-name" id="f-a1v">Ateliers hebdomadaires</span></div>
+          <div class="act"><span class="act-num" id="f-a2n">03</span><span class="act-name" id="f-a2v">Stages mensuels</span></div>
+          <div class="act"><span class="act-num" id="f-a3n">04</span><span class="act-name" id="f-a3v">Spectacles Vivants</span></div>
+          <div class="act"><span class="act-num" id="f-a4n">05</span><span class="act-name" id="f-a4v">Résidences artistiques &amp; pédagogiques</span></div>
+        </div>
+
+        <div class="quote-block" id="f-quote-block">
+          <div class="quote-txt" id="f-quote">« Au cœur de son essence, le mouvement... »</div>
+        </div>
+
+        <div class="artists">
+          <div>
+            <div class="a-name" id="f-a1name">Ambre Lavignac &amp; Ewen d'Aviau</div>
+            <div class="a-role" id="f-a1role">Danseurs · Pédagogues · Musiciens</div>
+          </div>
+          <div style="display:none">
+            <div class="a-name" id="f-a2name"></div>
+            <div class="a-role" id="f-a2role"></div>
+          </div>
+        </div>
+
+        <div class="foot">
+          <div class="contact" id="f-contact">contact@cie.poivresens.fr / 06 82 45 54 90<br>cie.poivresens.fr</div>
+          <div class="legal"   id="f-legal">Association<br>loi 1901</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── Liaison texte simple ─────────────────────── */
+    function bindText(inId, outId) {
+      const inp = document.getElementById(inId);
+      const out = document.getElementById(outId);
+      if (!inp || !out) return;
+      inp.addEventListener('input', () => { out.textContent = inp.value; });
+    }
+
+    /* Liaison texte multi-ligne (textarea → innerHTML avec <br>) */
+    function bindTextML(inId, outId) {
+      const inp = document.getElementById(inId);
+      const out = document.getElementById(outId);
+      if (!inp || !out) return;
+      inp.addEventListener('input', () => {
+        out.innerHTML = inp.value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
+      });
+    }
+
+    bindText('i-brand1', 'f-brand1');
+    bindText('i-brand2', 'f-brand2');
+    bindText('i-amp',    'f-amp');
+    bindText('i-tagline','f-tagline');
+
+    for (let i = 0; i < 5; i++) {
+      bindText(`i-a${i}n`, `f-a${i}n`);
+      bindText(`i-a${i}v`, `f-a${i}v`);
+    }
+
+    bindText('i-quote',  'f-quote');
+    bindText('i-a1name', 'f-a1name');
+    bindText('i-a1role', 'f-a1role');
+    bindText('i-a2name', 'f-a2name');
+    bindText('i-a2role', 'f-a2role');
+    bindTextML('i-contact', 'f-contact');
+    bindTextML('i-legal',   'f-legal');
+
+    /* ── Polices ──────────────────────────────────── */
+    document.getElementById('i-font-title').addEventListener('change', function() {
+      const f = this.value;
+      document.querySelectorAll('.brand-line, .brand-amp, .act-num, .quote-txt').forEach(el => {
+        el.style.fontFamily = f;
+      });
+    });
+
+    document.getElementById('i-font-body').addEventListener('change', function() {
+      const f = this.value;
+      document.querySelectorAll('.tagline, .act-name, .a-name, .a-role, .contact, .legal').forEach(el => {
+        el.style.fontFamily = f;
+      });
+    });
+
+    /* ── Tailles ──────────────────────────────────── */
+    function bindRange(inId, valId, fn) {
+      const inp = document.getElementById(inId);
+      const val = document.getElementById(valId);
+      inp.addEventListener('input', () => {
+        val.textContent = inp.value;
+        fn(parseFloat(inp.value));
+      });
+    }
+
+    bindRange('i-brand-size', 'v-brand', v => {
+      document.querySelectorAll('.brand-line').forEach(el => el.style.fontSize = v + 'pt');
+      document.getElementById('f-amp').style.fontSize = (v * 0.82).toFixed(1) + 'pt';
+    });
+
+    bindRange('i-acts-size', 'v-acts', v => {
+      document.querySelectorAll('.act-name').forEach(el => el.style.fontSize = v + 'pt');
+      document.querySelectorAll('.a-name').forEach(el  => el.style.fontSize = v + 'pt');
+      document.querySelectorAll('.a-role').forEach(el  => el.style.fontSize = (v * 0.76).toFixed(1) + 'pt');
+      document.querySelector('.contact').style.fontSize = (v * 0.88).toFixed(1) + 'pt';
+      document.querySelector('.tagline').style.fontSize = (v * 0.76).toFixed(1) + 'pt';
+    });
+
+    bindRange('i-quote-size', 'v-quote', v => {
+      document.querySelector('.quote-txt').style.fontSize = v + 'pt';
+    });
+
+    bindRange('i-tracking', 'v-tracking', v => {
+      document.querySelectorAll('.brand-line, .brand-amp').forEach(el => el.style.letterSpacing = v + 'px');
+    });
+
+    /* ── Couleurs ─────────────────────────────────── */
+    function bindColor(inId, valId, cssVar) {
+      const inp = document.getElementById(inId);
+      const val = document.getElementById(valId);
+      inp.addEventListener('input', () => {
+        val.textContent = inp.value;
+        document.documentElement.style.setProperty(cssVar, inp.value);
+      });
+    }
+
+    bindColor('i-c-bg',   'cv-bg',   '--bg');
+    bindColor('i-c-brun', 'cv-brun', '--brun');
+    bindColor('i-c-gris', 'cv-gris', '--gris');
+
+    document.getElementById('i-c-or').addEventListener('input', function() {
+      document.getElementById('cv-or').textContent = this.value;
+      document.documentElement.style.setProperty('--or-f', this.value);
+      document.documentElement.style.setProperty('--or',   this.value);
+      document.documentElement.style.setProperty('--orlt', this.value);
+    });
+
+    bindColor('i-c-qbg',  'cv-qbg',  '--quote-bg');
+
+    document.getElementById('i-c-qtxt').addEventListener('input', function() {
+      document.getElementById('cv-qtxt').textContent = this.value;
+      document.documentElement.style.setProperty('--creme', this.value);
+    });
+
+    /* ── Réinitialisation ─────────────────────────── */
+    const DEFAULTS = {
+      '--bg':       '#f1e9dd',
+      '--brun':     '#221c12',
+      '--or-f':     '#b68952',
+      '--or':       '#c28b36',
+      '--orlt':     '#ddb868',
+      '--gris':     '#7f7463',
+      '--creme':    '#ece3cb',
+      '--quote-bg': '#221c12',
+    };
+
+    function resetAll() {
+      if (!confirm('Remettre toutes les valeurs par défaut ?')) return;
+      location.reload();
+    }
+
+    /* ── Export ───────────────────────────────────── */
+    async function preloadFonts() {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:fixed;top:-9999px;opacity:0;pointer-events:none;';
+      [
+        '"Cormorant Garamond" 300',
+        '"Cormorant Garamond" 300 italic',
+        '"Playfair Display" 300',
+        '"Playfair Display" 300 italic',
+        '"Cinzel" 300',
+        '"Inter" 300',
+        '"Inter" 400',
+        '"Inter" 500',
+        '"DM Sans" 300',
+        '"Lato" 300',
+      ].forEach(f => {
+        const s = document.createElement('span');
+        s.style.font = f + ' 1px serif';
+        s.textContent = 'POIVRE & SENS abcéàïôûèê 0123456789';
+        wrap.appendChild(s);
+      });
+      document.body.appendChild(wrap);
+      await document.fonts.ready;
+      await new Promise(r => setTimeout(r, 900));
+      document.body.removeChild(wrap);
+    }
+
+    async function capture() {
+      const flyer = document.getElementById('flyer');
+      const bgColor = getComputedStyle(flyer).backgroundColor;
+      const canvas = await html2canvas(flyer, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        backgroundColor: bgColor
+      });
+      return canvas;
+    }
+
+    async function exportPDF(btn) {
+      if (!window.jspdf || !window.html2canvas) {
+        alert('Bibliothèques non chargées — rechargez la page.');
+        return;
+      }
+      const orig = btn.textContent;
+      btn.disabled = true; btn.textContent = '…';
+      try {
+        await preloadFonts();
+        const canvas = await capture();
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a6' });
+        pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, 105, 148);
+        pdf.save('flyer-poivresens.pdf');
+      } catch(e) {
+        console.error(e);
+        alert('Export PDF échoué : ' + e.message);
+      } finally {
+        btn.textContent = orig; btn.disabled = false;
+      }
+    }
+
+    async function exportJPG(btn) {
+      if (!window.html2canvas) {
+        alert('html2canvas non chargé — rechargez la page.');
+        return;
+      }
+      const orig = btn.textContent;
+      btn.disabled = true; btn.textContent = '…';
+      try {
+        await preloadFonts();
+        const canvas = await capture();
+        const a = document.createElement('a');
+        a.download = 'flyer-poivresens.jpg';
+        a.href = canvas.toDataURL('image/jpeg', 0.96);
+        a.click();
+      } catch(e) {
+        console.error(e);
+        alert('Export JPG échoué : ' + e.message);
+      } finally {
+        btn.textContent = orig; btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
