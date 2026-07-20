@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poivre &amp; Sens — Flyer (éditable, déplaçable, mise en forme)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;0,9..144,700;1,9..144,450;1,9..144,600&family=Archivo:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Work+Sans:wght@400;500;600&family=Josefin+Sans:wght@400;600&display=swap');
+
+:root{
+  --ink:#2A2521; --paper:#E9E2D3; --paper-soft:#F2EDE2;
+  --spice:#9C3E1C; --moss:#57624A; --line: rgba(42,37,33,0.35);
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; background:#666; }
+
+/* ---------- BARRES D'OUTILS (jamais exportées ni imprimées) ---------- */
+.toolbar{
+  position:sticky; top:0; z-index:100; width:100%;
+  background:#1c1a17; color:#F2EDE2;
+  display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+  padding:11px 16px; font-family:'Archivo',sans-serif; font-size:13px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.4);
+}
+.toolbar .hint{ opacity:0.72; font-size:12px; }
+.toolbar button{
+  font-family:'Archivo',sans-serif; font-size:13px; font-weight:600;
+  color:#fff; border:none; border-radius:6px; padding:9px 15px; cursor:pointer; background:var(--spice);
+}
+.toolbar button.ghost{ background:transparent; border:1px solid rgba(242,237,226,0.4); }
+.toolbar button:hover{ filter:brightness(1.08); }
+.toolbar button:disabled{ opacity:0.6; cursor:default; }
+
+/* ---- barre de mise en forme (2e rangée) ---- */
+.formatbar{
+  position:sticky; top:46px; z-index:99; width:100%;
+  background:#25211d; color:#F2EDE2; border-top:1px solid rgba(242,237,226,0.12);
+  display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
+  padding:8px 16px; font-family:'Archivo',sans-serif; font-size:13px;
+}
+.formatbar .grp{ display:flex; align-items:center; gap:6px; padding:0 8px; border-right:1px solid rgba(242,237,226,0.14); }
+.formatbar .grp:last-child{ border-right:none; }
+.formatbar .lbl{ opacity:0.6; font-size:11px; }
+.formatbar button{
+  font-family:'Archivo',sans-serif; font-size:13px; font-weight:600; color:#F2EDE2;
+  background:#3a342e; border:none; border-radius:6px; padding:7px 11px; cursor:pointer; min-width:34px;
+}
+.formatbar button:hover{ background:#4a423a; }
+.formatbar button.on{ background:var(--spice); color:#fff; }
+.formatbar #sizeVal{ min-width:44px; text-align:center; font-variant-numeric:tabular-nums; }
+.formatbar select{
+  font-family:'Archivo',sans-serif; font-size:13px; color:#F2EDE2; background:#3a342e;
+  border:1px solid rgba(242,237,226,0.2); border-radius:6px; padding:7px 8px; cursor:pointer;
+}
+.swatch{ width:22px; height:22px; min-width:22px; border-radius:50%; padding:0; border:2px solid rgba(255,255,255,0.25); cursor:pointer; }
+.formatbar .sel-name{ font-size:11px; opacity:0.85; font-style:italic; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.formatbar.disabled .grp{ opacity:0.4; pointer-events:none; }
+
+.stage{ display:flex; justify-content:center; padding:24px 12px 60px; }
+
+/* ---------- LA PAGE (A5, seule zone exportée) ---------- */
+.page{
+  width:148mm; height:210mm; background:var(--paper); color:var(--ink);
+  position:relative; overflow:hidden; font-family:'Archivo', sans-serif;
+  box-shadow:0 8px 30px rgba(0,0,0,0.35); transform-origin:top center;
+}
+@page{ size:148mm 210mm; margin:0; }
+.meridian{ position:absolute; inset:0; width:100%; height:100%; opacity:0.4; pointer-events:none; }
+
+/* ---------- BLOCS déplaçables ---------- */
+.block{ position:absolute; }
+.block .txt{ width:100%; }
+.drag-handle{
+  position:absolute; top:-10px; left:-10px; width:22px; height:22px; border-radius:50%;
+  background:var(--spice); color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:12px; line-height:1; cursor:grab; opacity:0; transition:opacity .12s;
+  z-index:10; touch-action:none; user-select:none; box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.block:hover .drag-handle{ opacity:1; }
+.block.dragging{ z-index:20; }
+.block.dragging .drag-handle{ cursor:grabbing; }
+@media (hover:none){ .drag-handle{ opacity:0.92; } }
+
+/* édition en place */
+[contenteditable]{ border-radius:2px; transition:outline .12s, background .12s; }
+[contenteditable]:hover{ outline:1px dashed rgba(156,62,28,0.55); outline-offset:3px; cursor:text; }
+[contenteditable]:focus{ outline:1.5px solid var(--spice); outline-offset:3px; background:rgba(255,255,255,0.4); }
+[contenteditable].selected{ outline:1.5px solid var(--spice); outline-offset:3px; }
+
+/* styles de texte */
+.eyebrow{ font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--moss); font-weight:600; }
+.brand{ font-family:'Fraunces', serif; font-weight:600; font-size:34px; line-height:0.95; letter-spacing:-0.01em; margin:0; }
+.brand em{ font-style:italic; font-weight:450; color:var(--spice); }
+.disciplines{ font-size:9.5px; letter-spacing:0.03em; opacity:0.78; }
+.manifesto{ font-family:'Fraunces', serif; font-style:italic; font-weight:450; font-size:15px; line-height:1.3; margin:0; }
+.intro{ font-size:11px; line-height:1.55; margin:0; }
+.intro strong{ color:var(--spice); font-weight:600; }
+
+.cta{ border:1px solid var(--line); background:var(--paper-soft); padding:6mm; display:flex; gap:6mm; align-items:center; }
+.cta-qr{ width:30mm; height:30mm; flex-shrink:0; background:#fff; border:1px solid var(--ink); display:flex; align-items:center; justify-content:center; padding:1.5mm; }
+.cta-qr img{ width:100%; height:100%; display:block; }
+.cta-title{ font-family:'Fraunces', serif; font-weight:600; font-size:16px; line-height:1.1; margin:0 0 2mm 0; }
+.cta-title em{ font-style:italic; font-weight:450; color:var(--spice); }
+.cta-text{ font-size:10.5px; line-height:1.45; margin:0; }
+.cta-url{ font-family:'Fraunces', serif; font-style:italic; color:var(--spice); display:block; margin-top:2mm; font-size:11px; }
+
+.proof{ font-size:9px; line-height:1.5; opacity:0.85; }
+.proof strong{ font-weight:600; }
+.contact{ font-size:9px; line-height:1.55; text-align:right; }
+.contact .phone{ font-weight:600; color:var(--spice); }
+.legal{ font-size:7.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--moss); opacity:0.8; margin-top:2mm; }
+
+/* export / impression */
+body.exporting .drag-handle{ display:none !important; }
+body.exporting [contenteditable].selected,
+body.exporting [contenteditable]:hover, body.exporting [contenteditable]:focus{ outline:none !important; background:none !important; }
+@media print{
+  html,body{ background:none; } .toolbar,.formatbar{ display:none !important; } .stage{ padding:0; }
+  .page{ box-shadow:none; } .drag-handle{ display:none !important; }
+  [contenteditable].selected,
+  [contenteditable]:hover, [contenteditable]:focus{ outline:none !important; background:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="hint">● glissez la poignée pour déplacer · cliquez un texte pour l'éditer / le mettre en forme</span>
+  <button id="exportBtn" onclick="exportJPEG()">⬇ Exporter en JPEG</button>
+  <button class="ghost" onclick="window.print()">🖨 Imprimer / PDF</button>
+  <button class="ghost" onclick="resetLayout()">↺ Réinitialiser</button>
+</div>
+
+<div class="formatbar disabled" id="formatbar">
+  <span class="lbl" id="fmtHint">Cliquez un texte pour le mettre en forme →</span>
+  <div class="grp">
+    <span class="lbl">Taille</span>
+    <button title="Réduire" onmousedown="return false" onclick="bumpSize(-1)">A−</button>
+    <span id="sizeVal">—</span>
+    <button title="Agrandir" onmousedown="return false" onclick="bumpSize(1)">A+</button>
+  </div>
+  <div class="grp">
+    <span class="lbl">Police</span>
+    <select id="fontSel" onchange="setFont(this.value)">
+      <option value="'Fraunces', serif">Fraunces</option>
+      <option value="'Archivo', sans-serif">Archivo</option>
+      <option value="'Cormorant Garamond', serif">Cormorant</option>
+      <option value="'EB Garamond', serif">EB Garamond</option>
+      <option value="'Work Sans', sans-serif">Work Sans</option>
+      <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
+    </select>
+  </div>
+  <div class="grp">
+    <button id="btnBold" title="Gras" onmousedown="return false" onclick="toggleBold()"><b>B</b></button>
+    <button id="btnItal" title="Italique" onmousedown="return false" onclick="toggleItalic()"><i>I</i></button>
+  </div>
+  <div class="grp">
+    <span class="lbl">Couleur</span>
+    <button class="swatch" title="Encre"  style="background:#2A2521" onmousedown="return false" onclick="setColor('#2A2521')"></button>
+    <button class="swatch" title="Épice"  style="background:#9C3E1C" onmousedown="return false" onclick="setColor('#9C3E1C')"></button>
+    <button class="swatch" title="Mousse" style="background:#57624A" onmousedown="return false" onclick="setColor('#57624A')"></button>
+    <button class="swatch" title="Crème"  style="background:#F2EDE2" onmousedown="return false" onclick="setColor('#F2EDE2')"></button>
+  </div>
+  <div class="grp">
+    <button title="Aligner à gauche" onmousedown="return false" onclick="setAlign('left')">⯇</button>
+    <button title="Centrer" onmousedown="return false" onclick="setAlign('center')">≡</button>
+    <button title="Aligner à droite" onmousedown="return false" onclick="setAlign('right')">⯈</button>
+  </div>
+  <span class="sel-name" id="selName"></span>
+</div>
+
+<div class="stage">
+  <div class="page" id="flyer">
+    <svg class="meridian" viewBox="0 0 148 210" preserveAspectRatio="none">
+      <path d="M -10 30 C 40 45, 30 80, 90 75 S 160 110, 130 150" fill="none" stroke="#57624A" stroke-width="0.35" opacity="0.55"></path>
+      <circle cx="90" cy="75" r="1" fill="#9C3E1C" opacity="0.6"></circle>
+    </svg>
+
+    <div class="block" data-k="eyebrow"><span class="drag-handle">✥</span>
+      <div class="txt eyebrow" contenteditable="true" spellcheck="false">Rencontré·es au Grand Bal de l'Europe · été 2026</div>
+    </div>
+
+    <div class="block" data-k="brand"><span class="drag-handle">✥</span>
+      <h1 class="txt brand" contenteditable="true" spellcheck="false">Poivre&nbsp;<em>&amp;&nbsp;</em>Sens</h1>
+    </div>
+
+    <div class="block" data-k="disciplines"><span class="drag-handle">✥</span>
+      <div class="txt disciplines" contenteditable="true" spellcheck="false">Danse contemporaine · Contact-improvisation · Musique improvisée · Pratiques somatiques</div>
+    </div>
+
+    <div class="block" data-k="manifesto"><span class="drag-handle">✥</span>
+      <p class="txt manifesto" contenteditable="true" spellcheck="false">Le corps sait ce que l'esprit cherche encore.</p>
+    </div>
+
+    <div class="block" data-k="intro"><span class="drag-handle">✥</span>
+      <p class="txt intro" contenteditable="true" spellcheck="false">Vous venez de vivre un moment d'enseignement avec nous — merci de votre présence et de votre écoute. Ce que vous avez ressenti, ce <strong>dialogue entre le corps, la conscience et la créativité</strong>, le plaisir d'improviser ensemble, pourra se prolonger au-delà du festival.</p>
+    </div>
+
+    <div class="block" data-k="cta"><span class="drag-handle">✥</span>
+      <div class="txt cta">
+        <div class="cta-qr"><img id="qrcode" alt="QR"></div>
+        <div class="cta-body">
+          <p class="cta-title" contenteditable="true" spellcheck="false">Restons&nbsp;<em>en mouvement</em> ensemble</p>
+          <p class="cta-text" contenteditable="true" spellcheck="false">En scannant ce code, recevez en avant-première les dates de nos <strong>stages immersifs</strong> — et une courte pratique somatique que nous avons plaisir à vous offrir.</p>
+          <span class="cta-url" contenteditable="true" spellcheck="false">cie.poivresens.fr</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="block" data-k="proof"><span class="drag-handle">✥</span>
+      <div class="txt proof" contenteditable="true" spellcheck="false"><strong>Cie Poivre &amp; Sens</strong> — Ambre Lavignac &amp; Ewen d'Aviau.<br>Basés à Saint-Nazaire (44), où nous animons un atelier un vendredi sur deux et un stage le 1<sup>er</sup> dimanche du mois.<div class="legal">Association loi 1901</div></div>
+    </div>
+
+    <div class="block" data-k="contact"><span class="drag-handle">✥</span>
+      <div class="txt contact" contenteditable="true" spellcheck="false"><span class="phone">06 82 45 54 90</span><br>contact@cie.poivresens.fr<br>Saint-Nazaire (44)</div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  var QR_URL = 'https://cie.poivresens.fr'; // ← une fois votre page d'inscription en ligne, mettez son URL ici
+
+  var LAYOUT = {
+    eyebrow:{top:13,left:13,width:122}, brand:{top:19,left:13,width:122},
+    disciplines:{top:35,left:13,width:122}, manifesto:{top:44,left:13,width:116},
+    intro:{top:62,left:13,width:120}, cta:{top:120,left:13,width:122},
+    proof:{top:184,left:13,width:82}, contact:{top:184,left:101,width:34}
+  };
+  var page = document.getElementById('flyer');
+  function applyLayout(){
+    document.querySelectorAll('.block').forEach(function(b){
+      var L=LAYOUT[b.dataset.k]; if(!L)return;
+      b.style.left=L.left+'mm'; b.style.top=L.top+'mm'; b.style.width=L.width+'mm';
+    });
+  }
+  function resetLayout(){ applyLayout(); }
+  applyLayout();
+
+  /* ================= MISE EN FORME ================= */
+  var activeEl = null;
+  var FRIENDLY = {eyebrow:'Bandeau',brand:'Titre',disciplines:'Disciplines',manifesto:'Manifeste',intro:'Introduction','cta-title':'Titre du QR','cta-text':'Texte du QR','cta-url':'Adresse web',proof:'Mentions',contact:'Contact'};
+
+  function friendlyName(el){
+    for(var k in FRIENDLY){ if(el.classList.contains(k)) return FRIENDLY[k]; }
+    return 'Texte';
+  }
+  function setActive(el){
+    if(activeEl && activeEl!==el) activeEl.classList.remove('selected');
+    activeEl = el; el.classList.add('selected');
+    document.getElementById('formatbar').classList.remove('disabled');
+    document.getElementById('fmtHint').style.display='none';
+    syncBar();
+  }
+  document.querySelectorAll('[contenteditable]').forEach(function(el){
+    el.addEventListener('focus', function(){ setActive(el); });
+    el.addEventListener('pointerdown', function(){ setActive(el); });
+  });
+
+  function syncBar(){
+    if(!activeEl) return;
+    var cs = getComputedStyle(activeEl);
+    document.getElementById('sizeVal').textContent = Math.round(parseFloat(cs.fontSize)) + 'px';
+    // gras / italique actifs ?
+    var w = cs.fontWeight; var isB = (w==='bold' || parseInt(w,10)>=600);
+    document.getElementById('btnBold').classList.toggle('on', isB);
+    document.getElementById('btnItal').classList.toggle('on', cs.fontStyle==='italic');
+    // police : essaie de refléter la valeur courante
+    var fam = cs.fontFamily.toLowerCase();
+    var sel = document.getElementById('fontSel');
+    for(var i=0;i<sel.options.length;i++){
+      var key = sel.options[i].text.toLowerCase();
+      if(fam.indexOf(key)!==-1){ sel.selectedIndex=i; break; }
+    }
+    document.getElementById('selName').textContent = '✎ ' + friendlyName(activeEl);
+  }
+
+  function need(){ return !!activeEl; }
+  function bumpSize(d){ if(!need())return; var s=parseFloat(getComputedStyle(activeEl).fontSize); s=Math.max(6,Math.min(120,s+d)); activeEl.style.fontSize=s+'px'; syncBar(); }
+  function setFont(f){ if(!need())return; activeEl.style.fontFamily=f; }
+  function toggleBold(){ if(!need())return; var w=getComputedStyle(activeEl).fontWeight; var isB=(w==='bold'||parseInt(w,10)>=600); activeEl.style.fontWeight=isB?'400':'700'; syncBar(); }
+  function toggleItalic(){ if(!need())return; var it=getComputedStyle(activeEl).fontStyle==='italic'; activeEl.style.fontStyle=it?'normal':'italic'; syncBar(); }
+  function setColor(c){ if(!need())return; activeEl.style.color=c; }
+  function setAlign(a){ if(!need())return; activeEl.style.textAlign=a; }
+
+  /* ================= DÉPLACEMENT ================= */
+  var active=null,startX=0,startY=0,origLeft=0,origTop=0;
+  function pageScale(){ return page.getBoundingClientRect().width / page.offsetWidth; }
+  document.querySelectorAll('.drag-handle').forEach(function(h){
+    h.addEventListener('pointerdown', function(e){
+      e.preventDefault(); active=h.closest('.block'); active.classList.add('dragging');
+      startX=e.clientX; startY=e.clientY; origLeft=active.offsetLeft; origTop=active.offsetTop;
+      document.body.style.userSelect='none';
+      try{ h.setPointerCapture(e.pointerId); }catch(_){}
+    });
+  });
+  document.addEventListener('pointermove', function(e){
+    if(!active) return; var s=pageScale()||1;
+    active.style.left=(origLeft+(e.clientX-startX)/s)+'px';
+    active.style.top =(origTop +(e.clientY-startY)/s)+'px';
+  });
+  function endDrag(){ if(active){ active.classList.remove('dragging'); active=null; document.body.style.userSelect=''; } }
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
+
+  /* ================= QR ================= */
+  window.addEventListener('load', function(){
+    try{
+      var holder=document.createElement('div');
+      new QRCode(holder,{text:QR_URL,width:512,height:512,colorDark:'#2A2521',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+      setTimeout(function(){
+        var src=holder.querySelector('img')||holder.querySelector('canvas');
+        document.getElementById('qrcode').src=(src.tagName==='IMG')?src.src:src.toDataURL('image/png');
+      },120);
+    }catch(e){ console.error('QR:',e); }
+  });
+
+  /* ================= EXPORT JPEG ================= */
+  async function exportJPEG(){
+    var btn=document.getElementById('exportBtn'); var label=btn.textContent;
+    btn.disabled=true; btn.textContent='Génération…'; var prev=page.style.transform;
+    try{
+      if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+      document.body.classList.add('exporting'); page.style.transform='none';
+      await new Promise(function(r){ setTimeout(r,60); });
+      var canvas=await html2canvas(page,{scale:4,backgroundColor:'#E9E2D3',useCORS:true,logging:false});
+      canvas.toBlob(function(blob){
+        var url=URL.createObjectURL(blob); var a=document.createElement('a');
+        a.href=url; a.download='flyer-poivre-et-sens.jpg'; document.body.appendChild(a); a.click();
+        document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+      },'image/jpeg',0.95);
+    }catch(e){ console.error(e); alert("L'export a échoué. Vérifiez votre connexion puis réessayez."); }
+    finally{ page.style.transform=prev; document.body.classList.remove('exporting'); btn.disabled=false; btn.textContent=label; }
+  }
+</script>
+</body>
+</html>
