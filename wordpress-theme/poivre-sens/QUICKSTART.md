@@ -197,6 +197,21 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 - Graphique des nouvelles inscriptions (12 mois)
 - Dernière campagne et taux d'ouverture
 
+### Gérer les listes (localiser l'origine des prospects)
+
+**Newsletter › Listes**
+
+Une liste permet de savoir **d'où vient chaque prospect** (site web, un
+événement, un salon…) et d'envoyer des campagnes ciblées. Un même abonné
+peut appartenir à plusieurs listes.
+
+Deux listes sont créées automatiquement à l'activation :
+- **Site web** (`site`) — inscriptions via le formulaire `[ps_newsletter]`
+- **Grand Bal de l'Europe** (`grand-bal-europe`) — voir le modèle de page
+  dédié ci-dessous
+
+Créez-en d'autres depuis **Newsletter › Listes** (nom, description, couleur).
+
 ### Gérer les abonnés
 
 **Newsletter › Abonnés**
@@ -204,10 +219,11 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 | Action | Comment |
 |--------|---------|
 | **Rechercher** | Par email, prénom ou nom |
-| **Filtrer** | Par statut (actif / désabonné / en attente) |
-| **Ajouter** | Bouton `+ Ajouter` → formulaire manuel |
-| **Importer** | Bouton `⬆ Import CSV` → format `email,prenom,nom` |
-| **Exporter** | Bouton `⬇ Export CSV` → fichier UTF-8 avec BOM |
+| **Filtrer** | Par statut (actif / désabonné / en attente) **et par liste** |
+| **Ajouter** | Bouton `+ Ajouter` → formulaire manuel, avec cases à cocher pour les listes |
+| **Importer** | Bouton `⬆ Import CSV` → format `email,prenom,nom`, avec choix de la liste de destination |
+| **Exporter** | Bouton `⬇ Export CSV` → fichier UTF-8 avec BOM, colonne « Listes » incluse |
+| **Ajouter à une liste** | Sélection multiple (checkbox) → menu « Ajouter à la liste » |
 | **Supprimer** | Unitaire ou en masse (checkbox + bouton Supprimer) |
 
 ### Créer et envoyer une campagne
@@ -216,14 +232,28 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 
 1. **Sujet** : ligne d'objet de l'email
 2. **Texte d'aperçu** : texte visible après l'objet (preheader)
-3. **Nom / Email expéditeur** : défaut `contact@cie.poivresens.fr`
-4. **Contenu HTML** : éditeur WYSIWYG complet
+3. **Ciblage** : cochez une ou plusieurs listes pour restreindre les
+   destinataires (aucune case cochée = tous les abonnés actifs)
+4. **Nom / Email expéditeur** : défaut `contact@cie.poivresens.fr`
+5. **Contenu HTML** : éditeur WYSIWYG complet
    - Le template par défaut est aux couleurs de la compagnie
    - Variables disponibles : `{prenom}`, `{email}`, `{desinscription}`
-5. **Enregistrer brouillon** ou **Envoyer maintenant**
+6. **Enregistrer brouillon** ou **Envoyer maintenant**
 
 > L'envoi se fait via `wp_mail()`. Pour un volume > 500 abonnés,
 > configurez un service SMTP (WP Mail SMTP + Brevo/Mailgun).
+
+### Landing page dédiée — Grand Bal de l'Europe
+
+Un modèle de page **« Landing — Grand Bal de l'Europe »** est disponible
+dans Pages → Attributs de page → Modèle. Il reprend le formulaire d'origine
+(design carte centrée, fond papier) et inscrit automatiquement chaque
+prospect dans la liste `grand-bal-europe`, ce qui les distingue des
+inscriptions via le formulaire principal du site.
+
+Créez une page (ex. slug `/grand-bal/`), sélectionnez ce modèle, publiez —
+aucune configuration supplémentaire n'est nécessaire (le formulaire utilise
+directement `admin-ajax.php`, comme le reste du site).
 
 ### Statistiques de campagne
 
