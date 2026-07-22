@@ -156,22 +156,6 @@ function ps_nl_get_list_by_slug($slug) {
     return $wpdb->get_row($wpdb->prepare("SELECT * FROM $tl WHERE slug=%s", $slug));
 }
 
-/** Retourne l'id d'une liste (par slug), la créant au besoin. */
-function ps_nl_get_or_create_list($nom, $slug = '') {
-    global $wpdb;
-    $tl   = $wpdb->prefix . 'ps_newsletter_lists';
-    $slug = sanitize_title($slug ?: $nom);
-    if (!$slug) return 0;
-    $existing = ps_nl_get_list_by_slug($slug);
-    if ($existing) return (int)$existing->id;
-    $wpdb->insert($tl, [
-        'nom'           => sanitize_text_field($nom ?: $slug),
-        'slug'          => $slug,
-        'date_creation' => current_time('mysql'),
-    ]);
-    return (int)$wpdb->insert_id;
-}
-
 /** Ids des listes d'un abonné. */
 function ps_nl_get_subscriber_list_ids($subscriber_id) {
     global $wpdb;
@@ -188,12 +172,6 @@ function ps_nl_get_subscriber_lists($subscriber_id) {
         "SELECT l.id, l.nom, l.slug, l.couleur FROM $tl l
          INNER JOIN $tj j ON j.list_id = l.id
          WHERE j.subscriber_id = %d ORDER BY l.nom ASC", (int)$subscriber_id));
-}
-
-/** Noms des listes d'un abonné, en chaîne « A, B, C ». */
-function ps_nl_subscriber_list_names($subscriber_id) {
-    $noms = wp_list_pluck(ps_nl_get_subscriber_lists($subscriber_id), 'nom');
-    return implode(', ', $noms);
 }
 
 /** Ajoute un abonné à une liste (idempotent). */
@@ -509,13 +487,25 @@ function ps_nl_page_abonnes() {
         $join    = $list_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $list_id : '';
         $where   = $statut === 'tous' ? 'WHERE 1=1' : $wpdb->prepare('WHERE t.statut=%s', $statut);
         $rows    = $wpdb->get_results("SELECT t.id, t.email, t.prenom, t.nom, t.statut, t.source, t.date_creation FROM $table t $join $where ORDER BY t.date_creation DESC");
+
+        // Précharge les listes de tous les abonnés exportés en une seule requête
+        // (évite une requête par ligne sur un export volumineux).
+        $list_names = [];
+        $sub_ids = wp_list_pluck($rows, 'id');
+        if ($sub_ids) {
+            $tl   = $wpdb->prefix . 'ps_newsletter_lists';
+            $in   = implode(',', array_map('intval', $sub_ids));
+            $rels = $wpdb->get_results("SELECT j.subscriber_id, l.nom FROM $tj j INNER JOIN $tl l ON l.id = j.list_id WHERE j.subscriber_id IN ($in) ORDER BY l.nom ASC");
+            foreach ($rels as $rel) $list_names[$rel->subscriber_id][] = $rel->nom;
+        }
+
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="newsletter-abonnes-' . date('Y-m-d') . '.csv"');
         $out = fopen('php://output', 'w');
         fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
         fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Listes', 'Date inscription']);
         foreach ($rows as $r) {
-            $noms = ps_nl_subscriber_list_names($r->id);
+            $noms = implode(', ', $list_names[$r->id] ?? []);
             fputcsv($out, [(string)$r->email, (string)$r->prenom, (string)$r->nom, (string)$r->statut, (string)$r->source, $noms, (string)$r->date_creation]);
         }
         fclose($out); exit;
@@ -705,6 +695,7 @@ function ps_nl_page_abonnes() {
         <?php wp_nonce_field('ps_bulk_delete', '_wpnonce_bulk_delete'); ?>
         <?php wp_nonce_field('ps_bulk_status', '_wpnonce_bulk_status'); ?>
         <?php wp_nonce_field('ps_bulk_addlist', '_wpnonce_bulk_addlist'); ?>
+        <input type="hidden" name="_wpnonce" value="">
 
         <div class="ps-bulk-bar" id="ps-bulk-bar">
             <span id="ps-bulk-count">0 <?= __('sélectionné(s)', 'poivre-sens') ?></span>
@@ -845,7 +836,7 @@ function ps_nl_page_listes() {
     if (isset($_POST['ps_save_list']) && check_admin_referer('ps_save_list')) {
         $id   = (int)($_POST['list_id'] ?? 0);
         $nom  = sanitize_text_field($_POST['nom'] ?? '');
-        $slug = sanitize_title($_POST['slug'] ?? $nom);
+        $slug = sanitize_title(($_POST['slug'] ?? '') ?: $nom);
         $desc = sanitize_text_field($_POST['description'] ?? '');
         $coul = sanitize_hex_color($_POST['couleur'] ?? '') ?: '#c28b36';
         if (!$nom || !$slug) {
@@ -881,7 +872,7 @@ function ps_nl_page_listes() {
     echo $notice;
     ?>
     <p style="font-size:13px;color:#666;margin-bottom:20px">
-        <?= __('Les listes permettent de <strong>localiser l\'origine de vos prospects</strong> (site web, événement, salon…) et de leur envoyer des campagnes ciblées. Un même abonné peut appartenir à plusieurs listes.', 'poivre-sens') ?>
+        <?= wp_kses_post(__('Les listes permettent de <strong>localiser l\'origine de vos prospects</strong> (site web, événement, salon…) et de leur envoyer des campagnes ciblées. Un même abonné peut appartenir à plusieurs listes.', 'poivre-sens')) ?>
     </p>
 
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start">
@@ -1241,14 +1232,12 @@ function ps_nl_page_nouvelle_campagne() {
                     </div>
                     <div style="display:flex;flex-direction:column;gap:10px">
                         <button type="submit" name="ps_save_campaign" class="ps-btn ps-btn-grey">💾 <?= __('Enregistrer le brouillon', 'poivre-sens') ?></button>
-                        <?php if ($actifs > 0): ?>
                         <button type="submit" name="ps_send_now" value="1" id="ps-send-now-btn"
+                            <?= $actifs > 0 ? '' : 'disabled' ?>
+                            style="<?= $actifs > 0 ? '' : 'opacity:.5;cursor:not-allowed' ?>"
                             onclick="return confirm('<?= esc_js(__('Envoyer maintenant à ', 'poivre-sens')) ?>' + document.getElementById('ps-cible-count').textContent + '<?= esc_js(__(' abonné(s) actif(s) ?', 'poivre-sens')) ?>')"
-                            class="ps-btn ps-btn-primary">✉ <?= __('Envoyer maintenant', 'poivre-sens') ?>
+                            class="ps-btn ps-btn-primary">✉ <span id="ps-send-now-label"><?= $actifs > 0 ? __('Envoyer maintenant', 'poivre-sens') : __('Aucun abonné actif', 'poivre-sens') ?></span>
                         </button>
-                        <?php else: ?>
-                        <button disabled class="ps-btn ps-btn-primary" style="opacity:.5;cursor:not-allowed"><?= __('Aucun abonné actif', 'poivre-sens') ?></button>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -1270,6 +1259,7 @@ function ps_nl_page_nouvelle_campagne() {
         var checks   = document.querySelectorAll('.ps-target-list');
         var countEl  = document.getElementById('ps-cible-count');
         var sendBtn  = document.getElementById('ps-send-now-btn');
+        var labelEl  = document.getElementById('ps-send-now-label');
         if (!checks.length || !countEl) return;
 
         function refreshCount(){
@@ -1284,7 +1274,16 @@ function ps_nl_page_nouvelle_campagne() {
                 .then(function(res){
                     if (!res.success) return;
                     countEl.textContent = res.data.count;
-                    if (sendBtn) sendBtn.disabled = (res.data.count === 0);
+                    if (sendBtn) {
+                        sendBtn.disabled = (res.data.count === 0);
+                        sendBtn.style.opacity = res.data.count === 0 ? '.5' : '';
+                        sendBtn.style.cursor  = res.data.count === 0 ? 'not-allowed' : '';
+                    }
+                    if (labelEl) {
+                        labelEl.textContent = res.data.count === 0
+                            ? <?= wp_json_encode(__('Aucun abonné actif', 'poivre-sens')) ?>
+                            : <?= wp_json_encode(__('Envoyer maintenant', 'poivre-sens')) ?>;
+                    }
                 });
         }
         checks.forEach(function(c){ c.addEventListener('change', refreshCount); });

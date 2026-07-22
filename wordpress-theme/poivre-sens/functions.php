@@ -370,8 +370,13 @@ add_action('save_post_galerie', function ($post_id) {
    7. TABLE & GESTION NEWSLETTER
    Le schéma complet (abonnés, listes, campagnes) et les migrations
    sont gérés par ps_nl_upgrade_db() dans inc/newsletter-admin.php.
+   NB : register_activation_hook() ne fonctionne que pour les plugins ;
+   pour un thème, le hook correct est after_switch_theme.
    ═══════════════════════════════════════════════════════════ */
-register_activation_hook(__FILE__, 'ps_nl_upgrade_db');
+add_action('after_switch_theme', function () {
+    ps_nl_upgrade_db();
+    flush_rewrite_rules();
+});
 
 // Créer/mettre à niveau les tables si besoin (upgrade / thème activé sans hook)
 add_action('init', function () {
@@ -395,6 +400,9 @@ function ps_newsletter_subscribe() {
     // de localiser l'origine des prospects, ex. « grand-bal-europe ».
     $liste_slug = sanitize_title(wp_unslash($_POST['liste'] ?? ''));
     $source     = $liste_slug ?: sanitize_text_field(wp_unslash($_POST['source'] ?? 'site'));
+    // À défaut de liste explicite, on rattache à la liste correspondant à la
+    // source (ex. « site » pour le formulaire principal, déjà semée par défaut).
+    $attach_slug = $liste_slug ?: sanitize_title($source);
 
     if (!is_email($email)) {
         wp_send_json_error(['message' => __('Adresse e-mail invalide.', 'poivre-sens')], 400);
@@ -404,9 +412,13 @@ function ps_newsletter_subscribe() {
     $table    = $wpdb->prefix . 'ps_newsletter';
     $existing = $wpdb->get_row($wpdb->prepare("SELECT id, statut FROM $table WHERE email = %s", $email));
 
+    // Sécurité : on ne rattache qu'à une liste déjà existante (créée depuis
+    // l'admin). Un visiteur anonyme ne doit pas pouvoir faire créer de
+    // nouvelles listes ou polluer les statistiques via un slug arbitraire.
     $list_id = 0;
-    if ($liste_slug) {
-        $list_id = ps_nl_get_or_create_list(ucwords(str_replace('-', ' ', $liste_slug)), $liste_slug);
+    if ($attach_slug) {
+        $target_list = ps_nl_get_list_by_slug($attach_slug);
+        if ($target_list) $list_id = (int)$target_list->id;
     }
 
     if ($existing) {
@@ -614,14 +626,6 @@ function ps_get_events_for_month($year, $month) {
         'order'          => 'ASC',
     ]);
 }
-
-/* ═══════════════════════════════════════════════════════════
-   9. FLUSH REWRITE RULES À L'ACTIVATION
-   ═══════════════════════════════════════════════════════════ */
-register_activation_hook(__FILE__, function () {
-    ps_nl_upgrade_db();
-    flush_rewrite_rules();
-});
 
 /* ═══════════════════════════════════════════════════════════
    10. COLONNES ADMIN ÉVÉNEMENTS
