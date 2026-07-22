@@ -283,9 +283,35 @@ ul, ol { list-style: none; }
 .single-evt__info-k { font-size:.65rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gris); margin-bottom:6px; }
 .single-evt__info-v { font-size:.95rem; color:var(--creme); }
 .single-evt__img { width:100%; max-height:500px; object-fit:cover; margin-bottom:48px; filter:brightness(.85); }
+/* .single-evt__corps sert de conteneur générique pour tout contenu édité
+   librement dans Gutenberg (the_content sur les pages, articles, événements).
+   Le reset global "*{margin:0}" plus haut annule l'espacement par défaut
+   entre blocs (paragraphes, titres, listes…) ; on le restaure ici pour que
+   le rendu front corresponde à l'aperçu de l'éditeur (add_editor_style). */
 .single-evt__corps { font-size:.96rem; line-height:1.88; color:rgba(236,227,203,.72); }
+.single-evt__corps > *:first-child { margin-top:0; }
+.single-evt__corps > *:last-child { margin-bottom:0; }
+.single-evt__corps p,
+.single-evt__corps ul,
+.single-evt__corps ol,
+.single-evt__corps blockquote,
+.single-evt__corps figure,
+.single-evt__corps .wp-block-group,
+.single-evt__corps .wp-block-columns { margin-top:0; margin-bottom:1.4em; }
 .single-evt__corps p+p { margin-top:1.2em; }
-.single-evt__corps h2 { font-family:var(--fh); font-size:1.6rem; font-weight:300; color:var(--creme); margin:40px 0 16px; }
+.single-evt__corps h1,
+.single-evt__corps h2,
+.single-evt__corps h3,
+.single-evt__corps h4,
+.single-evt__corps h5,
+.single-evt__corps h6 { font-family:var(--fh); font-weight:300; color:var(--creme); margin:1.3em 0 .5em; line-height:1.25; }
+.single-evt__corps h2 { font-size:1.6rem; margin:40px 0 16px; }
+.single-evt__corps h3 { font-size:1.3rem; }
+.single-evt__corps li { margin-bottom:.5em; }
+.single-evt__corps li:last-child { margin-bottom:0; }
+.single-evt__corps hr,
+.single-evt__corps .wp-block-separator { margin:2em 0; }
+.single-evt__corps .wp-block-spacer { margin:0; } /* garde sa hauteur explicite */
 .single-evt__billetterie {
   display:inline-flex; align-items:center; gap:12px; margin-top:48px;
   font-size:.72rem; font-weight:400; letter-spacing:.2em; text-transform:uppercase;

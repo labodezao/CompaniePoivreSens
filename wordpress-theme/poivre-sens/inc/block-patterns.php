@@ -210,6 +210,9 @@ add_shortcode('ps_newsletter_liste', function ($atts): string {
     ?>
     <div class="ps-nlf" id="<?= esc_attr($uid) ?>">
       <style>
+        /* Marge propre au shortcode : ne dépend pas du conteneur qui
+           l'entoure (bloc Shortcode, sans support de marge Gutenberg). */
+        #<?= esc_attr($uid) ?>{ margin: 4px 0 1.4em; }
         #<?= esc_attr($uid) ?> .ps-nlf-row{ display:flex; flex-direction:column; gap:12px; max-width:440px; }
         #<?= esc_attr($uid) ?> input[type=email]{
           font-size:16px; padding:15px 16px; border:1.5px solid rgba(0,0,0,.18);
