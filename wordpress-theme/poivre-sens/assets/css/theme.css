@@ -19,14 +19,16 @@
   --ease: cubic-bezier(.25,.46,.45,.94);
 }
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* overflow-x sur html (pas body) : sur mobile, un overflow posé sur <body>
+   casse le position:fixed de .nav (le header défile avec la page au lieu
+   de rester collé en haut) sur de nombreux navigateurs mobiles. */
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   background: var(--noir);
   color: var(--creme);
   font-family: var(--fb);
   font-weight: 300;
   line-height: 1.7;
-  overflow-x: hidden;
 }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
