@@ -82,8 +82,8 @@ $nonce      = wp_create_nonce('ps_newsletter');
 .ps-landing .done .done-title em{ font-style:italic; color:var(--spice); }
 .ps-landing .done p{ font-size:15px; line-height:1.5; max-width:36ch; margin:0; }
 
-.ps-landing .footer{ margin-top:34px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; line-height:1.6; color:var(--moss); }
-.ps-landing .footer .url{ font-family:'Fraunces',serif; font-style:italic; color:var(--spice); }
+.ps-landing .ps-landing-footer{ margin-top:34px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; line-height:1.6; color:var(--moss); background:none; }
+.ps-landing .ps-landing-footer .url{ font-family:'Fraunces',serif; font-style:italic; color:var(--spice); }
 
 @media (max-width:380px){ .ps-landing .headline{ font-size:34px; } }
 </style>
@@ -127,7 +127,7 @@ $nonce      = wp_create_nonce('ps_newsletter');
     <p><?php esc_html_e('Merci de votre confiance. Regardez votre boîte mail : votre pratique arrive, et vous serez les premier·es informé·es de nos prochains stages.', 'poivre-sens'); ?></p>
   </div>
 
-  <div class="footer">
+  <div class="ps-landing-footer">
     Ambre Lavignac &amp; Ewen d'Aviau · Saint-Nazaire (44)<br>
     <span class="url">cie.poivresens.fr</span>
   </div>
