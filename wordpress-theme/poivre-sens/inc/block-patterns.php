@@ -11,9 +11,13 @@
  *   Projet artistique · Nos activités · Esthétique · Contact
  *
  * Shortcodes dynamiques (contenu chargé depuis les CPT/formulaire) :
- *   [ps_galerie]     — galerie photos (CPT « Photo »)
- *   [ps_evenements]  — prochains événements (CPT « Événement »)
- *   [ps_newsletter]  — formulaire d'inscription newsletter
+ *   [ps_galerie]         — galerie photos (CPT « Photo »)
+ *   [ps_evenements]      — prochains événements (CPT « Événement »)
+ *   [ps_newsletter]      — formulaire d'inscription newsletter (section complète)
+ *   [ps_newsletter_liste slug="..." bouton="..."] — formulaire compact rattaché
+ *        à une liste précise, à insérer (bloc Shortcode) au milieu de blocs
+ *        Gutenberg natifs entièrement éditables — pour composer une landing
+ *        page dédiée (ex. un événement) sans passer par un modèle de page.
  *
  * Patterns disponibles dans Blocs › Patterns › Poivre & Sens :
  *   ① Hero, ② Manifeste, ③ Artistes, ④ Projet artistique,
@@ -170,6 +174,110 @@ add_shortcode('ps_newsletter', function (): string {
     <section class="sec sec3" id="newsletter" aria-labelledby="titre-nl">
       <?php get_template_part('template-parts/newsletter-form'); ?>
     </section>
+    <?php
+    return ob_get_clean();
+});
+
+/**
+ * [ps_newsletter_liste] — Formulaire d'inscription compact, rattaché à une
+ * liste précise (pour les landing pages composées à la main dans Gutenberg,
+ * ex. un événement). À insérer dans un bloc Shortcode, au milieu de blocs
+ * natifs (titre, paragraphe, liste…) librement éditables dans l'éditeur.
+ *
+ * Attributs :
+ *   slug        — slug de la liste à rattacher (doit déjà exister, voir
+ *                 Newsletter › Listes). Vide = pas de liste, comportement
+ *                 par défaut (source "site").
+ *   bouton      — texte du bouton (défaut « Je m'inscrire »)
+ *   placeholder — texte indicatif du champ e-mail
+ *
+ * Exemple : [ps_newsletter_liste slug="grand-bal-europe" bouton="Recevez votre pratique"]
+ */
+add_shortcode('ps_newsletter_liste', function ($atts): string {
+    $atts = shortcode_atts([
+        'slug'        => '',
+        'bouton'      => __("Je m'inscrire", 'poivre-sens'),
+        'placeholder' => __('prenom@exemple.fr', 'poivre-sens'),
+    ], $atts, 'ps_newsletter_liste');
+
+    static $instance = 0;
+    $instance++;
+    $uid   = 'ps-nlf-' . $instance;
+    $liste = sanitize_title($atts['slug']);
+    $nonce = wp_create_nonce('ps_newsletter');
+
+    ob_start();
+    ?>
+    <div class="ps-nlf" id="<?= esc_attr($uid) ?>">
+      <style>
+        #<?= esc_attr($uid) ?> .ps-nlf-row{ display:flex; flex-direction:column; gap:12px; max-width:440px; }
+        #<?= esc_attr($uid) ?> input[type=email]{
+          font-size:16px; padding:15px 16px; border:1.5px solid rgba(0,0,0,.18);
+          border-radius:10px; width:100%; box-sizing:border-box;
+        }
+        #<?= esc_attr($uid) ?> input[type=email]:focus{ outline:none; border-color:#9C3E1C; box-shadow:0 0 0 3px rgba(156,62,28,.14); }
+        #<?= esc_attr($uid) ?> button{
+          font-size:16px; font-weight:600; padding:15px 18px; border:none; border-radius:10px;
+          cursor:pointer; background:#9C3E1C; color:#fff; width:100%; transition:background .15s, opacity .15s;
+        }
+        #<?= esc_attr($uid) ?> button:hover{ background:#b04a24; }
+        #<?= esc_attr($uid) ?> button:disabled{ opacity:.65; cursor:default; }
+        #<?= esc_attr($uid) ?> .ps-nlf-msg{ font-size:14px; line-height:1.5; margin-top:6px; padding:12px 14px; border-radius:10px; display:none; }
+        #<?= esc_attr($uid) ?> .ps-nlf-msg.error{ display:block; background:rgba(156,62,28,.10); color:#9C3E1C; }
+        #<?= esc_attr($uid) ?> .ps-nlf-msg.ok{ display:block; background:rgba(87,98,74,.12); color:#57624A; }
+      </style>
+
+      <form class="ps-nlf-row" novalidate>
+        <input type="email" name="email" placeholder="<?= esc_attr($atts['placeholder']) ?>" autocomplete="email" required>
+        <button type="submit"><?= esc_html($atts['bouton']) ?></button>
+        <div class="ps-nlf-msg" role="alert" aria-live="polite"></div>
+      </form>
+
+      <script>
+      (function(){
+        var root = document.getElementById(<?= wp_json_encode($uid) ?>);
+        var form = root.querySelector('form');
+        var btn  = form.querySelector('button');
+        var msg  = root.querySelector('.ps-nlf-msg');
+        var label = btn.textContent;
+
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          msg.className = 'ps-nlf-msg';
+          var email = form.email.value.trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+            msg.textContent = <?= wp_json_encode(__('Vérifiez votre adresse e-mail.', 'poivre-sens')) ?>;
+            msg.className = 'ps-nlf-msg error';
+            return;
+          }
+          var data = new FormData();
+          data.append('action', 'ps_newsletter_subscribe');
+          data.append('nonce', <?= wp_json_encode($nonce) ?>);
+          data.append('email', email);
+          data.append('liste', <?= wp_json_encode($liste) ?>);
+
+          btn.disabled = true;
+          btn.textContent = <?= wp_json_encode(__('Envoi…', 'poivre-sens')) ?>;
+
+          fetch(<?= wp_json_encode(admin_url('admin-ajax.php')) ?>, { method:'POST', body:data })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+              msg.className = 'ps-nlf-msg ' + (res.success ? 'ok' : 'error');
+              msg.textContent = (res.data && res.data.message) || '';
+              if (res.success) { form.reset(); btn.style.display = 'none'; }
+            })
+            .catch(function(){
+              msg.className = 'ps-nlf-msg error';
+              msg.textContent = <?= wp_json_encode(__('Connexion impossible. Réessayez.', 'poivre-sens')) ?>;
+            })
+            .finally(function(){
+              btn.disabled = false;
+              if (btn.style.display !== 'none') btn.textContent = label;
+            });
+        });
+      })();
+      </script>
+    </div>
     <?php
     return ob_get_clean();
 });

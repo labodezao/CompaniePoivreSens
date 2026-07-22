@@ -207,8 +207,9 @@ peut appartenir à plusieurs listes.
 
 Deux listes sont créées automatiquement à l'activation :
 - **Site web** (`site`) — inscriptions via le formulaire `[ps_newsletter]`
-- **Grand Bal de l'Europe** (`grand-bal-europe`) — voir le modèle de page
-  dédié ci-dessous
+- **Grand Bal de l'Europe** (`grand-bal-europe`) — voir le shortcode
+  `[ps_newsletter_liste]` ci-dessous, pour les landing pages composées à
+  la main dans Gutenberg
 
 Créez-en d'autres depuis **Newsletter › Listes** (nom, description, couleur).
 
@@ -243,17 +244,24 @@ Créez-en d'autres depuis **Newsletter › Listes** (nom, description, couleur).
 > L'envoi se fait via `wp_mail()`. Pour un volume > 500 abonnés,
 > configurez un service SMTP (WP Mail SMTP + Brevo/Mailgun).
 
-### Landing page dédiée — Grand Bal de l'Europe
+### Landing page dédiée — composée dans Gutenberg
 
-Un modèle de page **« Landing — Grand Bal de l'Europe »** est disponible
-dans Pages → Attributs de page → Modèle. Il reprend le formulaire d'origine
-(design carte centrée, fond papier) et inscrit automatiquement chaque
-prospect dans la liste `grand-bal-europe`, ce qui les distingue des
-inscriptions via le formulaire principal du site.
+Pas de modèle de page ici : la landing page se compose entièrement avec des
+blocs Gutenberg natifs (titre, paragraphe, liste, séparateur…), entièrement
+éditables en ligne comme n'importe quelle page. Seul le formulaire lui-même
+est un shortcode technique, à placer dans un **bloc Shortcode** :
 
-Créez une page (ex. slug `/grand-bal/`), sélectionnez ce modèle, publiez —
-aucune configuration supplémentaire n'est nécessaire (le formulaire utilise
-directement `admin-ajax.php`, comme le reste du site).
+```
+[ps_newsletter_liste slug="grand-bal-europe" bouton="Recevez votre pratique"]
+```
+
+- `slug` : la liste à laquelle rattacher les inscriptions (doit déjà exister
+  dans Newsletter › Listes — sinon l'inscription se fait sans liste).
+- `bouton` : texte du bouton (optionnel).
+- `placeholder` : texte indicatif du champ e-mail (optionnel).
+
+Un exemple complet de page (à coller dans l'éditeur de code de la page,
+menu **⋮ → Éditeur de code**) est fourni à la fin de ce document.
 
 ### Statistiques de campagne
 
