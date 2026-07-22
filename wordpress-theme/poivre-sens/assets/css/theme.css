@@ -359,7 +359,10 @@ ul, ol { list-style: none; }
 
 /* ── Admin bar offset ─────────────────────────────────────── */
 .admin-bar .nav { top: 32px; }
-@media (max-width: 782px) { .admin-bar .nav { top: 46px; } }
+/* Pas de compensation mobile ici : sur certaines configs, la barre
+   d'admin WP ne s'affiche pas à cette taille sur mobile, et décaler
+   la nav de 46px laissait alors un vide permanent au-dessus d'elle.
+   Ce cas ne concerne que les sessions connectées (jamais les visiteurs). */
 
 /* ── Animations scroll ───────────────────────────────────── */
 .rv { opacity:0; transform:translateY(26px); transition:opacity .65s .05s var(--ease),transform .65s .05s var(--ease); }
