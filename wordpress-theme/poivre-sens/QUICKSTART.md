@@ -44,6 +44,18 @@ Le fichier `site/gutenberg-import.txt` existe pour deux situations différentes 
 
 > **Alternative via FTP** : copiez le dossier `poivre-sens/` dans `wp-content/themes/`
 
+#### Obtenir l'archive ZIP à jour
+
+Pour éviter les erreurs GitHub sur les fichiers binaires, l'archive ZIP n'est pas
+mise à jour directement dans les demandes d'extraction. Elle est générée comme
+artefact téléchargeable par GitHub Actions.
+
+- Sur GitHub : ouvrez l'onglet **Actions**, choisissez le workflow
+  **Build WordPress theme zip**, ouvrez le dernier run, puis téléchargez
+  l'artefact **poivre-sens-theme**. Il contient `poivre-sens.zip`.
+- En local : lancez `scripts/build-wordpress-theme-zip.sh`, puis récupérez
+  `dist/poivre-sens.zip`.
+
 ---
 
 ### 2. Configurer les permaliens ⚠️ Important
