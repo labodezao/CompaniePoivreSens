@@ -23,9 +23,9 @@ jobs:
       - name: Build theme zip
         run: scripts/build-wordpress-theme-zip.sh
 
-      - name: Upload installable theme artifact
+      - name: Upload theme zip artifact
         uses: actions/upload-artifact@v4
         with:
-          name: poivre-sens
-          path: dist/poivre-sens
+          name: poivre-sens-theme
+          path: dist/poivre-sens.zip
           if-no-files-found: error

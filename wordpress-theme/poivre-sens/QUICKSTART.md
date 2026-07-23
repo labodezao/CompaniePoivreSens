@@ -52,15 +52,9 @@ artefact téléchargeable par GitHub Actions.
 
 - Sur GitHub : ouvrez l'onglet **Actions**, choisissez le workflow
   **Build WordPress theme zip**, ouvrez le dernier run, puis téléchargez
-  l'artefact **poivre-sens**. Le fichier téléchargé par GitHub s'appelle
-  `poivre-sens.zip` et peut être envoyé directement dans WordPress.
+  l'artefact **poivre-sens-theme**. Il contient `poivre-sens.zip`.
 - En local : lancez `scripts/build-wordpress-theme-zip.sh`, puis récupérez
   `dist/poivre-sens.zip`.
-
-> Attention : si vous téléchargez un artefact nommé `poivre-sens-theme` venant
-> d'un ancien run, ne l'envoyez pas directement à WordPress : il contient une
-> archive à l'intérieur de l'archive. Relancez le dernier workflow et téléchargez
-> l'artefact **poivre-sens**.
 
 ---
 
