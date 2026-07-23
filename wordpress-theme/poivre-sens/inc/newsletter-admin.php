@@ -28,6 +28,27 @@ function ps_create_all_newsletter_tables() {
         UNIQUE KEY uq_email (email)
     ) $cs;");
 
+    // Listes (segments de prospects) — permet de localiser l'origine des abonnés
+    dbDelta("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}ps_newsletter_lists (
+        id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        nom           VARCHAR(150)    NOT NULL,
+        slug          VARCHAR(150)    NOT NULL,
+        description   VARCHAR(255)    NOT NULL DEFAULT '',
+        couleur       VARCHAR(7)      NOT NULL DEFAULT '#c28b36',
+        date_creation DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE KEY uq_slug (slug)
+    ) $cs;");
+
+    // Appartenance abonné ⇄ liste (plusieurs listes par abonné)
+    dbDelta("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}ps_newsletter_subscriber_lists (
+        subscriber_id BIGINT UNSIGNED NOT NULL,
+        list_id       BIGINT UNSIGNED NOT NULL,
+        date_ajout    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (subscriber_id, list_id),
+        KEY k_list (list_id)
+    ) $cs;");
+
     // Campagnes
     dbDelta("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}ps_newsletter_campaigns (
         id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -37,6 +58,7 @@ function ps_create_all_newsletter_tables() {
         contenu_texte  LONGTEXT        NOT NULL DEFAULT '',
         from_nom       VARCHAR(100)    NOT NULL DEFAULT '',
         from_email     VARCHAR(255)    NOT NULL DEFAULT '',
+        target_lists   VARCHAR(255)    NOT NULL DEFAULT '',
         statut         ENUM('brouillon','envoi_en_cours','envoye','erreur') NOT NULL DEFAULT 'brouillon',
         envoye_le      DATETIME        NULL,
         nb_envoyes     INT UNSIGNED    NOT NULL DEFAULT 0,
@@ -61,6 +83,156 @@ function ps_create_all_newsletter_tables() {
     ) $cs;");
 }
 
+/**
+ * Migration / mise à niveau du schéma newsletter.
+ * Crée les tables manquantes, ajoute les colonnes absentes sur d'anciennes
+ * installations (nom, source, target_lists) et sème les listes par défaut.
+ */
+function ps_nl_upgrade_db() {
+    global $wpdb;
+    ps_create_all_newsletter_tables();
+
+    // Colonnes ajoutées après coup sur la table abonnés (anciennes installs)
+    $ts   = $wpdb->prefix . 'ps_newsletter';
+    $cols = $wpdb->get_col("DESC $ts", 0);
+    if ($cols) {
+        if (!in_array('nom', $cols, true))    $wpdb->query("ALTER TABLE $ts ADD COLUMN nom VARCHAR(100) NOT NULL DEFAULT '' AFTER prenom");
+        if (!in_array('source', $cols, true)) $wpdb->query("ALTER TABLE $ts ADD COLUMN source VARCHAR(100) NOT NULL DEFAULT 'site' AFTER token");
+    }
+    // Colonne cible sur les campagnes
+    $tc    = $wpdb->prefix . 'ps_newsletter_campaigns';
+    $ccols = $wpdb->get_col("DESC $tc", 0);
+    if ($ccols && !in_array('target_lists', $ccols, true)) {
+        $wpdb->query("ALTER TABLE $tc ADD COLUMN target_lists VARCHAR(255) NOT NULL DEFAULT '' AFTER from_email");
+    }
+
+    ps_nl_seed_default_lists();
+}
+
+/** Sème les listes par défaut si aucune n'existe encore. */
+function ps_nl_seed_default_lists() {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    if ((int)$wpdb->get_var("SELECT COUNT(*) FROM $tl") > 0) return;
+
+    $defauts = [
+        ['nom' => __('Site web', 'poivre-sens'),             'slug' => 'site',             'description' => __('Inscriptions via le site cie.poivresens.fr', 'poivre-sens'), 'couleur' => '#c28b36'],
+        ['nom' => __('Grand Bal de l\'Europe', 'poivre-sens'), 'slug' => 'grand-bal-europe', 'description' => __('Prospects rencontrés au Grand Bal de l\'Europe', 'poivre-sens'), 'couleur' => '#9C3E1C'],
+    ];
+    foreach ($defauts as $d) {
+        $wpdb->insert($tl, $d + ['date_creation' => current_time('mysql')]);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODÈLE : LISTES DE PROSPECTS  (API interne)
+   ═══════════════════════════════════════════════════════════ */
+
+/** Toutes les listes, avec le nombre d'abonnés actifs par liste. */
+function ps_nl_get_lists() {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $ts = $wpdb->prefix . 'ps_newsletter';
+    return $wpdb->get_results("
+        SELECT l.*,
+               (SELECT COUNT(*) FROM $tj j INNER JOIN $ts s ON s.id=j.subscriber_id
+                 WHERE j.list_id=l.id AND s.statut='actif') AS nb_actifs,
+               (SELECT COUNT(*) FROM $tj j WHERE j.list_id=l.id) AS nb_total
+        FROM $tl l ORDER BY l.nom ASC");
+}
+
+/** Une liste par son id. */
+function ps_nl_get_list($id) {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    return $wpdb->get_row($wpdb->prepare("SELECT * FROM $tl WHERE id=%d", (int)$id));
+}
+
+/** Une liste par son slug. */
+function ps_nl_get_list_by_slug($slug) {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    return $wpdb->get_row($wpdb->prepare("SELECT * FROM $tl WHERE slug=%s", $slug));
+}
+
+/** Ids des listes d'un abonné. */
+function ps_nl_get_subscriber_list_ids($subscriber_id) {
+    global $wpdb;
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    return array_map('intval', $wpdb->get_col($wpdb->prepare("SELECT list_id FROM $tj WHERE subscriber_id=%d", (int)$subscriber_id)));
+}
+
+/** Objets liste d'un abonné (id, nom, couleur, slug). */
+function ps_nl_get_subscriber_lists($subscriber_id) {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    return $wpdb->get_results($wpdb->prepare(
+        "SELECT l.id, l.nom, l.slug, l.couleur FROM $tl l
+         INNER JOIN $tj j ON j.list_id = l.id
+         WHERE j.subscriber_id = %d ORDER BY l.nom ASC", (int)$subscriber_id));
+}
+
+/** Ajoute un abonné à une liste (idempotent). */
+function ps_nl_add_subscriber_to_list($subscriber_id, $list_id) {
+    global $wpdb;
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    if (!$subscriber_id || !$list_id) return;
+    $wpdb->query($wpdb->prepare(
+        "INSERT IGNORE INTO $tj (subscriber_id, list_id, date_ajout) VALUES (%d, %d, %s)",
+        (int)$subscriber_id, (int)$list_id, current_time('mysql')
+    ));
+}
+
+/** Remplace intégralement les listes d'un abonné. */
+function ps_nl_set_subscriber_lists($subscriber_id, array $list_ids) {
+    global $wpdb;
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $wpdb->delete($tj, ['subscriber_id' => (int)$subscriber_id]);
+    foreach (array_unique(array_map('intval', $list_ids)) as $lid) {
+        if ($lid > 0) ps_nl_add_subscriber_to_list($subscriber_id, $lid);
+    }
+}
+
+/** Normalise une valeur de ciblage (« 2,5 » ou tableau) en tableau d'ids. */
+function ps_nl_parse_target($target) {
+    if (is_array($target)) $ids = $target;
+    else $ids = array_filter(array_map('trim', explode(',', (string)$target)), 'strlen');
+    return array_values(array_unique(array_map('intval', $ids)));
+}
+
+/**
+ * Abonnés actifs correspondant à un ciblage de listes.
+ * Ciblage vide => tous les abonnés actifs (comportement historique).
+ */
+function ps_nl_get_active_subscribers($target = '') {
+    global $wpdb;
+    $ts  = $wpdb->prefix . 'ps_newsletter';
+    $tj  = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $ids = ps_nl_parse_target($target);
+    if (!$ids) {
+        return $wpdb->get_results("SELECT * FROM $ts WHERE statut='actif'");
+    }
+    $in = implode(',', array_map('intval', $ids));
+    return $wpdb->get_results("SELECT DISTINCT s.* FROM $ts s
+        INNER JOIN $tj j ON j.subscriber_id = s.id
+        WHERE s.statut='actif' AND j.list_id IN ($in)");
+}
+
+/** Nombre d'abonnés actifs pour un ciblage donné. */
+function ps_nl_count_active($target = '') {
+    global $wpdb;
+    $ts  = $wpdb->prefix . 'ps_newsletter';
+    $tj  = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $ids = ps_nl_parse_target($target);
+    if (!$ids) return (int)$wpdb->get_var("SELECT COUNT(*) FROM $ts WHERE statut='actif'");
+    $in = implode(',', array_map('intval', $ids));
+    return (int)$wpdb->get_var("SELECT COUNT(DISTINCT s.id) FROM $ts s
+        INNER JOIN $tj j ON j.subscriber_id = s.id
+        WHERE s.statut='actif' AND j.list_id IN ($in)");
+}
+
 /* ═══════════════════════════════════════════════════════════
    MENU ADMIN — STRUCTURE PRINCIPALE
    ═══════════════════════════════════════════════════════════ */
@@ -78,6 +250,7 @@ add_action('admin_menu', function () {
     // Sous-menus
     add_submenu_page('ps-newsletter', __('Tableau de bord', 'poivre-sens'), __('Tableau de bord', 'poivre-sens'), 'manage_options', 'ps-newsletter', 'ps_nl_page_dispatch');
     add_submenu_page('ps-newsletter', __('Abonnés',        'poivre-sens'), __('Abonnés',        'poivre-sens'), 'manage_options', 'ps-nl-abonnes',    'ps_nl_page_dispatch');
+    add_submenu_page('ps-newsletter', __('Listes',         'poivre-sens'), __('Listes',         'poivre-sens'), 'manage_options', 'ps-nl-listes',     'ps_nl_page_dispatch');
     add_submenu_page('ps-newsletter', __('Campagnes',      'poivre-sens'), __('Campagnes',      'poivre-sens'), 'manage_options', 'ps-nl-campagnes',  'ps_nl_page_dispatch');
     add_submenu_page('ps-newsletter', __('Nouvelle campagne', 'poivre-sens'), __('Nouvelle campagne', 'poivre-sens'), 'manage_options', 'ps-nl-nouvelle-campagne', 'ps_nl_page_dispatch');
 });
@@ -87,6 +260,7 @@ function ps_nl_page_dispatch() {
     $page = $_GET['page'] ?? 'ps-newsletter';
     switch ($page) {
         case 'ps-nl-abonnes':           ps_nl_page_abonnes();           break;
+        case 'ps-nl-listes':            ps_nl_page_listes();            break;
         case 'ps-nl-campagnes':         ps_nl_page_campagnes();         break;
         case 'ps-nl-nouvelle-campagne': ps_nl_page_nouvelle_campagne(); break;
         default:                        ps_nl_page_dashboard();         break;
@@ -304,67 +478,107 @@ function ps_nl_page_abonnes() {
     /* ── Actions POST ─────────────────────────────────────── */
     $notice = '';
 
-    // Export CSV
+    // Export CSV — filtrable par statut ET par liste
     if (isset($_GET['export']) && current_user_can('manage_options')) {
         check_admin_referer('ps_export_csv');
-        $statut = sanitize_text_field($_GET['statut'] ?? 'actif');
-        $where  = $statut === 'tous' ? '' : $wpdb->prepare('WHERE statut=%s', $statut);
-        $rows   = $wpdb->get_results("SELECT email, prenom, nom, statut, source, date_creation FROM $table $where ORDER BY date_creation DESC");
+        $statut  = sanitize_text_field($_GET['statut'] ?? 'actif');
+        $list_id = (int)($_GET['liste'] ?? 0);
+        $tj      = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+        $join    = $list_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $list_id : '';
+        $where   = $statut === 'tous' ? 'WHERE 1=1' : $wpdb->prepare('WHERE t.statut=%s', $statut);
+        $rows    = $wpdb->get_results("SELECT t.id, t.email, t.prenom, t.nom, t.statut, t.source, t.date_creation FROM $table t $join $where ORDER BY t.date_creation DESC");
+
+        // Précharge les listes de tous les abonnés exportés en une seule requête
+        // (évite une requête par ligne sur un export volumineux).
+        $list_names = [];
+        $sub_ids = wp_list_pluck($rows, 'id');
+        if ($sub_ids) {
+            $tl   = $wpdb->prefix . 'ps_newsletter_lists';
+            $in   = implode(',', array_map('intval', $sub_ids));
+            $rels = $wpdb->get_results("SELECT j.subscriber_id, l.nom FROM $tj j INNER JOIN $tl l ON l.id = j.list_id WHERE j.subscriber_id IN ($in) ORDER BY l.nom ASC");
+            foreach ($rels as $rel) $list_names[$rel->subscriber_id][] = $rel->nom;
+        }
+
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="newsletter-abonnes-' . date('Y-m-d') . '.csv"');
         $out = fopen('php://output', 'w');
         fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
-        fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Date inscription']);
-        foreach ($rows as $r) fputcsv($out, [(string)$r->email, (string)$r->prenom, (string)$r->nom, (string)$r->statut, (string)$r->source, (string)$r->date_creation]);
+        fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Listes', 'Date inscription']);
+        foreach ($rows as $r) {
+            $noms = implode(', ', $list_names[$r->id] ?? []);
+            fputcsv($out, [(string)$r->email, (string)$r->prenom, (string)$r->nom, (string)$r->statut, (string)$r->source, $noms, (string)$r->date_creation]);
+        }
         fclose($out); exit;
     }
 
-    // Import CSV
+    // Import CSV — avec affectation à une liste
     if (isset($_POST['ps_import_csv']) && check_admin_referer('ps_import_csv')) {
         if (!empty($_FILES['csv_file']['tmp_name'])) {
+            $import_list = (int)($_POST['import_list_id'] ?? 0);
             $handle = fopen($_FILES['csv_file']['tmp_name'], 'r');
             fgetcsv($handle); // skip header
-            $imported = $skipped = 0;
+            $imported = $skipped = $attached = 0;
             while (($row = fgetcsv($handle)) !== false) {
                 $email = sanitize_email(trim($row[0] ?? ''));
                 if (!is_email($email)) { $skipped++; continue; }
                 $prenom = sanitize_text_field(trim($row[1] ?? ''));
                 $nom    = sanitize_text_field(trim($row[2] ?? ''));
-                $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE email=%s", $email));
-                if ($exists) { $skipped++; continue; }
+                $exists = (int)$wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE email=%s", $email));
+                if ($exists) {
+                    // Déjà inscrit : on ne recrée pas, mais on peut l'ajouter à la liste choisie
+                    if ($import_list) { ps_nl_add_subscriber_to_list($exists, $import_list); $attached++; }
+                    $skipped++; continue;
+                }
                 $wpdb->insert($table, ['email'=>$email,'prenom'=>$prenom,'nom'=>$nom,'statut'=>'actif','token'=>wp_generate_password(32,false),'source'=>'import','date_creation'=>current_time('mysql'),'date_confirm'=>current_time('mysql')]);
+                if ($import_list) ps_nl_add_subscriber_to_list($wpdb->insert_id, $import_list);
                 $imported++;
             }
             fclose($handle);
-            $notice = sprintf(__('%d abonné(s) importé(s), %d ignoré(s).', 'poivre-sens'), $imported, $skipped);
+            $extra  = $attached ? ' ' . sprintf(__('(%d abonné(s) existant(s) ajouté(s) à la liste)', 'poivre-sens'), $attached) : '';
+            $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('%d abonné(s) importé(s), %d ignoré(s).', 'poivre-sens'), $imported, $skipped) . $extra . '</div>';
         }
     }
 
-    // Ajout manuel
+    // Ajout manuel — avec affectation aux listes
     if (isset($_POST['ps_add_subscriber']) && check_admin_referer('ps_add_subscriber')) {
         $email  = sanitize_email($_POST['email'] ?? '');
         $prenom = sanitize_text_field($_POST['prenom'] ?? '');
         $nom    = sanitize_text_field($_POST['nom'] ?? '');
+        $lists  = array_map('intval', (array)($_POST['lists'] ?? []));
         if (!is_email($email)) {
             $notice = '<div class="ps-notice ps-notice-err">' . __('E-mail invalide.', 'poivre-sens') . '</div>';
         } elseif ($wpdb->get_var($wpdb->prepare("SELECT id FROM $table WHERE email=%s", $email))) {
             $notice = '<div class="ps-notice ps-notice-warn">' . __('Cet e-mail est déjà inscrit.', 'poivre-sens') . '</div>';
         } else {
             $wpdb->insert($table, ['email'=>$email,'prenom'=>$prenom,'nom'=>$nom,'statut'=>'actif','token'=>wp_generate_password(32,false),'source'=>'admin','date_creation'=>current_time('mysql'),'date_confirm'=>current_time('mysql')]);
+            if ($lists) ps_nl_set_subscriber_lists($wpdb->insert_id, $lists);
             $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('%s ajouté(e) avec succès.', 'poivre-sens'), esc_html($email)) . '</div>';
         }
     }
 
+    // Affectation en masse à une liste
+    if (isset($_POST['ps_bulk_addlist']) && check_admin_referer('ps_bulk_addlist')) {
+        $ids  = array_map('intval', (array)($_POST['selected_ids'] ?? []));
+        $lid  = (int)($_POST['bulk_list_id'] ?? 0);
+        if ($lid) { foreach ($ids as $id) ps_nl_add_subscriber_to_list($id, $lid); }
+        $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('%d abonné(s) ajouté(s) à la liste.', 'poivre-sens'), count($ids)) . '</div>';
+    }
+
     // Suppression unitaire
     if (isset($_GET['delete_id']) && check_admin_referer('ps_del_sub_' . $_GET['delete_id'])) {
-        $wpdb->delete($table, ['id' => (int)$_GET['delete_id']]);
+        $sid = (int)$_GET['delete_id'];
+        $wpdb->delete($table, ['id' => $sid]);
+        $wpdb->delete($wpdb->prefix . 'ps_newsletter_subscriber_lists', ['subscriber_id' => $sid]);
         $notice = '<div class="ps-notice ps-notice-ok">' . __('Abonné supprimé.', 'poivre-sens') . '</div>';
     }
 
     // Suppression en masse
     if (isset($_POST['ps_bulk_delete']) && check_admin_referer('ps_bulk_delete')) {
         $ids = array_map('intval', (array)($_POST['selected_ids'] ?? []));
-        foreach ($ids as $id) $wpdb->delete($table, ['id' => $id]);
+        foreach ($ids as $id) {
+            $wpdb->delete($table, ['id' => $id]);
+            $wpdb->delete($wpdb->prefix . 'ps_newsletter_subscriber_lists', ['subscriber_id' => $id]);
+        }
         $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('%d abonné(s) supprimé(s).', 'poivre-sens'), count($ids)) . '</div>';
     }
 
@@ -379,23 +593,29 @@ function ps_nl_page_abonnes() {
     /* ── Recherche & filtres ─────────────────────────────── */
     $search    = sanitize_text_field($_GET['s'] ?? '');
     $filtre    = sanitize_text_field($_GET['statut'] ?? '');
+    $liste_id  = (int)($_GET['liste'] ?? 0);
     $per_page  = 25;
     $paged     = max(1, (int)($_GET['paged'] ?? 1));
     $offset    = ($paged - 1) * $per_page;
 
+    $tj    = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $join  = $liste_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $liste_id : '';
     $where = 'WHERE 1=1';
-    if ($filtre) $where .= $wpdb->prepare(' AND statut=%s', $filtre);
-    if ($search) $where .= $wpdb->prepare(' AND (email LIKE %s OR prenom LIKE %s OR nom LIKE %s)', "%$search%", "%$search%", "%$search%");
+    if ($filtre) $where .= $wpdb->prepare(' AND t.statut=%s', $filtre);
+    if ($search) $where .= $wpdb->prepare(' AND (t.email LIKE %s OR t.prenom LIKE %s OR t.nom LIKE %s)', "%$search%", "%$search%", "%$search%");
 
-    $total   = (int)$wpdb->get_var("SELECT COUNT(*) FROM $table $where");
-    $abonnes = $wpdb->get_results("SELECT * FROM $table $where ORDER BY date_creation DESC LIMIT $per_page OFFSET $offset");
+    $total   = (int)$wpdb->get_var("SELECT COUNT(*) FROM $table t $join $where");
+    $abonnes = $wpdb->get_results("SELECT t.* FROM $table t $join $where ORDER BY t.date_creation DESC LIMIT $per_page OFFSET $offset");
     $pages   = ceil($total / $per_page);
 
     $stats_statut = $wpdb->get_results("SELECT statut, COUNT(*) as n FROM $table GROUP BY statut");
     $ss = [];
     foreach ($stats_statut as $s) $ss[$s->statut] = $s->n;
 
-    $export_url = wp_nonce_url(add_query_arg(['export'=>1,'statut'=>$filtre ?: 'tous'], admin_url('admin.php?page=ps-nl-abonnes')), 'ps_export_csv');
+    $all_lists     = ps_nl_get_lists();
+    $liste_courante = $liste_id ? ps_nl_get_list($liste_id) : null;
+
+    $export_url = wp_nonce_url(add_query_arg(['export'=>1,'statut'=>$filtre ?: 'tous','liste'=>$liste_id], admin_url('admin.php?page=ps-nl-abonnes')), 'ps_export_csv');
     $add_mode   = ($_GET['action'] ?? '') === 'add';
 
     ps_nl_header(__('Abonnés', 'poivre-sens'), 'ps-nl-abonnes');
@@ -413,6 +633,12 @@ function ps_nl_page_abonnes() {
                     <option value="actif"       <?= selected($filtre,'actif',false)       ?>><?= __('Actifs',     'poivre-sens') ?> (<?= $ss['actif']      ?? 0 ?>)</option>
                     <option value="desabonne"   <?= selected($filtre,'desabonne',false)   ?>><?= __('Désabonnés','poivre-sens') ?> (<?= $ss['desabonne']  ?? 0 ?>)</option>
                     <option value="en_attente"  <?= selected($filtre,'en_attente',false)  ?>><?= __('En attente','poivre-sens') ?> (<?= $ss['en_attente'] ?? 0 ?>)</option>
+                </select>
+                <select name="liste" style="padding:7px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px">
+                    <option value="0"><?= __('Toutes les listes', 'poivre-sens') ?></option>
+                    <?php foreach ($all_lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>" <?= selected($liste_id, $l->id, false) ?>><?= esc_html($l->nom) ?> (<?= (int)$l->nb_actifs ?>)</option>
+                    <?php endforeach; ?>
                 </select>
                 <button type="submit" class="ps-btn ps-btn-grey ps-btn-sm"><?= __('Filtrer', 'poivre-sens') ?></button>
             </form>
@@ -434,6 +660,20 @@ function ps_nl_page_abonnes() {
                 <div class="ps-field"><label><?= __('Prénom', 'poivre-sens') ?></label><input type="text" name="prenom" placeholder="Ambre"></div>
                 <div class="ps-field"><label><?= __('Nom', 'poivre-sens') ?></label><input type="text" name="nom" placeholder="Lavignac"></div>
             </div>
+            <?php if ($all_lists): ?>
+            <div class="ps-field" style="margin-bottom:16px">
+                <label><?= __('Listes', 'poivre-sens') ?></label>
+                <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:6px">
+                    <?php foreach ($all_lists as $l): ?>
+                    <label style="display:inline-flex;align-items:center;gap:6px;font-weight:400;text-transform:none;letter-spacing:0;font-size:13px;color:#333">
+                        <input type="checkbox" name="lists[]" value="<?= (int)$l->id ?>" <?= checked($liste_id, $l->id, false) ?> style="width:auto">
+                        <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:<?= esc_attr($l->couleur) ?>"></span>
+                        <?= esc_html($l->nom) ?>
+                    </label>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
             <button type="submit" name="ps_add_subscriber" class="ps-btn ps-btn-primary"><?= __('Ajouter l\'abonné', 'poivre-sens') ?></button>
             <a href="<?= admin_url('admin.php?page=ps-nl-abonnes') ?>" class="ps-btn ps-btn-grey" style="margin-left:8px"><?= __('Annuler', 'poivre-sens') ?></a>
         </form>
@@ -442,6 +682,10 @@ function ps_nl_page_abonnes() {
 
     <div style="font-size:12px;color:#888;margin-bottom:10px">
         <?= sprintf(__('%d résultat(s)', 'poivre-sens'), $total) ?>
+        <?php if ($liste_courante): ?> — <?= __('Liste :', 'poivre-sens') ?>
+            <strong style="color:<?= esc_attr($liste_courante->couleur) ?>"><?= esc_html($liste_courante->nom) ?></strong>
+            <a href="<?= admin_url('admin.php?page=ps-nl-abonnes') ?>" style="color:#c28b36">✕ <?= __('effacer', 'poivre-sens') ?></a>
+        <?php endif; ?>
         <?php if ($search): ?> — <?= __('Recherche :', 'poivre-sens') ?> <strong><?= esc_html($search) ?></strong>
             <a href="<?= admin_url('admin.php?page=ps-nl-abonnes') ?>" style="color:#c28b36">✕ <?= __('effacer', 'poivre-sens') ?></a>
         <?php endif; ?>
@@ -450,6 +694,8 @@ function ps_nl_page_abonnes() {
     <form method="post" id="ps-abonnes-form">
         <?php wp_nonce_field('ps_bulk_delete', '_wpnonce_bulk_delete'); ?>
         <?php wp_nonce_field('ps_bulk_status', '_wpnonce_bulk_status'); ?>
+        <?php wp_nonce_field('ps_bulk_addlist', '_wpnonce_bulk_addlist'); ?>
+        <input type="hidden" name="_wpnonce" value="">
 
         <div class="ps-bulk-bar" id="ps-bulk-bar">
             <span id="ps-bulk-count">0 <?= __('sélectionné(s)', 'poivre-sens') ?></span>
@@ -458,6 +704,16 @@ function ps_nl_page_abonnes() {
                 <option value="desabonne"><?= __('Désabonner', 'poivre-sens') ?></option>
             </select>
             <button type="submit" name="ps_bulk_status" onclick="this.form['_wpnonce'].value=this.form['_wpnonce_bulk_status'].value" class="ps-btn ps-btn-grey ps-btn-sm"><?= __('Changer statut', 'poivre-sens') ?></button>
+            <?php if ($all_lists): ?>
+            <span style="color:#ddd">|</span>
+            <select name="bulk_list_id" style="padding:4px 8px;border:1px solid #ddd;border-radius:3px;font-size:12px">
+                <?php foreach ($all_lists as $l): ?>
+                <option value="<?= (int)$l->id ?>"><?= esc_html($l->nom) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" name="ps_bulk_addlist" onclick="this.form['_wpnonce'].value=this.form['_wpnonce_bulk_addlist'].value" class="ps-btn ps-btn-outline ps-btn-sm"><?= __('Ajouter à la liste', 'poivre-sens') ?></button>
+            <?php endif; ?>
+            <span style="color:#ddd">|</span>
             <button type="submit" name="ps_bulk_delete" onclick="return confirm('<?= esc_js(__('Supprimer les abonnés sélectionnés ?', 'poivre-sens')) ?>') && (this.form['_wpnonce'].value=this.form['_wpnonce_bulk_delete'].value, true)" class="ps-btn ps-btn-danger ps-btn-sm"><?= __('Supprimer', 'poivre-sens') ?></button>
         </div>
 
@@ -466,6 +722,7 @@ function ps_nl_page_abonnes() {
                 <th style="width:32px"><input type="checkbox" class="ps-checkbox-all" id="cb-all"></th>
                 <th><?= __('E-mail', 'poivre-sens') ?></th>
                 <th><?= __('Prénom / Nom', 'poivre-sens') ?></th>
+                <th><?= __('Listes', 'poivre-sens') ?></th>
                 <th><?= __('Statut', 'poivre-sens') ?></th>
                 <th><?= __('Source', 'poivre-sens') ?></th>
                 <th><?= __('Inscrit le', 'poivre-sens') ?></th>
@@ -477,6 +734,13 @@ function ps_nl_page_abonnes() {
                 <td><input type="checkbox" name="selected_ids[]" value="<?= $a->id ?>" class="ps-cb-row"></td>
                 <td><strong><?= esc_html($a->email) ?></strong></td>
                 <td><?= esc_html(trim("$a->prenom $a->nom")) ?: '<span style="color:#ccc">—</span>' ?></td>
+                <td>
+                    <?php $subs_lists = ps_nl_get_subscriber_lists($a->id); ?>
+                    <?php if ($subs_lists): foreach ($subs_lists as $sl): ?>
+                    <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-abonnes&liste='.$sl->id)) ?>"
+                       class="ps-badge" style="background:<?= esc_attr($sl->couleur) ?>1a;color:<?= esc_attr($sl->couleur) ?>;text-decoration:none;margin:0 3px 3px 0"><?= esc_html($sl->nom) ?></a>
+                    <?php endforeach; else: ?><span style="color:#ccc">—</span><?php endif; ?>
+                </td>
                 <td><span class="ps-badge ps-badge-<?= esc_attr($a->statut) ?>"><?= esc_html(ucfirst(str_replace('_',' ',$a->statut))) ?></span></td>
                 <td style="color:#aaa;font-size:12px"><?= esc_html($a->source) ?></td>
                 <td style="color:#888;font-size:12px"><?= date_i18n('d/m/Y', strtotime($a->date_creation)) ?></td>
@@ -486,7 +750,7 @@ function ps_nl_page_abonnes() {
                 </td>
             </tr>
             <?php endforeach; else: ?>
-            <tr><td colspan="7" style="text-align:center;color:#aaa;padding:32px"><?= __('Aucun abonné trouvé.', 'poivre-sens') ?></td></tr>
+            <tr><td colspan="8" style="text-align:center;color:#aaa;padding:32px"><?= __('Aucun abonné trouvé.', 'poivre-sens') ?></td></tr>
             <?php endif; ?>
             </tbody>
         </table>
@@ -495,7 +759,7 @@ function ps_nl_page_abonnes() {
     <?php if ($pages > 1): ?>
     <div class="ps-pagination">
         <?php
-        $base_url = add_query_arg(['page'=>'ps-nl-abonnes','s'=>$search,'statut'=>$filtre], admin_url('admin.php'));
+        $base_url = add_query_arg(['page'=>'ps-nl-abonnes','s'=>$search,'statut'=>$filtre,'liste'=>$liste_id], admin_url('admin.php'));
         if ($paged > 1) echo '<a href="' . esc_url(add_query_arg('paged', $paged-1, $base_url)) . '">‹</a>';
         for ($i=1; $i<=$pages; $i++) {
             $cls = $i === $paged ? 'current' : '';
@@ -520,6 +784,15 @@ function ps_nl_page_abonnes() {
             <form method="post" enctype="multipart/form-data">
                 <?php wp_nonce_field('ps_import_csv'); ?>
                 <input type="file" name="csv_file" accept=".csv,.txt" style="margin-bottom:16px;display:block">
+                <?php if ($all_lists): ?>
+                <label style="display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em"><?= __('Ajouter les abonnés à la liste', 'poivre-sens') ?></label>
+                <select name="import_list_id" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:16px">
+                    <option value="0"><?= __('— Aucune liste —', 'poivre-sens') ?></option>
+                    <?php foreach ($all_lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>" <?= selected($liste_id, $l->id, false) ?>><?= esc_html($l->nom) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php endif; ?>
                 <div style="display:flex;gap:10px">
                     <button type="submit" name="ps_import_csv" class="ps-btn ps-btn-primary"><?= __('Importer', 'poivre-sens') ?></button>
                     <button type="button" onclick="document.getElementById('ps-import-modal').style.display='none'" class="ps-btn ps-btn-grey"><?= __('Annuler', 'poivre-sens') ?></button>
@@ -547,6 +820,130 @@ function ps_nl_page_abonnes() {
     })();
     </script>
 
+    </div><!-- .ps-wrap -->
+    <?php
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE : LISTES  (segments de prospects)
+   ═══════════════════════════════════════════════════════════ */
+function ps_nl_page_listes() {
+    global $wpdb;
+    $tl = $wpdb->prefix . 'ps_newsletter_lists';
+    $notice = '';
+
+    // Créer / modifier une liste
+    if (isset($_POST['ps_save_list']) && check_admin_referer('ps_save_list')) {
+        $id   = (int)($_POST['list_id'] ?? 0);
+        $nom  = sanitize_text_field($_POST['nom'] ?? '');
+        $slug = sanitize_title(($_POST['slug'] ?? '') ?: $nom);
+        $desc = sanitize_text_field($_POST['description'] ?? '');
+        $coul = sanitize_hex_color($_POST['couleur'] ?? '') ?: '#c28b36';
+        if (!$nom || !$slug) {
+            $notice = '<div class="ps-notice ps-notice-err">' . __('Le nom de la liste est obligatoire.', 'poivre-sens') . '</div>';
+        } else {
+            // Slug unique (hors liste courante)
+            $clash = $wpdb->get_var($wpdb->prepare("SELECT id FROM $tl WHERE slug=%s AND id<>%d", $slug, $id));
+            if ($clash) {
+                $notice = '<div class="ps-notice ps-notice-err">' . __('Ce raccourci (slug) est déjà utilisé par une autre liste.', 'poivre-sens') . '</div>';
+            } elseif ($id) {
+                $wpdb->update($tl, ['nom'=>$nom,'slug'=>$slug,'description'=>$desc,'couleur'=>$coul], ['id'=>$id]);
+                $notice = '<div class="ps-notice ps-notice-ok">' . __('Liste mise à jour.', 'poivre-sens') . '</div>';
+            } else {
+                $wpdb->insert($tl, ['nom'=>$nom,'slug'=>$slug,'description'=>$desc,'couleur'=>$coul,'date_creation'=>current_time('mysql')]);
+                $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('Liste « %s » créée.', 'poivre-sens'), esc_html($nom)) . '</div>';
+            }
+        }
+    }
+
+    // Suppression d'une liste (les appartenances sont supprimées, pas les abonnés)
+    if (isset($_GET['delete_id']) && check_admin_referer('ps_del_list_' . $_GET['delete_id'])) {
+        $id = (int)$_GET['delete_id'];
+        $wpdb->delete($tl, ['id' => $id]);
+        $wpdb->delete($wpdb->prefix . 'ps_newsletter_subscriber_lists', ['list_id' => $id]);
+        $notice = '<div class="ps-notice ps-notice-ok">' . __('Liste supprimée. Les abonnés concernés restent inscrits.', 'poivre-sens') . '</div>';
+    }
+
+    $edit = null;
+    if (isset($_GET['edit_id'])) $edit = ps_nl_get_list((int)$_GET['edit_id']);
+    $lists = ps_nl_get_lists();
+
+    ps_nl_header(__('Listes', 'poivre-sens'), 'ps-nl-listes');
+    echo $notice;
+    ?>
+    <p style="font-size:13px;color:#666;margin-bottom:20px">
+        <?= wp_kses_post(__('Les listes permettent de <strong>localiser l\'origine de vos prospects</strong> (site web, événement, salon…) et de leur envoyer des campagnes ciblées. Un même abonné peut appartenir à plusieurs listes.', 'poivre-sens')) ?>
+    </p>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start">
+
+        <div class="ps-card">
+            <h3>🏷 <?= __('Vos listes', 'poivre-sens') ?></h3>
+            <table class="ps-table">
+                <thead><tr>
+                    <th><?= __('Liste', 'poivre-sens') ?></th>
+                    <th><?= __('Slug', 'poivre-sens') ?></th>
+                    <th><?= __('Abonnés actifs', 'poivre-sens') ?></th>
+                    <th><?= __('Actions', 'poivre-sens') ?></th>
+                </tr></thead>
+                <tbody>
+                <?php if ($lists): foreach ($lists as $l): ?>
+                <tr>
+                    <td>
+                        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:<?= esc_attr($l->couleur) ?>;margin-right:8px;vertical-align:middle"></span>
+                        <strong><?= esc_html($l->nom) ?></strong>
+                        <?php if ($l->description): ?><br><span style="font-size:11px;color:#aaa;padding-left:18px"><?= esc_html($l->description) ?></span><?php endif; ?>
+                    </td>
+                    <td><code style="font-size:11px;color:#888"><?= esc_html($l->slug) ?></code></td>
+                    <td>
+                        <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-abonnes&liste='.$l->id)) ?>">
+                            <strong><?= (int)$l->nb_actifs ?></strong>
+                        </a>
+                        <span style="color:#bbb;font-size:11px"> / <?= (int)$l->nb_total ?> <?= __('au total', 'poivre-sens') ?></span>
+                    </td>
+                    <td class="actions">
+                        <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-listes&edit_id='.$l->id)) ?>" class="ps-btn ps-btn-outline ps-btn-sm"><?= __('Modifier', 'poivre-sens') ?></a>
+                        <?php $del = wp_nonce_url(add_query_arg(['page'=>'ps-nl-listes','delete_id'=>$l->id], admin_url('admin.php')), 'ps_del_list_'.$l->id); ?>
+                        <a href="<?= esc_url($del) ?>" class="ps-btn ps-btn-danger ps-btn-sm" onclick="return confirm('<?= esc_js(__('Supprimer cette liste ? Les abonnés ne seront pas supprimés.', 'poivre-sens')) ?>')"><?= __('Supprimer', 'poivre-sens') ?></a>
+                    </td>
+                </tr>
+                <?php endforeach; else: ?>
+                <tr><td colspan="4" style="text-align:center;color:#aaa;padding:28px"><?= __('Aucune liste. Créez-en une pour segmenter vos prospects.', 'poivre-sens') ?></td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ps-card">
+            <h3><?= $edit ? '✏️ '.__('Modifier la liste', 'poivre-sens') : '➕ '.__('Nouvelle liste', 'poivre-sens') ?></h3>
+            <form method="post">
+                <?php wp_nonce_field('ps_save_list'); ?>
+                <input type="hidden" name="list_id" value="<?= (int)($edit->id ?? 0) ?>">
+                <div class="ps-field" style="margin-bottom:14px">
+                    <label><?= __('Nom de la liste *', 'poivre-sens') ?></label>
+                    <input type="text" name="nom" required value="<?= esc_attr($edit->nom ?? '') ?>" placeholder="<?= esc_attr(__('Ex : Grand Bal de l\'Europe', 'poivre-sens')) ?>">
+                </div>
+                <div class="ps-field" style="margin-bottom:14px">
+                    <label><?= __('Slug (raccourci)', 'poivre-sens') ?></label>
+                    <input type="text" name="slug" value="<?= esc_attr($edit->slug ?? '') ?>" placeholder="<?= esc_attr(__('grand-bal-europe', 'poivre-sens')) ?>">
+                    <div class="help"><?= __('Identifiant utilisé dans les formulaires. Laissez vide pour le générer automatiquement.', 'poivre-sens') ?></div>
+                </div>
+                <div class="ps-field" style="margin-bottom:14px">
+                    <label><?= __('Description', 'poivre-sens') ?></label>
+                    <input type="text" name="description" value="<?= esc_attr($edit->description ?? '') ?>" placeholder="<?= esc_attr(__('Où avez-vous rencontré ces prospects ?', 'poivre-sens')) ?>">
+                </div>
+                <div class="ps-field" style="margin-bottom:18px">
+                    <label><?= __('Couleur', 'poivre-sens') ?></label>
+                    <input type="color" name="couleur" value="<?= esc_attr($edit->couleur ?? '#c28b36') ?>" style="width:60px;height:34px;padding:2px">
+                </div>
+                <button type="submit" name="ps_save_list" class="ps-btn ps-btn-primary"><?= $edit ? __('Enregistrer', 'poivre-sens') : __('Créer la liste', 'poivre-sens') ?></button>
+                <?php if ($edit): ?>
+                <a href="<?= admin_url('admin.php?page=ps-nl-listes') ?>" class="ps-btn ps-btn-grey" style="margin-left:8px"><?= __('Annuler', 'poivre-sens') ?></a>
+                <?php endif; ?>
+            </form>
+        </div>
+
+    </div>
     </div><!-- .ps-wrap -->
     <?php
 }
@@ -583,6 +980,7 @@ function ps_nl_page_campagnes() {
     <table class="ps-table">
         <thead><tr>
             <th><?= __('Sujet', 'poivre-sens') ?></th>
+            <th><?= __('Ciblage', 'poivre-sens') ?></th>
             <th><?= __('Statut', 'poivre-sens') ?></th>
             <th><?= __('Envoyés', 'poivre-sens') ?></th>
             <th><?= __('Ouverts', 'poivre-sens') ?></th>
@@ -593,8 +991,17 @@ function ps_nl_page_campagnes() {
         <tbody>
         <?php if ($campagnes): foreach ($campagnes as $c): ?>
         <?php $taux = $c->nb_envoyes ? round(100*$c->nb_ouverts/$c->nb_envoyes) : 0; ?>
+        <?php $c_target_ids = ps_nl_parse_target($c->target_lists ?? ''); ?>
+        <?php $c_actifs = ps_nl_count_active($c->target_lists ?? ''); ?>
         <tr>
             <td><strong><?= esc_html($c->sujet) ?></strong><?php if($c->preheader): ?><br><span style="font-size:11px;color:#aaa"><?= esc_html($c->preheader) ?></span><?php endif; ?></td>
+            <td style="font-size:12px">
+                <?php if (!$c_target_ids): ?>
+                <span style="color:#888"><?= __('Tous les abonnés', 'poivre-sens') ?></span>
+                <?php else: foreach ($c_target_ids as $lid): $l = ps_nl_get_list($lid); if (!$l) continue; ?>
+                <span class="ps-badge" style="background:<?= esc_attr($l->couleur) ?>1a;color:<?= esc_attr($l->couleur) ?>;margin:0 3px 3px 0"><?= esc_html($l->nom) ?></span>
+                <?php endforeach; endif; ?>
+            </td>
             <td><span class="ps-badge ps-badge-<?= esc_attr($c->statut) ?>"><?= esc_html(ucfirst(str_replace('_',' ',$c->statut))) ?></span></td>
             <td><?= $c->nb_envoyes ?: '—' ?></td>
             <td><?= $c->nb_ouverts ?: '—' ?></td>
@@ -612,7 +1019,7 @@ function ps_nl_page_campagnes() {
                 <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-nouvelle-campagne&edit_id='.$c->id)) ?>" class="ps-btn ps-btn-outline ps-btn-sm"><?= __('Modifier', 'poivre-sens') ?></a>
                 <a href="<?= esc_url(wp_nonce_url(admin_url('admin.php?page=ps-nl-campagnes&send_id='.$c->id), 'ps_send_camp_'.$c->id)) ?>"
                    class="ps-btn ps-btn-primary ps-btn-sm"
-                   onclick="return confirm('<?= esc_js(sprintf(__('Envoyer cette campagne à %d abonnés actifs ?', 'poivre-sens'), $actifs)) ?>')"
+                   onclick="return confirm('<?= esc_js(sprintf(__('Envoyer cette campagne à %d abonnés actifs ?', 'poivre-sens'), $c_actifs)) ?>')"
                 >✉ <?= __('Envoyer', 'poivre-sens') ?></a>
                 <?php elseif ($c->statut === 'envoye'): ?>
                 <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-nouvelle-campagne&view_id='.$c->id)) ?>" class="ps-btn ps-btn-grey ps-btn-sm"><?= __('Aperçu', 'poivre-sens') ?></a>
@@ -626,7 +1033,7 @@ function ps_nl_page_campagnes() {
             </td>
         </tr>
         <?php endforeach; else: ?>
-        <tr><td colspan="7" style="text-align:center;color:#aaa;padding:40px">
+        <tr><td colspan="8" style="text-align:center;color:#aaa;padding:40px">
             <?= __('Aucune campagne. Créez votre première campagne !', 'poivre-sens') ?>
             <br><br><a href="<?= admin_url('admin.php?page=ps-nl-nouvelle-campagne') ?>" class="ps-btn ps-btn-primary"><?= __('Créer une campagne', 'poivre-sens') ?></a>
         </td></tr>
@@ -662,6 +1069,7 @@ function ps_nl_page_nouvelle_campagne() {
 
     // Sauvegarde / envoi
     if (isset($_POST['ps_save_campaign']) && check_admin_referer('ps_save_campaign')) {
+        $target_ids = array_map('intval', (array)($_POST['target_lists'] ?? []));
         $data = [
             'sujet'         => sanitize_text_field($_POST['sujet'] ?? ''),
             'preheader'     => sanitize_text_field($_POST['preheader'] ?? ''),
@@ -669,6 +1077,7 @@ function ps_nl_page_nouvelle_campagne() {
             'contenu_texte' => sanitize_textarea_field($_POST['contenu_texte'] ?? ''),
             'from_nom'      => sanitize_text_field($_POST['from_nom'] ?? ''),
             'from_email'    => sanitize_email($_POST['from_email'] ?? ''),
+            'target_lists'  => implode(',', $target_ids),
         ];
 
         if (!$data['sujet']) {
@@ -686,9 +1095,9 @@ function ps_nl_page_nouvelle_campagne() {
 
             // Envoi immédiat ?
             if (isset($_POST['ps_send_now'])) {
-                $actifs = (int)$wpdb->get_var("SELECT COUNT(*) FROM $ts WHERE statut='actif'");
-                if ($actifs === 0) {
-                    $notice = '<div class="ps-notice ps-notice-warn">' . __('Aucun abonné actif. Campagne sauvegardée en brouillon.', 'poivre-sens') . '</div>';
+                $cible_actifs = ps_nl_count_active($data['target_lists']);
+                if ($cible_actifs === 0) {
+                    $notice = '<div class="ps-notice ps-notice-warn">' . __('Aucun abonné actif pour ce ciblage. Campagne sauvegardée en brouillon.', 'poivre-sens') . '</div>';
                 } else {
                     ps_nl_send_campaign($camp_id);
                     wp_redirect(admin_url('admin.php?page=ps-nl-campagnes&sent=1'));
@@ -701,7 +1110,9 @@ function ps_nl_page_nouvelle_campagne() {
         }
     }
 
-    $actifs   = (int)$wpdb->get_var("SELECT COUNT(*) FROM $ts WHERE statut='actif'");
+    $all_lists      = ps_nl_get_lists();
+    $target_ids_sel = ps_nl_parse_target($camp->target_lists ?? '');
+    $actifs         = ps_nl_count_active($camp->target_lists ?? '');
     $def_nom  = get_bloginfo('name');
     $def_mail = get_option('admin_email');
     $view_only = $view_id && $camp && $camp->statut === 'envoye';
@@ -778,6 +1189,26 @@ function ps_nl_page_nouvelle_campagne() {
             </div>
 
             <div>
+                <?php if ($all_lists): ?>
+                <div class="ps-card">
+                    <h3>🎯 <?= __('Ciblage', 'poivre-sens') ?></h3>
+                    <div class="ps-field" style="margin-bottom:6px">
+                        <label style="margin-bottom:10px"><?= __('Listes destinataires', 'poivre-sens') ?></label>
+                        <div style="display:flex;flex-direction:column;gap:10px">
+                            <?php foreach ($all_lists as $l): ?>
+                            <label style="display:flex;align-items:center;gap:8px;font-weight:400;text-transform:none;letter-spacing:0;font-size:13px;color:#333">
+                                <input type="checkbox" name="target_lists[]" value="<?= (int)$l->id ?>" class="ps-target-list" <?= checked(in_array((int)$l->id, $target_ids_sel, true)) ?> style="width:auto">
+                                <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:<?= esc_attr($l->couleur) ?>"></span>
+                                <?= esc_html($l->nom) ?>
+                                <span style="color:#aaa;font-size:11px">(<?= (int)$l->nb_actifs ?>)</span>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="help"><?= __('Aucune liste cochée = tous les abonnés actifs.', 'poivre-sens') ?></div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <div class="ps-card">
                     <h3>⚙ <?= __('Paramètres d\'envoi', 'poivre-sens') ?></h3>
                     <div class="ps-field" style="margin-bottom:14px">
@@ -790,7 +1221,7 @@ function ps_nl_page_nouvelle_campagne() {
                     </div>
                     <hr style="border:none;border-top:1px solid #f0f0f0;margin:16px 0">
                     <div style="background:#fdf9f3;border:1px solid #e8d5a3;border-radius:4px;padding:14px;font-size:13px;margin-bottom:16px">
-                        <strong style="color:#c28b36">📬 <?= sprintf(__('%d abonné(s) actif(s)', 'poivre-sens'), $actifs) ?></strong><br>
+                        <strong style="color:#c28b36">📬 <span id="ps-cible-count"><?= $actifs ?></span> <?= __('abonné(s) actif(s)', 'poivre-sens') ?></strong><br>
                         <span style="color:#888;font-size:12px"><?= __('Recevront cette campagne.', 'poivre-sens') ?></span>
                     </div>
                     <div style="font-size:12px;color:#999;margin-bottom:14px">
@@ -801,14 +1232,12 @@ function ps_nl_page_nouvelle_campagne() {
                     </div>
                     <div style="display:flex;flex-direction:column;gap:10px">
                         <button type="submit" name="ps_save_campaign" class="ps-btn ps-btn-grey">💾 <?= __('Enregistrer le brouillon', 'poivre-sens') ?></button>
-                        <?php if ($actifs > 0): ?>
-                        <button type="submit" name="ps_send_now" value="1"
-                            onclick="return confirm('<?= esc_js(sprintf(__('Envoyer maintenant à %d abonné(s) actif(s) ?', 'poivre-sens'), $actifs)) ?>')"
-                            class="ps-btn ps-btn-primary">✉ <?= __('Envoyer maintenant', 'poivre-sens') ?>
+                        <button type="submit" name="ps_send_now" value="1" id="ps-send-now-btn"
+                            <?= $actifs > 0 ? '' : 'disabled' ?>
+                            style="<?= $actifs > 0 ? '' : 'opacity:.5;cursor:not-allowed' ?>"
+                            onclick="return confirm('<?= esc_js(__('Envoyer maintenant à ', 'poivre-sens')) ?>' + document.getElementById('ps-cible-count').textContent + '<?= esc_js(__(' abonné(s) actif(s) ?', 'poivre-sens')) ?>')"
+                            class="ps-btn ps-btn-primary">✉ <span id="ps-send-now-label"><?= $actifs > 0 ? __('Envoyer maintenant', 'poivre-sens') : __('Aucun abonné actif', 'poivre-sens') ?></span>
                         </button>
-                        <?php else: ?>
-                        <button disabled class="ps-btn ps-btn-primary" style="opacity:.5;cursor:not-allowed"><?= __('Aucun abonné actif', 'poivre-sens') ?></button>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -824,11 +1253,57 @@ function ps_nl_page_nouvelle_campagne() {
         </div>
     </form>
 
+    <?php if ($all_lists): ?>
+    <script>
+    (function(){
+        var checks   = document.querySelectorAll('.ps-target-list');
+        var countEl  = document.getElementById('ps-cible-count');
+        var sendBtn  = document.getElementById('ps-send-now-btn');
+        var labelEl  = document.getElementById('ps-send-now-label');
+        if (!checks.length || !countEl) return;
+
+        function refreshCount(){
+            var ids = Array.prototype.filter.call(checks, function(c){ return c.checked; })
+                                             .map(function(c){ return c.value; });
+            var body = new URLSearchParams();
+            body.append('action', 'ps_nl_count_target');
+            body.append('nonce', <?= wp_json_encode(wp_create_nonce('ps_nl_count_target')) ?>);
+            body.append('ids', ids.join(','));
+            fetch(ajaxurl, { method:'POST', body: body })
+                .then(function(r){ return r.json(); })
+                .then(function(res){
+                    if (!res.success) return;
+                    countEl.textContent = res.data.count;
+                    if (sendBtn) {
+                        sendBtn.disabled = (res.data.count === 0);
+                        sendBtn.style.opacity = res.data.count === 0 ? '.5' : '';
+                        sendBtn.style.cursor  = res.data.count === 0 ? 'not-allowed' : '';
+                    }
+                    if (labelEl) {
+                        labelEl.textContent = res.data.count === 0
+                            ? <?= wp_json_encode(__('Aucun abonné actif', 'poivre-sens')) ?>
+                            : <?= wp_json_encode(__('Envoyer maintenant', 'poivre-sens')) ?>;
+                    }
+                });
+        }
+        checks.forEach(function(c){ c.addEventListener('change', refreshCount); });
+    })();
+    </script>
+    <?php endif; ?>
+
     <?php endif; ?>
 
     </div><!-- .ps-wrap -->
     <?php
 }
+
+/* ── AJAX (admin) : recompte les abonnés actifs pour un ciblage de listes ── */
+add_action('wp_ajax_ps_nl_count_target', function () {
+    check_ajax_referer('ps_nl_count_target', 'nonce');
+    if (!current_user_can('manage_options')) wp_send_json_error();
+    $ids = sanitize_text_field(wp_unslash($_POST['ids'] ?? ''));
+    wp_send_json_success(['count' => ps_nl_count_active($ids)]);
+});
 
 /* ═══════════════════════════════════════════════════════════
    ENVOI D'UNE CAMPAGNE
@@ -845,7 +1320,8 @@ function ps_nl_send_campaign($campaign_id) {
     // Marquer en cours
     $wpdb->update($tc, ['statut' => 'envoi_en_cours'], ['id' => $campaign_id]);
 
-    $abonnes = $wpdb->get_results("SELECT * FROM $ts WHERE statut='actif'");
+    // Destinataires : ciblage par liste(s) si défini, sinon tous les actifs
+    $abonnes = ps_nl_get_active_subscribers($camp->target_lists ?? '');
     if (!$abonnes) {
         $wpdb->update($tc, ['statut' => 'erreur'], ['id' => $campaign_id]);
         return false;
@@ -983,6 +1459,7 @@ function ps_nl_header($titre, $current_page) {
     $tabs = [
         'ps-newsletter'           => ['📊', __('Tableau de bord', 'poivre-sens')],
         'ps-nl-abonnes'           => ['👥', __('Abonnés',         'poivre-sens')],
+        'ps-nl-listes'            => ['🏷', __('Listes',          'poivre-sens')],
         'ps-nl-campagnes'         => ['📬', __('Campagnes',       'poivre-sens')],
         'ps-nl-nouvelle-campagne' => ['✉',  __('Nouvelle campagne','poivre-sens')],
     ];

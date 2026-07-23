@@ -368,33 +368,21 @@ add_action('save_post_galerie', function ($post_id) {
 
 /* ═══════════════════════════════════════════════════════════
    7. TABLE & GESTION NEWSLETTER
+   Le schéma complet (abonnés, listes, campagnes) et les migrations
+   sont gérés par ps_nl_upgrade_db() dans inc/newsletter-admin.php.
+   NB : register_activation_hook() ne fonctionne que pour les plugins ;
+   pour un thème, le hook correct est after_switch_theme.
    ═══════════════════════════════════════════════════════════ */
-register_activation_hook(__FILE__, 'ps_create_newsletter_table');
+add_action('after_switch_theme', function () {
+    ps_nl_upgrade_db();
+    flush_rewrite_rules();
+});
 
-function ps_create_newsletter_table() {
-    global $wpdb;
-    $table  = $wpdb->prefix . 'ps_newsletter';
-    $cs     = $wpdb->get_charset_collate();
-    $sql    = "CREATE TABLE IF NOT EXISTS $table (
-        id            BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-        email         VARCHAR(255)        NOT NULL,
-        prenom        VARCHAR(100)        NOT NULL DEFAULT '',
-        statut        ENUM('actif','desabonne','en_attente') NOT NULL DEFAULT 'en_attente',
-        token         VARCHAR(64)         NOT NULL DEFAULT '',
-        date_creation DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        date_confirm  DATETIME            NULL,
-        PRIMARY KEY  (id),
-        UNIQUE KEY   uq_email (email)
-    ) $cs;";
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta($sql);
-}
-
-// Créer la table si elle n'existe pas encore (upgrade / thème activé sans hook)
+// Créer/mettre à niveau les tables si besoin (upgrade / thème activé sans hook)
 add_action('init', function () {
-    if (get_option('ps_newsletter_db_version') !== '1.0') {
-        ps_create_newsletter_table();
-        update_option('ps_newsletter_db_version', '1.0');
+    if (get_option('ps_newsletter_db_version') !== '2.0') {
+        ps_nl_upgrade_db();
+        update_option('ps_newsletter_db_version', '2.0');
     }
 });
 
@@ -407,6 +395,14 @@ function ps_newsletter_subscribe() {
 
     $email  = sanitize_email(wp_unslash($_POST['email']  ?? ''));
     $prenom = sanitize_text_field(wp_unslash($_POST['prenom'] ?? ''));
+    $nom    = sanitize_text_field(wp_unslash($_POST['nom'] ?? ''));
+    // Slug de liste optionnel : permet à un formulaire (landing page, événement…)
+    // de localiser l'origine des prospects, ex. « grand-bal-europe ».
+    $liste_slug = sanitize_title(wp_unslash($_POST['liste'] ?? ''));
+    $source     = $liste_slug ?: sanitize_text_field(wp_unslash($_POST['source'] ?? 'site'));
+    // À défaut de liste explicite, on rattache à la liste correspondant à la
+    // source (ex. « site » pour le formulaire principal, déjà semée par défaut).
+    $attach_slug = $liste_slug ?: sanitize_title($source);
 
     if (!is_email($email)) {
         wp_send_json_error(['message' => __('Adresse e-mail invalide.', 'poivre-sens')], 400);
@@ -416,7 +412,17 @@ function ps_newsletter_subscribe() {
     $table    = $wpdb->prefix . 'ps_newsletter';
     $existing = $wpdb->get_row($wpdb->prepare("SELECT id, statut FROM $table WHERE email = %s", $email));
 
+    // Sécurité : on ne rattache qu'à une liste déjà existante (créée depuis
+    // l'admin). Un visiteur anonyme ne doit pas pouvoir faire créer de
+    // nouvelles listes ou polluer les statistiques via un slug arbitraire.
+    $list_id = 0;
+    if ($attach_slug) {
+        $target_list = ps_nl_get_list_by_slug($attach_slug);
+        if ($target_list) $list_id = (int)$target_list->id;
+    }
+
     if ($existing) {
+        if ($list_id) ps_nl_add_subscriber_to_list($existing->id, $list_id);
         if ($existing->statut === 'actif') {
             wp_send_json_error(['message' => __('Vous êtes déjà inscrit(e) à notre newsletter.', 'poivre-sens')]);
         }
@@ -429,8 +435,10 @@ function ps_newsletter_subscribe() {
     $wpdb->insert($table, [
         'email'         => $email,
         'prenom'        => $prenom,
+        'nom'           => $nom,
         'statut'        => 'actif',
         'token'         => $token,
+        'source'        => $source,
         'date_creation' => current_time('mysql'),
         'date_confirm'  => current_time('mysql'),
     ]);
@@ -438,6 +446,8 @@ function ps_newsletter_subscribe() {
     if ($wpdb->last_error) {
         wp_send_json_error(['message' => __('Une erreur est survenue, veuillez réessayer.', 'poivre-sens')], 500);
     }
+
+    if ($list_id) ps_nl_add_subscriber_to_list($wpdb->insert_id, $list_id);
 
     // E-mail de confirmation
     ps_send_confirm_email($email, $prenom, $token);
@@ -616,14 +626,6 @@ function ps_get_events_for_month($year, $month) {
         'order'          => 'ASC',
     ]);
 }
-
-/* ═══════════════════════════════════════════════════════════
-   9. FLUSH REWRITE RULES À L'ACTIVATION
-   ═══════════════════════════════════════════════════════════ */
-register_activation_hook(__FILE__, function () {
-    ps_create_newsletter_table();
-    flush_rewrite_rules();
-});
 
 /* ═══════════════════════════════════════════════════════════
    10. COLONNES ADMIN ÉVÉNEMENTS

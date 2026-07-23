@@ -197,6 +197,22 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 - Graphique des nouvelles inscriptions (12 mois)
 - Dernière campagne et taux d'ouverture
 
+### Gérer les listes (localiser l'origine des prospects)
+
+**Newsletter › Listes**
+
+Une liste permet de savoir **d'où vient chaque prospect** (site web, un
+événement, un salon…) et d'envoyer des campagnes ciblées. Un même abonné
+peut appartenir à plusieurs listes.
+
+Deux listes sont créées automatiquement à l'activation :
+- **Site web** (`site`) — inscriptions via le formulaire `[ps_newsletter]`
+- **Grand Bal de l'Europe** (`grand-bal-europe`) — voir le shortcode
+  `[ps_newsletter_liste]` ci-dessous, pour les landing pages composées à
+  la main dans Gutenberg
+
+Créez-en d'autres depuis **Newsletter › Listes** (nom, description, couleur).
+
 ### Gérer les abonnés
 
 **Newsletter › Abonnés**
@@ -204,10 +220,11 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 | Action | Comment |
 |--------|---------|
 | **Rechercher** | Par email, prénom ou nom |
-| **Filtrer** | Par statut (actif / désabonné / en attente) |
-| **Ajouter** | Bouton `+ Ajouter` → formulaire manuel |
-| **Importer** | Bouton `⬆ Import CSV` → format `email,prenom,nom` |
-| **Exporter** | Bouton `⬇ Export CSV` → fichier UTF-8 avec BOM |
+| **Filtrer** | Par statut (actif / désabonné / en attente) **et par liste** |
+| **Ajouter** | Bouton `+ Ajouter` → formulaire manuel, avec cases à cocher pour les listes |
+| **Importer** | Bouton `⬆ Import CSV` → format `email,prenom,nom`, avec choix de la liste de destination |
+| **Exporter** | Bouton `⬇ Export CSV` → fichier UTF-8 avec BOM, colonne « Listes » incluse |
+| **Ajouter à une liste** | Sélection multiple (checkbox) → menu « Ajouter à la liste » |
 | **Supprimer** | Unitaire ou en masse (checkbox + bouton Supprimer) |
 
 ### Créer et envoyer une campagne
@@ -216,14 +233,35 @@ Admin → **Newsletter** (icône enveloppe dans le menu gauche)
 
 1. **Sujet** : ligne d'objet de l'email
 2. **Texte d'aperçu** : texte visible après l'objet (preheader)
-3. **Nom / Email expéditeur** : défaut `contact@cie.poivresens.fr`
-4. **Contenu HTML** : éditeur WYSIWYG complet
+3. **Ciblage** : cochez une ou plusieurs listes pour restreindre les
+   destinataires (aucune case cochée = tous les abonnés actifs)
+4. **Nom / Email expéditeur** : défaut `contact@cie.poivresens.fr`
+5. **Contenu HTML** : éditeur WYSIWYG complet
    - Le template par défaut est aux couleurs de la compagnie
    - Variables disponibles : `{prenom}`, `{email}`, `{desinscription}`
-5. **Enregistrer brouillon** ou **Envoyer maintenant**
+6. **Enregistrer brouillon** ou **Envoyer maintenant**
 
 > L'envoi se fait via `wp_mail()`. Pour un volume > 500 abonnés,
 > configurez un service SMTP (WP Mail SMTP + Brevo/Mailgun).
+
+### Landing page dédiée — composée dans Gutenberg
+
+Pas de modèle de page ici : la landing page se compose entièrement avec des
+blocs Gutenberg natifs (titre, paragraphe, liste, séparateur…), entièrement
+éditables en ligne comme n'importe quelle page. Seul le formulaire lui-même
+est un shortcode technique, à placer dans un **bloc Shortcode** :
+
+```
+[ps_newsletter_liste slug="grand-bal-europe" bouton="Recevez votre pratique"]
+```
+
+- `slug` : la liste à laquelle rattacher les inscriptions (doit déjà exister
+  dans Newsletter › Listes — sinon l'inscription se fait sans liste).
+- `bouton` : texte du bouton (optionnel).
+- `placeholder` : texte indicatif du champ e-mail (optionnel).
+
+Un exemple complet de page (à coller dans l'éditeur de code de la page,
+menu **⋮ → Éditeur de code**) est fourni à la fin de ce document.
 
 ### Statistiques de campagne
 
