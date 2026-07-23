@@ -1,0 +1,31 @@
+name: Build WordPress theme zip
+
+on:
+  push:
+    paths:
+      - 'wordpress-theme/poivre-sens/**'
+      - 'scripts/build-wordpress-theme-zip.sh'
+      - '.github/workflows/wordpress-theme-zip.yml'
+  pull_request:
+    paths:
+      - 'wordpress-theme/poivre-sens/**'
+      - 'scripts/build-wordpress-theme-zip.sh'
+      - '.github/workflows/wordpress-theme-zip.yml'
+  workflow_dispatch:
+
+jobs:
+  package-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build theme zip
+        run: scripts/build-wordpress-theme-zip.sh
+
+      - name: Upload installable theme artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poivre-sens
+          path: dist/poivre-sens
+          if-no-files-found: error
