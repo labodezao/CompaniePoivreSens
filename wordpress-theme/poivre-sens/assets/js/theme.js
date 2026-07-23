@@ -53,15 +53,18 @@
   var list   = document.getElementById('nav-list');
 
   window.toggleMenu = function () {
+    if (!list || !burger) return;
     var open = list.classList.toggle('open');
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    document.body.style.overflow = open ? 'hidden' : '';
+    document.documentElement.classList.toggle('nav-open', open);
+    document.body.classList.toggle('nav-open', open);
   };
   window.closeMenu = function () {
     if (!list) return;
     list.classList.remove('open');
     if (burger) burger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    document.documentElement.classList.remove('nav-open');
+    document.body.classList.remove('nav-open');
   };
 
   /* ── Animations révélation au scroll ───────────────────── */
