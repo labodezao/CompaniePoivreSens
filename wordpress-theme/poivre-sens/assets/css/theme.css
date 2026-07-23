@@ -49,11 +49,6 @@ ul, ol { list-style: none; }
   justify-content: space-between; padding: 0 48px;
   transition: background .4s var(--ease), border-color .4s var(--ease);
   border-bottom: 1px solid transparent;
-  /* Layer de composition dédiée : le backdrop-filter ci-dessous est coûteux
-     à repeindre sur mobile, ce qui peut faire "décoller" un instant la nav
-     fixe du haut de l'écran pendant le scroll sur certains téléphones. */
-  transform: translateZ(0);
-  will-change: transform;
 }
 .nav.scrolled {
   background: rgba(8,7,5,.93);
