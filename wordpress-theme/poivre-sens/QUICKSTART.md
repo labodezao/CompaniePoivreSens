@@ -319,6 +319,27 @@ l'aperçu, pour vous permettre de régler les textes).
 > Laisser un champ texte vide masque simplement l'élément correspondant
 > (sauf le titre et le bouton, nécessaires au fonctionnement).
 
+### « Je ne vois pas le popup »
+
+C'est presque toujours normal — le popup s'efface volontairement dans
+plusieurs situations. Par ordre de fréquence :
+
+1. **Vous êtes connecté·e à WordPress.** Le popup ne s'affiche jamais aux
+   personnes qui peuvent éditer le site (vous), pour ne pas gêner le travail.
+2. **Vous l'avez déjà fermé.** Le cookie `ps_construction_seen` le masque
+   pendant le nombre de jours réglé.
+3. **Vous êtes déjà inscrit·e** à la newsletter depuis ce navigateur
+   (cookie `ps_nl_subscribed`) : il ne s'affiche plus jamais.
+4. **Un cache** (plugin de cache, CDN) sert une version antérieure de la page.
+
+**Pour le voir immédiatement, quel que soit le cas :** ajoutez `?ps_popup=1`
+à l'URL, par exemple `https://cie.poivresens.fr/?ps_popup=1`. Le popup
+s'ouvre aussitôt, sans délai, en ignorant les cookies — sans rien changer
+pour vos visiteurs.
+
+Sinon, testez simplement en **navigation privée** (vous n'y êtes ni
+connecté·e ni porteur des cookies).
+
 ---
 
 ## 📅 Calendrier en mode liste

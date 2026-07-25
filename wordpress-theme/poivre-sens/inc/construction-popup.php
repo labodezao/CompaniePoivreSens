@@ -152,12 +152,22 @@ add_action('init', 'ps_construction_ensure_list', 20);
  */
 function ps_construction_should_render() {
     if (is_admin()) return false;
+    // Mode test : ajouter ?ps_popup=1 à l'URL force l'affichage, même si
+    // vous êtes connecté·e ou si vous avez déjà fermé le popup. Pratique
+    // pour vérifier le rendu sans avoir à vous déconnecter ni vider vos
+    // cookies. N'affecte que la personne qui ajoute ce paramètre.
+    if (ps_construction_is_forced()) return true;
     if (!ps_construction_opt('ps_cp_enabled')) return false;
     // Dans l'aperçu du Customizer, on affiche toujours le popup (ouvert
     // d'office, sans cookie) pour permettre d'en éditer les textes en direct.
     if (is_customize_preview()) return true;
     if (is_user_logged_in() && current_user_can('edit_posts')) return false; // les bâtisseurs du site
     return true;
+}
+
+/** Affichage forcé via ?ps_popup=1 (test / prévisualisation). */
+function ps_construction_is_forced() {
+    return !empty($_GET['ps_popup']);
 }
 
 /**
@@ -170,7 +180,9 @@ add_action('wp_footer', function () {
     $ajax_url   = admin_url('admin-ajax.php');
     $cookie_max = (int) ps_construction_opt('ps_cp_days') * DAY_IN_SECONDS;
     $delay_ms   = (int) round((float) ps_construction_opt('ps_cp_delay') * 1000);
-    $is_preview = is_customize_preview();
+    // Aperçu Customizer ou mode test ?ps_popup=1 : ouverture immédiate,
+    // sans cookie, pour pouvoir vérifier le rendu à volonté.
+    $is_preview = is_customize_preview() || ps_construction_is_forced();
 
     $titre    = ps_construction_opt('ps_cp_title');
     $titre_em = ps_construction_opt('ps_cp_title_em');
