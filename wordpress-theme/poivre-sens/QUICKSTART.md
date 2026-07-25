@@ -282,6 +282,24 @@ menu **⋮ → Éditeur de code**) est fourni à la fin de ce document.
 - Nombre d'ouvertures (via pixel de tracking 1×1)
 - Taux d'ouverture avec barre de progression
 
+### Popup « site en construction »
+
+Un popup discret invite les visiteurs à laisser leur e-mail pendant que le
+site est en travaux (fichier `inc/construction-popup.php`). Il est conçu
+pour être **non invasif** :
+
+- Il s'affiche **après un court délai** (≈ 3,5 s), pas dès l'arrivée.
+- Une fois **fermé**, il ne réapparaît pas avant plusieurs jours (cookie
+  `ps_construction_seen`, durée réglable via `PS_CONSTRUCTION_COOKIE_DAYS`).
+- Il **ne s'affiche pas** aux personnes déjà inscrites à la newsletter
+  (cookie `ps_nl_subscribed`, posé à l'inscription), ni aux administrateurs
+  connectés.
+- Les inscriptions sont rattachées à la liste **« Site en construction »**
+  (créée automatiquement, visible dans Newsletter › Listes).
+
+Pour désactiver le popup : commentez la ligne `require_once … construction-popup.php`
+dans `functions.php`.
+
 ---
 
 ## 📅 Calendrier en mode liste

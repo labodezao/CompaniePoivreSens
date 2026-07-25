@@ -12,6 +12,9 @@ require_once get_template_directory() . '/inc/newsletter-admin.php';
 // Shortcodes & patterns Gutenberg — édition WYSIWYG de la page d'accueil
 require_once get_template_directory() . '/inc/block-patterns.php';
 
+// Popup « site en construction » + capture newsletter (non invasif, cookie)
+require_once get_template_directory() . '/inc/construction-popup.php';
+
 /* ═══════════════════════════════════════════════════════════
    1. SUPPORTS & SETUP
    ═══════════════════════════════════════════════════════════ */
@@ -424,7 +427,9 @@ function ps_newsletter_subscribe() {
     if ($existing) {
         if ($list_id) ps_nl_add_subscriber_to_list($existing->id, $list_id);
         if ($existing->statut === 'actif') {
-            wp_send_json_error(['message' => __('Vous êtes déjà inscrit(e) à notre newsletter.', 'poivre-sens')]);
+            // 'already' => permet au front (popup construction) de mémoriser
+            // que cette personne est déjà abonnée et de ne plus l'importuner.
+            wp_send_json_error(['message' => __('Vous êtes déjà inscrit(e) à notre newsletter.', 'poivre-sens'), 'already' => true]);
         }
         // Réactivation
         $wpdb->update($table, ['statut' => 'actif', 'date_confirm' => current_time('mysql')], ['id' => $existing->id]);
