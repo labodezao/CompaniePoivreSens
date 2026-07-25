@@ -15,13 +15,113 @@
  *     site) ni dans l'éditeur/aperçu.
  *   - Le formulaire réutilise l'AJAX newsletter existant et rattache les
  *     inscrits à la liste « construction » (visible dans Newsletter › Listes).
+ *
+ * Tous les textes et les réglages (délai, durée du cookie, activation) se
+ * modifient sans toucher au code depuis :
+ *   Apparence › Personnaliser › « Popup site en construction »
  */
 defined('ABSPATH') || exit;
 
-/* Durée d'affichage du cookie « déjà vu » (en jours). */
-if (!defined('PS_CONSTRUCTION_COOKIE_DAYS')) {
-    define('PS_CONSTRUCTION_COOKIE_DAYS', 14);
+/**
+ * Réglages par défaut du popup.
+ * Chaque valeur est modifiable sans toucher au code, depuis
+ * Apparence › Personnaliser › « Popup site en construction ».
+ */
+function ps_construction_defaults() {
+    return [
+        'ps_cp_enabled'  => true,
+        'ps_cp_eyebrow'  => __('Cie Poivre & Sens', 'poivre-sens'),
+        'ps_cp_title'    => __('Notre site fait', 'poivre-sens'),
+        'ps_cp_title_em' => __('peau neuve', 'poivre-sens'),
+        'ps_cp_lede'     => __('Le nouveau site arrive bientôt. En attendant, laissez-nous votre e-mail pour rester en lien : dates de stages, spectacles et nouvelles rares.', 'poivre-sens'),
+        'ps_cp_button'   => __('Rester en lien', 'poivre-sens'),
+        'ps_cp_note'     => __('Un e-mail rare, jamais de spam. Désinscription en un clic.', 'poivre-sens'),
+        'ps_cp_thanks'   => __('Merci ! À très bientôt.', 'poivre-sens'),
+        'ps_cp_delay'    => 3.5,  // secondes avant ouverture
+        'ps_cp_days'     => 14,   // jours avant de réafficher après fermeture
+    ];
 }
+
+/** Valeur d'un réglage du popup (réglage utilisateur, sinon défaut). */
+function ps_construction_opt($key) {
+    $defaults = ps_construction_defaults();
+    $default  = $defaults[$key] ?? '';
+    return get_theme_mod($key, $default);
+}
+
+/* ── Réglages dans le Customizer (édition sans code) ──────── */
+add_action('customize_register', function (\WP_Customize_Manager $wp_customize) {
+    $defaults = ps_construction_defaults();
+
+    $wp_customize->add_section('ps_construction', [
+        'title'       => __('Popup site en construction', 'poivre-sens'),
+        'description' => __('Textes et comportement du popup qui invite les visiteurs à laisser leur e-mail. Les inscriptions arrivent dans Newsletter › Abonnés (liste « Site en construction »).', 'poivre-sens'),
+        'priority'    => 29,
+    ]);
+
+    // Champs texte : [clé => [libellé, type de contrôle, description]]
+    $champs = [
+        'ps_cp_eyebrow'  => [__('Sur-titre', 'poivre-sens'),                'text',     ''],
+        'ps_cp_title'    => [__('Titre', 'poivre-sens'),                    'text',     ''],
+        'ps_cp_title_em' => [__('Fin du titre (en italique coloré)', 'poivre-sens'), 'text', __('Affichée en italique dans la couleur d\'accent, à la suite du titre.', 'poivre-sens')],
+        'ps_cp_lede'     => [__('Texte d\'introduction', 'poivre-sens'),    'textarea', ''],
+        'ps_cp_button'   => [__('Texte du bouton', 'poivre-sens'),          'text',     ''],
+        'ps_cp_note'     => [__('Mention rassurante (sous le bouton)', 'poivre-sens'), 'text', ''],
+        'ps_cp_thanks'   => [__('Message de remerciement', 'poivre-sens'),  'text',     __('Affiché après une inscription réussie.', 'poivre-sens')],
+    ];
+
+    foreach ($champs as $cle => [$label, $type, $desc]) {
+        $wp_customize->add_setting($cle, [
+            'default'           => $defaults[$cle],
+            'sanitize_callback' => $type === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field',
+            'transport'         => 'refresh',
+        ]);
+        $wp_customize->add_control($cle, [
+            'label'       => $label,
+            'description' => $desc,
+            'section'     => 'ps_construction',
+            'type'        => $type,
+        ]);
+    }
+
+    // Activer / désactiver
+    $wp_customize->add_setting('ps_cp_enabled', [
+        'default'           => $defaults['ps_cp_enabled'],
+        'sanitize_callback' => function ($v) { return (bool) $v; },
+    ]);
+    $wp_customize->add_control('ps_cp_enabled', [
+        'label'       => __('Afficher le popup', 'poivre-sens'),
+        'description' => __('Décochez pour le désactiver entièrement.', 'poivre-sens'),
+        'section'     => 'ps_construction',
+        'type'        => 'checkbox',
+    ]);
+
+    // Délai d'apparition
+    $wp_customize->add_setting('ps_cp_delay', [
+        'default'           => $defaults['ps_cp_delay'],
+        'sanitize_callback' => function ($v) { return max(0, min(60, (float) $v)); },
+    ]);
+    $wp_customize->add_control('ps_cp_delay', [
+        'label'       => __('Délai avant apparition (secondes)', 'poivre-sens'),
+        'description' => __('Laisser quelques secondes évite l\'effet intrusif. 0 = immédiat.', 'poivre-sens'),
+        'section'     => 'ps_construction',
+        'type'        => 'number',
+        'input_attrs' => ['min' => 0, 'max' => 60, 'step' => 0.5],
+    ]);
+
+    // Durée du cookie
+    $wp_customize->add_setting('ps_cp_days', [
+        'default'           => $defaults['ps_cp_days'],
+        'sanitize_callback' => function ($v) { return max(1, min(365, (int) $v)); },
+    ]);
+    $wp_customize->add_control('ps_cp_days', [
+        'label'       => __('Ne pas réafficher pendant (jours)', 'poivre-sens'),
+        'description' => __('Après fermeture par le visiteur. Les personnes déjà inscrites ne le revoient jamais.', 'poivre-sens'),
+        'section'     => 'ps_construction',
+        'type'        => 'number',
+        'input_attrs' => ['min' => 1, 'max' => 365, 'step' => 1],
+    ]);
+});
 
 /**
  * S'assure que la liste « construction » existe (le handler d'inscription
@@ -51,7 +151,11 @@ add_action('init', 'ps_construction_ensure_list', 20);
  *  pour rester compatible avec le cache de pages.)
  */
 function ps_construction_should_render() {
-    if (is_admin() || is_customize_preview()) return false;
+    if (is_admin()) return false;
+    if (!ps_construction_opt('ps_cp_enabled')) return false;
+    // Dans l'aperçu du Customizer, on affiche toujours le popup (ouvert
+    // d'office, sans cookie) pour permettre d'en éditer les textes en direct.
+    if (is_customize_preview()) return true;
     if (is_user_logged_in() && current_user_can('edit_posts')) return false; // les bâtisseurs du site
     return true;
 }
@@ -64,28 +168,37 @@ add_action('wp_footer', function () {
 
     $nonce      = wp_create_nonce('ps_newsletter');
     $ajax_url   = admin_url('admin-ajax.php');
-    $cookie_max = PS_CONSTRUCTION_COOKIE_DAYS * DAY_IN_SECONDS;
+    $cookie_max = (int) ps_construction_opt('ps_cp_days') * DAY_IN_SECONDS;
+    $delay_ms   = (int) round((float) ps_construction_opt('ps_cp_delay') * 1000);
+    $is_preview = is_customize_preview();
+
+    $titre    = ps_construction_opt('ps_cp_title');
+    $titre_em = ps_construction_opt('ps_cp_title_em');
     ?>
     <div class="ps-cp" id="ps-cp" hidden aria-hidden="true">
       <div class="ps-cp__backdrop" data-ps-cp-close></div>
       <div class="ps-cp__card" role="dialog" aria-modal="true" aria-labelledby="ps-cp-title">
         <button type="button" class="ps-cp__close" data-ps-cp-close aria-label="<?= esc_attr__('Fermer', 'poivre-sens') ?>">&times;</button>
 
-        <div class="ps-cp__eyebrow"><?= esc_html__('Cie Poivre & Sens', 'poivre-sens') ?></div>
+        <?php if ($eyebrow = ps_construction_opt('ps_cp_eyebrow')): ?>
+        <div class="ps-cp__eyebrow"><?= esc_html($eyebrow) ?></div>
+        <?php endif; ?>
         <h2 class="ps-cp__title" id="ps-cp-title">
-          <?= esc_html__('Notre site fait', 'poivre-sens') ?> <em><?= esc_html__('peau neuve', 'poivre-sens') ?></em>
+          <?= esc_html($titre) ?><?php if ($titre_em): ?> <em><?= esc_html($titre_em) ?></em><?php endif; ?>
         </h2>
-        <p class="ps-cp__lede">
-          <?= esc_html__('Le nouveau site arrive bientôt. En attendant, laissez-nous votre e-mail pour rester en lien : dates de stages, spectacles et nouvelles rares.', 'poivre-sens') ?>
-        </p>
+        <?php if ($lede = ps_construction_opt('ps_cp_lede')): ?>
+        <p class="ps-cp__lede"><?= esc_html($lede) ?></p>
+        <?php endif; ?>
 
         <form class="ps-cp__form" id="ps-cp-form" novalidate>
           <input type="email" name="email" id="ps-cp-email" required autocomplete="email"
                  placeholder="<?= esc_attr__('prenom@exemple.fr', 'poivre-sens') ?>">
-          <button type="submit" id="ps-cp-submit"><?= esc_html__('Rester en lien', 'poivre-sens') ?></button>
+          <button type="submit" id="ps-cp-submit"><?= esc_html(ps_construction_opt('ps_cp_button')) ?></button>
         </form>
         <p class="ps-cp__msg" id="ps-cp-msg" role="alert" aria-live="polite"></p>
-        <p class="ps-cp__note"><?= esc_html__('Un e-mail rare, jamais de spam. Désinscription en un clic.', 'poivre-sens') ?></p>
+        <?php if ($note = ps_construction_opt('ps_cp_note')): ?>
+        <p class="ps-cp__note"><?= esc_html($note) ?></p>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -137,12 +250,16 @@ add_action('wp_footer', function () {
       var COOKIE_SUB  = 'ps_nl_subscribed';
       var SEEN_MAX    = <?= (int) $cookie_max ?>;
       var SUB_MAX     = 60*60*24*365;
+      var DELAY       = <?= (int) $delay_ms ?>;
+      // Aperçu du Customizer : toujours visible, sans cookie ni délai, pour
+      // permettre de régler les textes en direct.
+      var PREVIEW     = <?= $is_preview ? 'true' : 'false' ?>;
 
       function hasCookie(name){ return document.cookie.split('; ').indexOf(name + '=1') !== -1; }
-      function setCookie(name, maxAge){ document.cookie = name + '=1;path=/;max-age=' + maxAge + ';SameSite=Lax'; }
+      function setCookie(name, maxAge){ if (PREVIEW) return; document.cookie = name + '=1;path=/;max-age=' + maxAge + ';SameSite=Lax'; }
 
       // Ne rien faire si déjà vu récemment ou déjà abonné.
-      if (hasCookie(COOKIE_SEEN) || hasCookie(COOKIE_SUB)) return;
+      if (!PREVIEW && (hasCookie(COOKIE_SEEN) || hasCookie(COOKIE_SUB))) return;
 
       var pop    = document.getElementById('ps-cp');
       if (!pop) return;
@@ -197,9 +314,13 @@ add_action('wp_footer', function () {
               setCookie(COOKIE_SUB, SUB_MAX);
               setCookie(COOKIE_SEEN, SEEN_MAX);
               msg.className = 'ps-cp__msg is-ok';
-              msg.textContent = (res.data && res.data.message) || <?= wp_json_encode(__('Merci ! À très bientôt.', 'poivre-sens')) ?>;
+              // Inscription réussie : on affiche le message personnalisable.
+              // Cas « déjà inscrit·e » : on garde le message du serveur, plus parlant.
+              msg.textContent = res.success
+                ? <?= wp_json_encode(ps_construction_opt('ps_cp_thanks')) ?>
+                : ((res.data && res.data.message) || <?= wp_json_encode(ps_construction_opt('ps_cp_thanks')) ?>);
               form.style.display = 'none';
-              setTimeout(dismiss, 2200);
+              if (!PREVIEW) setTimeout(dismiss, 2200);
             } else {
               msg.className = 'ps-cp__msg is-error';
               msg.textContent = (res.data && res.data.message) || <?= wp_json_encode(__('Un souci est survenu. Réessayez.', 'poivre-sens')) ?>;
@@ -213,8 +334,8 @@ add_action('wp_footer', function () {
           });
       });
 
-      // Non invasif : on laisse la page s'afficher, puis on ouvre après un délai.
-      setTimeout(open, 3500);
+      // Non invasif : on laisse la page s'afficher, puis on ouvre après le délai réglé.
+      if (PREVIEW) { open(); } else { setTimeout(open, DELAY); }
     })();
     </script>
     <?php
