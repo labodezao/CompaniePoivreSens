@@ -70,6 +70,11 @@ defined('ABSPATH') || exit;
                     form.reset();
                     btn.style.display = 'none';
                 }
+                // Mémorise l'abonnement (ou "déjà abonné") pour ne plus afficher
+                // le popup "site en construction" à cette personne.
+                if (res.success || (res.data && res.data.already)) {
+                    document.cookie = 'ps_nl_subscribed=1;path=/;max-age=' + (60*60*24*365) + ';SameSite=Lax';
+                }
             })
             .catch(function () {
                 msg.className = 'nl-form-msg nl-form-msg--err';

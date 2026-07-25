@@ -282,6 +282,43 @@ menu **⋮ → Éditeur de code**) est fourni à la fin de ce document.
 - Nombre d'ouvertures (via pixel de tracking 1×1)
 - Taux d'ouverture avec barre de progression
 
+### Popup « site en construction »
+
+Un popup discret invite les visiteurs à laisser leur e-mail pendant que le
+site est en travaux (fichier `inc/construction-popup.php`). Il est conçu
+pour être **non invasif** :
+
+- Il s'affiche **après un court délai** (3,5 s par défaut), pas dès l'arrivée.
+- Une fois **fermé**, il ne réapparaît pas avant plusieurs jours (14 j par
+  défaut, cookie `ps_construction_seen`).
+- Il **ne s'affiche pas** aux personnes déjà inscrites à la newsletter
+  (cookie `ps_nl_subscribed`, posé à l'inscription), ni aux administrateurs
+  connectés.
+- Les inscriptions sont rattachées à la liste **« Site en construction »**
+  (créée automatiquement, visible dans Newsletter › Listes).
+
+### Modifier les textes du popup
+
+**Apparence › Personnaliser › « Popup site en construction »** — aucun code
+à toucher, avec aperçu en direct (le popup s'affiche en permanence dans
+l'aperçu, pour vous permettre de régler les textes).
+
+| Réglage | Rôle |
+|---------|------|
+| **Afficher le popup** | Case à cocher : décochez pour le désactiver entièrement |
+| **Sur-titre** | Petite ligne en capitales au-dessus du titre |
+| **Titre** | Début du titre |
+| **Fin du titre (en italique coloré)** | Suite du titre, en italique dans la couleur d'accent |
+| **Texte d'introduction** | Paragraphe explicatif |
+| **Texte du bouton** | Libellé du bouton d'inscription |
+| **Mention rassurante** | Petite ligne sous le bouton |
+| **Message de remerciement** | Affiché après une inscription réussie |
+| **Délai avant apparition** | En secondes (0 = immédiat) |
+| **Ne pas réafficher pendant** | En jours, après fermeture par le visiteur |
+
+> Laisser un champ texte vide masque simplement l'élément correspondant
+> (sauf le titre et le bouton, nécessaires au fonctionnement).
+
 ---
 
 ## 📅 Calendrier en mode liste
