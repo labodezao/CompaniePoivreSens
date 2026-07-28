@@ -30,6 +30,7 @@ defined('ABSPATH') || exit;
 function ps_construction_defaults() {
     return [
         'ps_cp_enabled'  => true,
+        'ps_cp_scope'    => 'home',  // 'home' = accueil seulement, 'all' = tout le site
         'ps_cp_eyebrow'  => __('Cie Poivre & Sens', 'poivre-sens'),
         'ps_cp_title'    => __('Notre site fait', 'poivre-sens'),
         'ps_cp_title_em' => __('peau neuve', 'poivre-sens'),
@@ -96,6 +97,22 @@ add_action('customize_register', function (\WP_Customize_Manager $wp_customize) 
         'type'        => 'checkbox',
     ]);
 
+    // Où afficher le popup
+    $wp_customize->add_setting('ps_cp_scope', [
+        'default'           => $defaults['ps_cp_scope'],
+        'sanitize_callback' => function ($v) { return in_array($v, ['home', 'all'], true) ? $v : 'home'; },
+    ]);
+    $wp_customize->add_control('ps_cp_scope', [
+        'label'       => __('Où afficher le popup', 'poivre-sens'),
+        'description' => __('Sur la page d\'accueil uniquement, il ne fait pas doublon avec les pages qui contiennent déjà un formulaire d\'inscription.', 'poivre-sens'),
+        'section'     => 'ps_construction',
+        'type'        => 'radio',
+        'choices'     => [
+            'home' => __('Page d\'accueil uniquement (recommandé)', 'poivre-sens'),
+            'all'  => __('Toutes les pages du site', 'poivre-sens'),
+        ],
+    ]);
+
     // Délai d'apparition
     $wp_customize->add_setting('ps_cp_delay', [
         'default'           => $defaults['ps_cp_delay'],
@@ -158,6 +175,10 @@ function ps_construction_should_render() {
     // cookies. N'affecte que la personne qui ajoute ce paramètre.
     if (ps_construction_is_forced()) return true;
     if (!ps_construction_opt('ps_cp_enabled')) return false;
+    // Portée : par défaut la page d'accueil seulement, pour ne pas doublonner
+    // avec les pages qui portent déjà un formulaire d'inscription
+    // (ex. « Restons en lien »).
+    if (ps_construction_opt('ps_cp_scope') === 'home' && !is_front_page() && !is_home()) return false;
     // Dans l'aperçu du Customizer, on affiche toujours le popup (ouvert
     // d'office, sans cookie) pour permettre d'en éditer les textes en direct.
     if (is_customize_preview()) return true;

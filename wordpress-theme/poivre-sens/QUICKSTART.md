@@ -306,6 +306,7 @@ l'aperçu, pour vous permettre de régler les textes).
 | Réglage | Rôle |
 |---------|------|
 | **Afficher le popup** | Case à cocher : décochez pour le désactiver entièrement |
+| **Où afficher le popup** | *Page d'accueil uniquement* (par défaut) ou *Toutes les pages*. L'accueil seul évite le doublon avec les pages portant déjà un formulaire, comme « Restons en lien » |
 | **Sur-titre** | Petite ligne en capitales au-dessus du titre |
 | **Titre** | Début du titre |
 | **Fin du titre (en italique coloré)** | Suite du titre, en italique dans la couleur d'accent |
@@ -324,13 +325,15 @@ l'aperçu, pour vous permettre de régler les textes).
 C'est presque toujours normal — le popup s'efface volontairement dans
 plusieurs situations. Par ordre de fréquence :
 
-1. **Vous êtes connecté·e à WordPress.** Le popup ne s'affiche jamais aux
+1. **Vous n'êtes pas sur la page d'accueil.** Par défaut le popup ne
+   s'affiche que sur l'accueil (réglage « Où afficher le popup »).
+2. **Vous êtes connecté·e à WordPress.** Le popup ne s'affiche jamais aux
    personnes qui peuvent éditer le site (vous), pour ne pas gêner le travail.
-2. **Vous l'avez déjà fermé.** Le cookie `ps_construction_seen` le masque
+3. **Vous l'avez déjà fermé.** Le cookie `ps_construction_seen` le masque
    pendant le nombre de jours réglé.
-3. **Vous êtes déjà inscrit·e** à la newsletter depuis ce navigateur
+4. **Vous êtes déjà inscrit·e** à la newsletter depuis ce navigateur
    (cookie `ps_nl_subscribed`) : il ne s'affiche plus jamais.
-4. **Un cache** (plugin de cache, CDN) sert une version antérieure de la page.
+5. **Un cache** (plugin de cache, CDN) sert une version antérieure de la page.
 
 **Pour le voir immédiatement, quel que soit le cas :** ajoutez `?ps_popup=1`
 à l'URL, par exemple `https://cie.poivresens.fr/?ps_popup=1`. Le popup
