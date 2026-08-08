@@ -320,6 +320,19 @@ l'aperçu, pour vous permettre de régler les textes).
 > Laisser un champ texte vide masque simplement l'élément correspondant
 > (sauf le titre et le bouton, nécessaires au fonctionnement).
 
+### Indexation Google des pages utilitaires
+
+Les URL à paramètre qui affichent une variante d'une page existante sont
+automatiquement marquées **`noindex`** par le thème, pour éviter que Google
+les signale comme doublons :
+
+- `?mailpoet_page=…` et `?mailpoet_router` — gestion d'abonnement et
+  désinscription MailPoet ;
+- `?ps_popup=1` — affichage forcé du popup (mode test).
+
+Ces pages restent accessibles normalement aux visiteurs ; seuls les moteurs
+de recherche sont invités à ne pas les indexer.
+
 ### « Je ne vois pas le popup »
 
 C'est presque toujours normal — le popup s'efface volontairement dans

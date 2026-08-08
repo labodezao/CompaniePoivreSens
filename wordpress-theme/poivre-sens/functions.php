@@ -16,6 +16,35 @@ require_once get_template_directory() . '/inc/block-patterns.php';
 require_once get_template_directory() . '/inc/construction-popup.php';
 
 /* ═══════════════════════════════════════════════════════════
+   0. INDEXATION — pages utilitaires à exclure de Google
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * Marque en « noindex » les URL utilitaires à paramètre, qui affichent une
+ * variante d'une page existante et que Google signale sinon comme doublons
+ * (« Page en double : Google n'a pas choisi la même URL canonique »).
+ *
+ * Concerné :
+ *   ?mailpoet_page=…  gestion d'abonnement / désinscription MailPoet
+ *   ?ps_popup=1       affichage forcé du popup (mode test du thème)
+ *
+ * Ces pages restent parfaitement accessibles aux visiteurs : on demande
+ * seulement aux moteurs de ne pas les indexer.
+ */
+add_filter('wp_robots', function (array $robots) {
+    $params_utilitaires = ['mailpoet_page', 'mailpoet_router', 'ps_popup'];
+    foreach ($params_utilitaires as $param) {
+        if (isset($_GET[$param])) {
+            $robots['noindex']  = true;
+            $robots['nofollow'] = true;
+            unset($robots['index'], $robots['follow']);
+            break;
+        }
+    }
+    return $robots;
+});
+
+/* ═══════════════════════════════════════════════════════════
    1. SUPPORTS & SETUP
    ═══════════════════════════════════════════════════════════ */
 add_action('after_setup_theme', function () {
