@@ -320,6 +320,28 @@ l'aperçu, pour vous permettre de régler les textes).
 > Laisser un champ texte vide masque simplement l'élément correspondant
 > (sauf le titre et le bouton, nécessaires au fonctionnement).
 
+### Modifier l'e-mail de bienvenue
+
+**Newsletter › Réglages** — l'e-mail envoyé automatiquement à chaque
+nouvelle inscription (objet et corps) s'y modifie sans toucher au code.
+
+Variables utilisables dans le message :
+
+| Variable | Remplacée par |
+|----------|---------------|
+| `{salutation}` | « Bonjour Prénom, » ou « Bonjour, » si le prénom est inconnu |
+| `{prenom}` | Le prénom seul (peut être vide) |
+| `{email}` | L'adresse de l'inscrit |
+| `{desinscription}` | Le lien de désinscription |
+| `{site}` | Le nom du site |
+| `{url}` | L'adresse du site |
+
+> ⚠️ Conservez `{desinscription}` : le lien de désinscription est une
+> obligation légale (RGPD).
+
+La page permet aussi de **désactiver** cet e-mail, de **restaurer le modèle
+par défaut**, et d'**envoyer un test** à l'adresse de votre choix.
+
 ### Indexation Google des pages utilitaires
 
 Les URL à paramètre qui affichent une variante d'une page existante sont

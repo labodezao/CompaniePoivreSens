@@ -15,6 +15,9 @@ require_once get_template_directory() . '/inc/block-patterns.php';
 // Popup « site en construction » + capture newsletter (non invasif, cookie)
 require_once get_template_directory() . '/inc/construction-popup.php';
 
+// Balises description / Open Graph / données structurées
+require_once get_template_directory() . '/inc/seo.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
@@ -507,18 +510,23 @@ function ps_newsletter_unsubscribe() {
     wp_die(__('Lien invalide ou déjà utilisé.', 'poivre-sens'));
 }
 
+/**
+ * E-mail de bienvenue envoyé à chaque nouvelle inscription.
+ * Objet et corps sont modifiables dans Newsletter › Réglages ;
+ * les valeurs par défaut reprennent le message d'origine.
+ */
 function ps_send_confirm_email($email, $prenom, $token) {
-    $site     = get_bloginfo('name');
-    $unsub    = add_query_arg(['action' => 'ps_newsletter_unsubscribe', 'token' => $token], admin_url('admin-ajax.php'));
-    $greeting = $prenom ? sprintf(__('Bonjour %s,', 'poivre-sens'), $prenom) : __('Bonjour,', 'poivre-sens');
+    if (ps_nl_confirm_opt('ps_nl_confirm_actif') !== '1') return false;
 
-    $subject = sprintf(__('Bienvenue dans la newsletter de %s', 'poivre-sens'), $site);
-    $body = "$greeting\n\n" .
-        __("Vous êtes maintenant inscrit(e) à la newsletter de la Compagnie Poivre & Sens.\n\nVous recevrez nos prochaines dates d'événements, résidences et stages.\n\n", 'poivre-sens') .
-        sprintf(__("Pour vous désinscrire à tout moment : %s\n\n", 'poivre-sens'), $unsub) .
-        sprintf(__("Compagnie Poivre & Sens\n%s", 'poivre-sens'), get_bloginfo('url'));
+    $unsub = add_query_arg(
+        ['action' => 'ps_newsletter_unsubscribe', 'token' => $token],
+        admin_url('admin-ajax.php')
+    );
 
-    wp_mail($email, $subject, $body, ['Content-Type: text/plain; charset=UTF-8']);
+    $subject = ps_nl_confirm_render(ps_nl_confirm_opt('ps_nl_confirm_sujet'), $prenom, $email, $unsub);
+    $body    = ps_nl_confirm_render(ps_nl_confirm_opt('ps_nl_confirm_corps'), $prenom, $email, $unsub);
+
+    return wp_mail($email, $subject, $body, ['Content-Type: text/plain; charset=UTF-8']);
 }
 
 /* ── Page admin abonnés newsletter ──────────────────────── */

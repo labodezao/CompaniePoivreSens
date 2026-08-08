@@ -1,0 +1,121 @@
+<?php
+/**
+ * inc/seo.php
+ *
+ * Balises minimales d'indexation et de partage, absentes du thème :
+ *   - meta description
+ *   - Open Graph / Twitter (aperçu lors des partages)
+ *   - données structurées JSON-LD décrivant la compagnie (schema.org)
+ *
+ * Les données structurées aident Google à comprendre que « Poivre & Sens »,
+ * « Poivre et Sens » et « Compagnie Poivre & Sens » désignent la même
+ * entité — utile pour les recherches sur le nom de la compagnie.
+ *
+ * Si une extension SEO (Yoast, Rank Math, SEOPress, All in One SEO) est
+ * active, ce fichier s'efface : c'est elle qui gère ces balises, et les
+ * dupliquer nuirait au référencement.
+ */
+defined('ABSPATH') || exit;
+
+/** Une extension SEO gère-t-elle déjà ces balises ? */
+function ps_seo_plugin_actif() {
+    return defined('WPSEO_VERSION')            // Yoast
+        || class_exists('RankMath')            // Rank Math
+        || defined('SEOPRESS_VERSION')         // SEOPress
+        || defined('AIOSEO_VERSION');          // All in One SEO
+}
+
+/** Description de la page courante (160 caractères max, comme Google). */
+function ps_seo_description() {
+    $desc = '';
+    if (is_front_page()) {
+        $desc = get_bloginfo('description');
+    } elseif (is_singular()) {
+        $post = get_queried_object();
+        $desc = has_excerpt($post) ? get_the_excerpt($post) : wp_strip_all_tags($post->post_content ?? '');
+    } elseif (is_post_type_archive('evenement')) {
+        $desc = __('Prochaines dates de la Compagnie Poivre & Sens : spectacles, jams de contact-improvisation, ateliers et résidences.', 'poivre-sens');
+    }
+    $desc = trim(preg_replace('/\s+/', ' ', (string) $desc));
+    if ($desc === '') {
+        $desc = get_bloginfo('description');
+    }
+    return wp_html_excerpt($desc, 160, '…');
+}
+
+/**
+ * Injecte description, Open Graph et JSON-LD dans le <head>.
+ * Priorité 5 : avant les éventuels ajouts d'extensions.
+ */
+add_action('wp_head', function () {
+    if (ps_seo_plugin_actif()) return;
+    if (is_404() || is_search()) return;
+
+    $nom   = get_bloginfo('name');
+    $desc  = ps_seo_description();
+    $url   = is_front_page() ? home_url('/') : get_permalink();
+    $titre = is_front_page() ? $nom : wp_get_document_title();
+
+    // Image de partage : image à la une, sinon rien (pas de logo dans le thème).
+    $image = '';
+    if (is_singular() && has_post_thumbnail()) {
+        $image = get_the_post_thumbnail_url(null, 'evt-thumbnail');
+    }
+
+    echo "\n<!-- Poivre & Sens — SEO -->\n";
+    printf('<meta name="description" content="%s">' . "\n", esc_attr($desc));
+
+    printf('<meta property="og:type" content="%s">' . "\n", is_singular() && !is_front_page() ? 'article' : 'website');
+    printf('<meta property="og:site_name" content="%s">' . "\n", esc_attr($nom));
+    printf('<meta property="og:title" content="%s">' . "\n", esc_attr($titre));
+    printf('<meta property="og:description" content="%s">' . "\n", esc_attr($desc));
+    printf('<meta property="og:url" content="%s">' . "\n", esc_url($url));
+    printf('<meta property="og:locale" content="%s">' . "\n", esc_attr(get_locale()));
+    if ($image) printf('<meta property="og:image" content="%s">' . "\n", esc_url($image));
+
+    printf('<meta name="twitter:card" content="%s">' . "\n", $image ? 'summary_large_image' : 'summary');
+    printf('<meta name="twitter:title" content="%s">' . "\n", esc_attr($titre));
+    printf('<meta name="twitter:description" content="%s">' . "\n", esc_attr($desc));
+    if ($image) printf('<meta name="twitter:image" content="%s">' . "\n", esc_url($image));
+
+    // ── Données structurées : l'entité « compagnie » ──────────
+    if (is_front_page()) {
+        $schema = [
+            '@context'      => 'https://schema.org',
+            '@type'         => 'PerformingGroup',
+            'name'          => $nom,
+            // Variantes du nom : aide Google à relier les recherches
+            // « poivre et sens », « cie poivre & sens », etc.
+            'alternateName' => array_values(array_unique(array_filter([
+                'Compagnie Poivre & Sens',
+                'Cie Poivre & Sens',
+                'Poivre et Sens',
+                'Compagnie Poivre et Sens',
+            ]))),
+            'url'           => home_url('/'),
+            'description'   => $desc,
+            'address'       => [
+                '@type'           => 'PostalAddress',
+                'addressLocality' => 'Saint-Nazaire',
+                'postalCode'      => '44600',
+                'addressCountry'  => 'FR',
+            ],
+            'knowsAbout'    => [
+                __('Danse contemporaine', 'poivre-sens'),
+                __('Contact-improvisation', 'poivre-sens'),
+                __('Musique improvisée', 'poivre-sens'),
+            ],
+        ];
+
+        /**
+         * Permet de compléter les données structurées, par exemple pour
+         * ajouter 'sameAs' => ['https://instagram.com/…', …] une fois les
+         * réseaux sociaux en place.
+         */
+        $schema = apply_filters('ps_seo_schema', $schema);
+
+        echo '<script type="application/ld+json">'
+           . wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+           . '</script>' . "\n";
+    }
+}, 5);

@@ -253,6 +253,7 @@ add_action('admin_menu', function () {
     add_submenu_page('ps-newsletter', __('Listes',         'poivre-sens'), __('Listes',         'poivre-sens'), 'manage_options', 'ps-nl-listes',     'ps_nl_page_dispatch');
     add_submenu_page('ps-newsletter', __('Campagnes',      'poivre-sens'), __('Campagnes',      'poivre-sens'), 'manage_options', 'ps-nl-campagnes',  'ps_nl_page_dispatch');
     add_submenu_page('ps-newsletter', __('Nouvelle campagne', 'poivre-sens'), __('Nouvelle campagne', 'poivre-sens'), 'manage_options', 'ps-nl-nouvelle-campagne', 'ps_nl_page_dispatch');
+    add_submenu_page('ps-newsletter', __('Réglages',        'poivre-sens'), __('Réglages',        'poivre-sens'), 'manage_options', 'ps-nl-reglages',   'ps_nl_page_dispatch');
 });
 
 /** Dispatcher : redirige vers la bonne page selon page=  */
@@ -263,6 +264,7 @@ function ps_nl_page_dispatch() {
         case 'ps-nl-listes':            ps_nl_page_listes();            break;
         case 'ps-nl-campagnes':         ps_nl_page_campagnes();         break;
         case 'ps-nl-nouvelle-campagne': ps_nl_page_nouvelle_campagne(); break;
+        case 'ps-nl-reglages':          ps_nl_page_reglages();          break;
         default:                        ps_nl_page_dashboard();         break;
     }
 }
@@ -820,6 +822,150 @@ function ps_nl_page_abonnes() {
     })();
     </script>
 
+    </div><!-- .ps-wrap -->
+    <?php
+}
+
+/* ═══════════════════════════════════════════════════════════
+   E-MAIL DE CONFIRMATION D'INSCRIPTION  (modèle éditable)
+   ═══════════════════════════════════════════════════════════ */
+
+/** Sujet et corps par défaut de l'e-mail de bienvenue. */
+function ps_nl_confirm_defaults() {
+    return [
+        'ps_nl_confirm_actif' => '1',
+        'ps_nl_confirm_sujet' => __('Bienvenue dans la newsletter de {site}', 'poivre-sens'),
+        'ps_nl_confirm_corps' => __("{salutation}\n\nVous êtes maintenant inscrit(e) à la newsletter de la Compagnie Poivre & Sens.\n\nVous recevrez nos prochaines dates d'événements, résidences et stages.\n\nPour vous désinscrire à tout moment : {desinscription}\n\nCompagnie Poivre & Sens\n{url}", 'poivre-sens'),
+    ];
+}
+
+/** Valeur d'un réglage de l'e-mail de confirmation. */
+function ps_nl_confirm_opt($cle) {
+    $defauts = ps_nl_confirm_defaults();
+    return get_option($cle, $defauts[$cle] ?? '');
+}
+
+/**
+ * Remplace les variables du modèle par leurs valeurs.
+ * {salutation} gère l'absence de prénom (« Bonjour, » au lieu de « Bonjour , »).
+ */
+function ps_nl_confirm_render($texte, $prenom, $email, $unsub) {
+    $salutation = $prenom
+        ? sprintf(__('Bonjour %s,', 'poivre-sens'), $prenom)
+        : __('Bonjour,', 'poivre-sens');
+
+    return str_replace(
+        ['{salutation}', '{prenom}', '{email}', '{desinscription}', '{site}', '{url}'],
+        [$salutation, $prenom, $email, $unsub, get_bloginfo('name'), home_url('/')],
+        (string) $texte
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PAGE : RÉGLAGES
+   ═══════════════════════════════════════════════════════════ */
+function ps_nl_page_reglages() {
+    $notice = '';
+
+    if (isset($_POST['ps_save_reglages']) && check_admin_referer('ps_save_reglages')) {
+        update_option('ps_nl_confirm_actif', isset($_POST['confirm_actif']) ? '1' : '0');
+        update_option('ps_nl_confirm_sujet', sanitize_text_field(wp_unslash($_POST['confirm_sujet'] ?? '')));
+        update_option('ps_nl_confirm_corps', sanitize_textarea_field(wp_unslash($_POST['confirm_corps'] ?? '')));
+        $notice = '<div class="ps-notice ps-notice-ok">' . __('Réglages enregistrés.', 'poivre-sens') . '</div>';
+    }
+
+    // Restaurer le modèle par défaut
+    if (isset($_POST['ps_reset_confirm']) && check_admin_referer('ps_save_reglages')) {
+        $d = ps_nl_confirm_defaults();
+        update_option('ps_nl_confirm_sujet', $d['ps_nl_confirm_sujet']);
+        update_option('ps_nl_confirm_corps', $d['ps_nl_confirm_corps']);
+        $notice = '<div class="ps-notice ps-notice-ok">' . __('Modèle par défaut restauré.', 'poivre-sens') . '</div>';
+    }
+
+    // Envoi d'un e-mail de test à l'administrateur
+    if (isset($_POST['ps_test_confirm']) && check_admin_referer('ps_save_reglages')) {
+        $dest = sanitize_email(wp_unslash($_POST['test_email'] ?? '')) ?: get_option('admin_email');
+        $ok   = ps_send_confirm_email($dest, __('Prénom', 'poivre-sens'), 'TOKEN-DE-TEST');
+        $notice = $ok
+            ? '<div class="ps-notice ps-notice-ok">' . sprintf(__('E-mail de test envoyé à %s.', 'poivre-sens'), esc_html($dest)) . '</div>'
+            : '<div class="ps-notice ps-notice-err">' . __('L\'envoi a échoué. Vérifiez la configuration e-mail du site (extension SMTP recommandée).', 'poivre-sens') . '</div>';
+    }
+
+    $actif = ps_nl_confirm_opt('ps_nl_confirm_actif') === '1';
+    $sujet = ps_nl_confirm_opt('ps_nl_confirm_sujet');
+    $corps = ps_nl_confirm_opt('ps_nl_confirm_corps');
+
+    ps_nl_header(__('Réglages', 'poivre-sens'), 'ps-nl-reglages');
+    echo $notice;
+    ?>
+    <form method="post">
+        <?php wp_nonce_field('ps_save_reglages'); ?>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start">
+
+            <div class="ps-card">
+                <h3>✉ <?= __('E-mail de bienvenue', 'poivre-sens') ?></h3>
+                <p style="font-size:13px;color:#666;margin-bottom:18px">
+                    <?= __('Envoyé automatiquement à chaque nouvelle inscription (formulaire du site, popup, landing page).', 'poivre-sens') ?>
+                </p>
+
+                <div class="ps-field" style="margin-bottom:16px">
+                    <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:400;color:#333">
+                        <input type="checkbox" name="confirm_actif" value="1" <?= checked($actif, true, false) ?> style="width:auto">
+                        <?= __('Envoyer un e-mail de bienvenue aux nouveaux inscrits', 'poivre-sens') ?>
+                    </label>
+                </div>
+
+                <div class="ps-field" style="margin-bottom:16px">
+                    <label><?= __('Objet', 'poivre-sens') ?></label>
+                    <input type="text" name="confirm_sujet" value="<?= esc_attr($sujet) ?>">
+                </div>
+
+                <div class="ps-field">
+                    <label><?= __('Corps du message', 'poivre-sens') ?></label>
+                    <textarea name="confirm_corps" rows="14" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:4px;font-size:13px;line-height:1.7;font-family:ui-monospace,SFMono-Regular,Menlo,monospace"><?= esc_textarea($corps) ?></textarea>
+                    <div class="help"><?= __('Message en texte brut (pas de HTML) — le plus fiable pour arriver en boîte de réception.', 'poivre-sens') ?></div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+                    <button type="submit" name="ps_save_reglages" class="ps-btn ps-btn-primary">💾 <?= __('Enregistrer', 'poivre-sens') ?></button>
+                    <button type="submit" name="ps_reset_confirm" class="ps-btn ps-btn-grey"
+                        onclick="return confirm('<?= esc_js(__('Restaurer le modèle par défaut ? Vos modifications seront perdues.', 'poivre-sens')) ?>')">
+                        <?= __('Restaurer le modèle par défaut', 'poivre-sens') ?>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <div class="ps-card">
+                    <h3>🔤 <?= __('Variables disponibles', 'poivre-sens') ?></h3>
+                    <div style="font-size:12px;color:#555;line-height:2">
+                        <code>{salutation}</code> — <?= __('« Bonjour Prénom, » ou « Bonjour, »', 'poivre-sens') ?><br>
+                        <code>{prenom}</code> — <?= __('Prénom seul (peut être vide)', 'poivre-sens') ?><br>
+                        <code>{email}</code> — <?= __('Adresse de l\'inscrit', 'poivre-sens') ?><br>
+                        <code>{desinscription}</code> — <?= __('Lien de désinscription', 'poivre-sens') ?><br>
+                        <code>{site}</code> — <?= __('Nom du site', 'poivre-sens') ?><br>
+                        <code>{url}</code> — <?= __('Adresse du site', 'poivre-sens') ?>
+                    </div>
+                    <p style="font-size:11px;color:#999;margin-top:14px">
+                        <?= __('Pensez à conserver {desinscription} : le lien de désinscription est une obligation légale (RGPD).', 'poivre-sens') ?>
+                    </p>
+                </div>
+
+                <div class="ps-card">
+                    <h3>📨 <?= __('Tester', 'poivre-sens') ?></h3>
+                    <div class="ps-field" style="margin-bottom:12px">
+                        <label><?= __('Envoyer un e-mail de test à', 'poivre-sens') ?></label>
+                        <input type="email" name="test_email" value="<?= esc_attr(get_option('admin_email')) ?>">
+                    </div>
+                    <button type="submit" name="ps_test_confirm" class="ps-btn ps-btn-outline"><?= __('Envoyer le test', 'poivre-sens') ?></button>
+                    <p style="font-size:11px;color:#999;margin-top:10px">
+                        <?= __('Le test utilise le modèle enregistré. Enregistrez d\'abord vos modifications.', 'poivre-sens') ?>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </form>
     </div><!-- .ps-wrap -->
     <?php
 }
@@ -1462,6 +1608,7 @@ function ps_nl_header($titre, $current_page) {
         'ps-nl-listes'            => ['🏷', __('Listes',          'poivre-sens')],
         'ps-nl-campagnes'         => ['📬', __('Campagnes',       'poivre-sens')],
         'ps-nl-nouvelle-campagne' => ['✉',  __('Nouvelle campagne','poivre-sens')],
+        'ps-nl-reglages'          => ['⚙',  __('Réglages',         'poivre-sens')],
     ];
     global $wpdb;
     $actifs = (int)$wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ps_newsletter WHERE statut='actif'");
