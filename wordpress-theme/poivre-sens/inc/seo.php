@@ -89,6 +89,140 @@ add_filter('wpseo_schema_organization', function ($data) {
     return $data;
 });
 
+/* ═══════════════════════════════════════════════════════════
+   DONNÉES STRUCTURÉES DES ÉVÉNEMENTS (schema.org/Event)
+   ═══════════════════════════════════════════════════════════
+   Ni Yoast (même Premium) ni les autres extensions SEO ne génèrent de
+   schéma « Event » pour un type de contenu personnalisé. Ce bloc est donc
+   émis même lorsqu'une extension SEO est active : il ne fait doublon avec
+   rien, et permet à Google d'afficher date, lieu et billetterie
+   directement dans les résultats de recherche.
+   ═══════════════════════════════════════════════════════════ */
+
+/** Combine une date (Y-m-d) et une heure (H:i) en ISO 8601 avec fuseau. */
+function ps_seo_event_datetime($date, $heure = '') {
+    if (!$date) return '';
+    $heure = $heure ?: '00:00';
+    try {
+        $dt = new DateTime($date . ' ' . $heure, wp_timezone());
+    } catch (Exception $e) {
+        return '';
+    }
+    return $dt->format('c');
+}
+
+/**
+ * Tarif exploitable par Google : un nombre, ou 0 si l'entrée dit « gratuit ».
+ * Renvoie null si le texte libre n'est pas interprétable (« sur réservation »,
+ * « prix libre »…), auquel cas on n'annonce pas de prix plutôt que d'en
+ * inventer un.
+ */
+function ps_seo_event_price($texte) {
+    $texte = trim((string) $texte);
+    if ($texte === '') return null;
+    if (preg_match('/gratuit|libre|offert|free/i', $texte)) return '0';
+    // Premier nombre rencontré : « 12€ », « 12,50 € », « 10 à 15 € » → 10
+    if (preg_match('/(\d+(?:[.,]\d{1,2})?)/', $texte, $m)) {
+        return str_replace(',', '.', $m[1]);
+    }
+    return null;
+}
+
+/** Construit le schéma Event d'un événement, ou null si inexploitable. */
+function ps_seo_event_schema($post_id) {
+    $date = get_post_meta($post_id, '_evt_date', true);
+    if (!$date) return null; // sans date, pas d'événement valide pour Google
+
+    $debut = ps_seo_event_datetime($date, get_post_meta($post_id, '_evt_heure', true));
+    if (!$debut) return null;
+
+    $lieu    = get_post_meta($post_id, '_evt_lieu', true);
+    $adresse = get_post_meta($post_id, '_evt_adresse', true);
+    $ville   = get_post_meta($post_id, '_evt_ville', true);
+    $prix    = get_post_meta($post_id, '_evt_prix', true);
+    $billet  = get_post_meta($post_id, '_evt_billetterie', true);
+    $complet = get_post_meta($post_id, '_evt_complet', true) === '1';
+    $fin     = get_post_meta($post_id, '_evt_heure_fin', true);
+
+    $compagnie = [
+        '@type' => 'PerformingGroup',
+        'name'  => get_bloginfo('name'),
+        'url'   => home_url('/'),
+    ];
+
+    $schema = [
+        '@context'            => 'https://schema.org',
+        '@type'               => 'Event',
+        'name'                => get_the_title($post_id),
+        'startDate'           => $debut,
+        'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+        'eventStatus'         => 'https://schema.org/EventScheduled',
+        'url'                 => get_permalink($post_id),
+        'performer'           => $compagnie,
+        'organizer'           => $compagnie,
+    ];
+
+    if ($fin) {
+        $date_fin = ps_seo_event_datetime($date, $fin);
+        // Une heure de fin antérieure au début signifie un passage après minuit.
+        if ($date_fin && $date_fin < $debut) {
+            $lendemain = date('Y-m-d', strtotime($date . ' +1 day'));
+            $date_fin  = ps_seo_event_datetime($lendemain, $fin);
+        }
+        if ($date_fin) $schema['endDate'] = $date_fin;
+    }
+
+    $desc = get_the_excerpt($post_id) ?: wp_strip_all_tags(get_post_field('post_content', $post_id));
+    $desc = trim(preg_replace('/\s+/', ' ', $desc));
+    if ($desc) $schema['description'] = wp_html_excerpt($desc, 300, '…');
+
+    if (has_post_thumbnail($post_id)) {
+        $img = get_the_post_thumbnail_url($post_id, 'evt-thumbnail');
+        if ($img) $schema['image'] = $img;
+    }
+
+    // Lieu : Google exige au minimum un nom ou une adresse.
+    if ($lieu || $adresse || $ville) {
+        $place = ['@type' => 'Place', 'name' => $lieu ?: $ville];
+        $postal = ['@type' => 'PostalAddress', 'addressCountry' => 'FR'];
+        if ($adresse) $postal['streetAddress']   = $adresse;
+        if ($ville)   $postal['addressLocality'] = $ville;
+        $place['address'] = $postal;
+        $schema['location'] = $place;
+    }
+
+    // Offre : uniquement si l'on dispose d'un prix exploitable ou d'un lien.
+    $montant = ps_seo_event_price($prix);
+    if ($montant !== null || $billet) {
+        $offre = [
+            '@type'         => 'Offer',
+            'availability'  => $complet
+                ? 'https://schema.org/SoldOut'
+                : 'https://schema.org/InStock',
+            'url'           => $billet ?: get_permalink($post_id),
+        ];
+        if ($montant !== null) {
+            $offre['price']         = $montant;
+            $offre['priceCurrency'] = 'EUR';
+        }
+        $schema['offers'] = $offre;
+    }
+
+    /** Permet d'ajuster le schéma d'un événement. */
+    return apply_filters('ps_seo_event_schema', $schema, $post_id);
+}
+
+add_action('wp_head', function () {
+    if (!is_singular('evenement')) return;
+    $schema = ps_seo_event_schema(get_the_ID());
+    if (!$schema) return;
+
+    echo "\n<!-- Poivre & Sens — événement -->\n"
+       . '<script type="application/ld+json">'
+       . wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+       . '</script>' . "\n";
+}, 6);
+
 /** Description de la page courante (160 caractères max, comme Google). */
 function ps_seo_description() {
     $desc = '';
