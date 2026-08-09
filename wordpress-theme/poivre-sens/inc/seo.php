@@ -25,6 +25,43 @@ function ps_seo_plugin_actif() {
         || defined('AIOSEO_VERSION');          // All in One SEO
 }
 
+/**
+ * Variantes du nom de la compagnie.
+ * Déclarer « Poivre et Sens » à côté de « Poivre & Sens » aide Google à
+ * relier les deux graphies à une même entité, et donc à faire ressortir
+ * le site sur des recherches du type « poivre et sens compagnie ».
+ */
+function ps_seo_name_variants() {
+    return array_values(array_unique(array_filter([
+        'Compagnie Poivre & Sens',
+        'Cie Poivre & Sens',
+        'Poivre et Sens',
+        'Compagnie Poivre et Sens',
+    ])));
+}
+
+/**
+ * Yoast gère lui-même les données structurées : on lui ajoute seulement
+ * les variantes du nom, plutôt que d'émettre un second bloc concurrent.
+ * Ce filtre ne se déclenche que si Yoast est actif.
+ */
+add_filter('wpseo_schema_organization', function ($data) {
+    $existant = $data['alternateName'] ?? [];
+    if (is_string($existant)) $existant = [$existant];
+    if (!is_array($existant))  $existant = [];
+
+    $noms = array_values(array_unique(array_filter(
+        array_merge($existant, ps_seo_name_variants()),
+        function ($n) use ($data) {
+            // Inutile de répéter le nom principal dans les variantes.
+            return is_string($n) && $n !== '' && $n !== ($data['name'] ?? '');
+        }
+    )));
+
+    if ($noms) $data['alternateName'] = $noms;
+    return $data;
+});
+
 /** Description de la page courante (160 caractères max, comme Google). */
 function ps_seo_description() {
     $desc = '';
@@ -86,12 +123,7 @@ add_action('wp_head', function () {
             'name'          => $nom,
             // Variantes du nom : aide Google à relier les recherches
             // « poivre et sens », « cie poivre & sens », etc.
-            'alternateName' => array_values(array_unique(array_filter([
-                'Compagnie Poivre & Sens',
-                'Cie Poivre & Sens',
-                'Poivre et Sens',
-                'Compagnie Poivre et Sens',
-            ]))),
+            'alternateName' => ps_seo_name_variants(),
             'url'           => home_url('/'),
             'description'   => $desc,
             'address'       => [

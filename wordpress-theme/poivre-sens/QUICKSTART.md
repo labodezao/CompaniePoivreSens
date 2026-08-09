@@ -342,6 +342,29 @@ Variables utilisables dans le message :
 La page permet aussi de **désactiver** cet e-mail, de **restaurer le modèle
 par défaut**, et d'**envoyer un test** à l'adresse de votre choix.
 
+### SEO — où modifier les titres et descriptions
+
+**Si une extension SEO est installée (Yoast, Rank Math, SEOPress, AIOSEO)**,
+le thème s'efface : c'est l'extension qui gère titres, descriptions,
+Open Graph et données structurées. Tout se règle donc chez elle.
+
+Avec **Yoast** :
+
+| Ce que vous voulez changer | Où |
+|---|---|
+| Titre et description d'une page précise | Éditez la page → encadré **Yoast SEO** sous le contenu → *Aperçu Google* |
+| Modèles par défaut (toutes les pages, tous les événements) | **Yoast SEO › Réglages › Types de contenu** |
+| Identité de la compagnie (nom, logo, réseaux sociaux) | **Yoast SEO › Réglages › Représentation du site** — choisissez *Organisation* |
+| Image de partage réseaux sociaux | Encadré Yoast de la page → onglet **Réseaux sociaux** |
+
+> Le thème complète malgré tout les données structurées de Yoast avec les
+> **variantes du nom** (« Compagnie Poivre & Sens », « Poivre et Sens »…),
+> sans rien écraser de ce que vous y avez renseigné.
+
+**Sans extension SEO**, le thème génère lui-même description, Open Graph et
+données structurées à partir du **titre** et de l'**accroche** du site
+(Réglages › Général) et des extraits de page.
+
 ### Indexation Google des pages utilitaires
 
 Les URL à paramètre qui affichent une variante d'une page existante sont
