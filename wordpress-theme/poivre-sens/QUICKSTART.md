@@ -358,8 +358,13 @@ Avec **Yoast** :
 | Image de partage réseaux sociaux | Encadré Yoast de la page → onglet **Réseaux sociaux** |
 
 > Le thème complète malgré tout les données structurées de Yoast avec les
-> **variantes du nom** (« Compagnie Poivre & Sens », « Poivre et Sens »…),
-> sans rien écraser de ce que vous y avez renseigné.
+> **variantes du nom**, sans rien écraser de ce que vous y avez renseigné.
+
+Ces variantes se modifient dans **Apparence › Personnaliser ›
+« Référencement (SEO) » › Autres façons d'écrire le nom** — une par ligne.
+Elles servent à ce que Google reconnaisse la compagnie quelle que soit
+l'orthographe employée (« Poivre & Sens », « Poivre et Sens », « Cie
+Poivre & Sens »…). Videz le champ pour n'en déclarer aucune.
 
 **Sans extension SEO**, le thème génère lui-même description, Open Graph et
 données structurées à partir du **titre** et de l'**accroche** du site

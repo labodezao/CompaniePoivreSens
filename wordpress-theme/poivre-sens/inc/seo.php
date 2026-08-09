@@ -32,13 +32,40 @@ function ps_seo_plugin_actif() {
  * le site sur des recherches du type « poivre et sens compagnie ».
  */
 function ps_seo_name_variants() {
-    return array_values(array_unique(array_filter([
-        'Compagnie Poivre & Sens',
-        'Cie Poivre & Sens',
-        'Poivre et Sens',
-        'Compagnie Poivre et Sens',
-    ])));
+    $saisie = get_theme_mod('ps_seo_alt_names', ps_seo_alt_names_default());
+
+    $noms = array_map('trim', explode("\n", (string) $saisie));
+    $noms = array_filter($noms, function ($n) { return $n !== ''; });
+
+    return array_values(array_unique($noms));
 }
+
+/** Variantes proposées par défaut (modifiables dans le Customizer). */
+function ps_seo_alt_names_default() {
+    return "Compagnie Poivre & Sens\nCie Poivre & Sens\nPoivre et Sens\nCompagnie Poivre et Sens";
+}
+
+/* ── Réglage éditable : variantes du nom ──────────────────── */
+add_action('customize_register', function (\WP_Customize_Manager $wp_customize) {
+    $wp_customize->add_section('ps_seo', [
+        'title'       => __('Référencement (SEO)', 'poivre-sens'),
+        'description' => __('Aide Google à reconnaître votre compagnie, quelle que soit la façon dont son nom est écrit.', 'poivre-sens'),
+        'priority'    => 30,
+    ]);
+
+    $wp_customize->add_setting('ps_seo_alt_names', [
+        'default'           => ps_seo_alt_names_default(),
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ]);
+
+    $wp_customize->add_control('ps_seo_alt_names', [
+        'label'       => __('Autres façons d\'écrire le nom', 'poivre-sens'),
+        'description' => __('Une par ligne. Déclarer « Poivre et Sens » à côté de « Poivre & Sens » aide Google à comprendre qu\'il s\'agit de la même compagnie. Ces variantes sont transmises à Yoast si l\'extension est active.', 'poivre-sens'),
+        'section'     => 'ps_seo',
+        'type'        => 'textarea',
+        'input_attrs' => ['rows' => 5],
+    ]);
+});
 
 /**
  * Yoast gère lui-même les données structurées : on lui ajoute seulement
