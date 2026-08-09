@@ -282,9 +282,6 @@ add_action('wp_head', function () {
             '@context'      => 'https://schema.org',
             '@type'         => 'PerformingGroup',
             'name'          => $nom,
-            // Variantes du nom : aide Google à relier les recherches
-            // « poivre et sens », « cie poivre & sens », etc.
-            'alternateName' => ps_seo_name_variants(),
             'url'           => home_url('/'),
             'description'   => $desc,
             'address'       => [
@@ -299,6 +296,13 @@ add_action('wp_head', function () {
                 __('Musique improvisée', 'poivre-sens'),
             ],
         ];
+
+        // Variantes du nom : aide Google à relier les recherches
+        // « poivre et sens », « cie poivre & sens », etc.
+        // Champ vidé dans le Customizer ⇒ on n'émet pas la clé du tout,
+        // plutôt qu'un tableau vide.
+        $variantes = ps_seo_name_variants();
+        if ($variantes) $schema['alternateName'] = $variantes;
 
         /**
          * Permet de compléter les données structurées, par exemple pour
