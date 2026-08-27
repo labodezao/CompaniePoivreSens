@@ -21,6 +21,9 @@ require_once get_template_directory() . '/inc/seo.php';
 // Interface d'édition d'un événement (champs + aperçu en direct)
 require_once get_template_directory() . '/inc/event-meta-box.php';
 
+// Bascule des événements du thème vers le plugin CF (outil de migration)
+require_once get_template_directory() . '/inc/event-migration.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
