@@ -1,6 +1,6 @@
 # CF Événements & Réservations
 
-Plugin WordPress léger remplaçant **The Events Calendar + SSA Booking** — optimisé pour OVH offre perso, compatible thème Astra et Constellation CF.
+Plugin WordPress léger remplaçant **The Events Calendar + SSA Booking** — optimisé pour OVH offre perso, compatible avec la plupart des thèmes WP standards.
 
 ## Fonctionnalités
 
@@ -77,7 +77,7 @@ wp-content/
 |---|---|
 | `[cf_events]` | Liste des prochains événements |
 | `[cf_events nombre="6"]` | Limiter le nombre affiché |
-| `[cf_events categorie="constellation"]` | Filtrer par slug de catégorie |
+| `[cf_events categorie="jam"]` | Filtrer par slug de catégorie |
 | `[cf_events vue="calendrier"]` | Vue calendrier mensuel |
 | `[cf_calendrier]` | Alias vue calendrier |
 | `[cf_mes_reservations]` | Espace « mes réservations » avec recherche par email |
@@ -293,7 +293,7 @@ Namespace : `cfeb/v1`
 
 - WordPress 6.0+
 - PHP 7.4+
-- Thème Constellation CF et tous thèmes WP standards (Astra, etc.)
+- Tous thèmes WP standards
 - OVH hébergement mutualisé (zéro dépendance externe, assets chargés conditionnellement)
 
 ## Optimisation performance (OVH)

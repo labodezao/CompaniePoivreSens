@@ -1033,8 +1033,6 @@ class CF_Admin {
 				<a href="<?php echo esc_url( $tab_url . '&tab=lieux' ); ?>"   class="nav-tab<?php echo 'lieux'   === $tab ? ' nav-tab-active' : ''; ?>">📍 Lieux</a>
 				<a href="<?php echo esc_url( $tab_url . '&tab=gcal#gcal' ); ?>"   class="nav-tab<?php echo 'gcal'    === $tab ? ' nav-tab-active' : ''; ?>">📅 Google Agenda</a>
 				<a href="<?php echo esc_url( $tab_url . '&tab=paiement' ); ?>" class="nav-tab<?php echo 'paiement' === $tab ? ' nav-tab-active' : ''; ?>">💳 Paiement</a>
-				<a href="<?php echo esc_url( $tab_url . '&tab=newsletter' ); ?>" class="nav-tab<?php echo 'newsletter' === $tab ? ' nav-tab-active' : ''; ?>">📰 Newsletter</a>
-				<a href="<?php echo esc_url( $tab_url . '&tab=ia' ); ?>" class="nav-tab<?php echo 'ia' === $tab ? ' nav-tab-active' : ''; ?>">🤖 IA</a>
 			</nav>
 
 			<form method="post">
@@ -1258,10 +1256,6 @@ class CF_Admin {
 				<?php CF_GoogleCalendar::render_settings_section(); ?>
 				<?php elseif ( 'paiement' === $tab ) : ?>
 				<?php if ( class_exists( 'CF_SumUp' ) ) CF_SumUp::render_settings_section(); ?>
-				<?php elseif ( 'newsletter' === $tab ) : ?>
-				<?php if ( class_exists( 'CF_MailPoet' ) ) CF_MailPoet::render_settings_section(); ?>
-				<?php elseif ( 'ia' === $tab ) : ?>
-				<?php if ( class_exists( 'CFI_AI' ) ) CFI_AI::render_settings_section(); ?>
 				<?php endif; ?>
 
 				<?php submit_button( 'Enregistrer les paramètres' ); ?>
@@ -1332,10 +1326,6 @@ class CF_Admin {
 			update_option( 'cfeb_gcal_sync_all', ! empty( $_POST['cfeb_gcal_sync_all'] ) ? 1 : 0 );
 		} elseif ( 'paiement' === $tab && class_exists( 'CF_SumUp' ) ) {
 			CF_SumUp::save_settings();
-		} elseif ( 'newsletter' === $tab && class_exists( 'CF_MailPoet' ) ) {
-			CF_MailPoet::save_settings();
-		} elseif ( 'ia' === $tab && class_exists( 'CFI_AI' ) ) {
-			CFI_AI::save_settings();
 		}
 
 		wp_safe_redirect( add_query_arg( [ 'post_type' => CFEB_SLUG, 'page' => 'cfeb-settings', 'tab' => $tab, 'cfeb_saved' => '1' ], admin_url( 'edit.php' ) ) );

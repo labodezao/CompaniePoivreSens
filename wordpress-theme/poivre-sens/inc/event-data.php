@@ -204,6 +204,17 @@ add_filter('register_post_type_args', function ($args, $type) {
 }, 10, 2);
 
 /**
+ * Adresse d'un mois de l'agenda, filtres de type et de ville conservés.
+ * Sert à la navigation prev/suivant du calendrier.
+ */
+function ps_evt_url_calendrier($base, $annee, $mois, $type = '', $ville = '') {
+    $args = ['vue' => 'calendrier', 'mois' => sprintf('%04d-%02d', $annee, $mois)];
+    if ($type !== '')  $args['type']  = $type;
+    if ($ville !== '') $args['ville'] = $ville;
+    return add_query_arg($args, $base);
+}
+
+/**
  * La catégorie du plugin sert de « type d'événement » côté site :
  * elle doit donc être visible et modifiable dans l'administration.
  */

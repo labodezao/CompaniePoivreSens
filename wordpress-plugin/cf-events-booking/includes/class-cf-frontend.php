@@ -644,7 +644,6 @@ class CF_Frontend {
 						</div>
 
 						<?php if ( class_exists( 'CF_Vouchers' ) ) CF_Vouchers::render_field(); ?>
-						<?php if ( class_exists( 'CF_MailPoet' ) ) CF_MailPoet::render_checkbox_field(); ?>
 
 						<?php if ( $opts['mentions_rgpd'] ) : ?>
 							<div class="cfeb-rgpd"><?php echo wp_kses_post( $opts['mentions_rgpd'] ); ?></div>
