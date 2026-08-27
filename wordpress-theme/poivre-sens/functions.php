@@ -18,6 +18,9 @@ require_once get_template_directory() . '/inc/construction-popup.php';
 // Balises description / Open Graph / données structurées
 require_once get_template_directory() . '/inc/seo.php';
 
+// Interface d'édition d'un événement (champs + aperçu en direct)
+require_once get_template_directory() . '/inc/event-meta-box.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
@@ -254,126 +257,6 @@ add_action('init', function () {
         'supports'      => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest'  => true,
     ]);
-});
-
-/* ═══════════════════════════════════════════════════════════
-   5. META BOXES — ÉVÉNEMENT
-   ═══════════════════════════════════════════════════════════ */
-add_action('add_meta_boxes', function () {
-    add_meta_box(
-        'ps_evt_details',
-        __('Détails de l\'événement', 'poivre-sens'),
-        'ps_evt_meta_box_html',
-        'evenement',
-        'normal',
-        'high'
-    );
-});
-
-function ps_evt_meta_box_html($post) {
-    wp_nonce_field('ps_evt_save', 'ps_evt_nonce');
-    $date        = get_post_meta($post->ID, '_evt_date',        true);
-    $heure       = get_post_meta($post->ID, '_evt_heure',       true);
-    $heure_fin   = get_post_meta($post->ID, '_evt_heure_fin',   true);
-    $lieu        = get_post_meta($post->ID, '_evt_lieu',        true);
-    $adresse     = get_post_meta($post->ID, '_evt_adresse',     true);
-    $ville       = get_post_meta($post->ID, '_evt_ville',       true);
-    $type        = get_post_meta($post->ID, '_evt_type',        true);
-    $prix        = get_post_meta($post->ID, '_evt_prix',        true);
-    $billetterie = get_post_meta($post->ID, '_evt_billetterie', true);
-    $complet     = get_post_meta($post->ID, '_evt_complet',     true);
-
-    $types = [
-        'spectacle'  => 'Spectacle vivant',
-        'jam'        => 'Jam contact-improvisation',
-        'atelier'    => 'Atelier / Stage',
-        'residence'  => 'Résidence',
-        'concert'    => 'Concert',
-        'autre'      => 'Autre',
-    ];
-    ?>
-    <style>
-        .ps-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;padding:4px 0}
-        .ps-meta-grid label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#555;margin-bottom:4px;font-weight:600}
-        .ps-meta-grid input,.ps-meta-grid select,.ps-meta-grid textarea{width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px}
-        .ps-meta-grid .full{grid-column:1/-1}
-        .ps-meta-grid .check-row{display:flex;align-items:center;gap:8px}
-        .ps-meta-grid .check-row input{width:auto}
-    </style>
-    <div class="ps-meta-grid">
-        <div>
-            <label><?php _e('Date', 'poivre-sens'); ?></label>
-            <input type="date" name="evt_date" value="<?php echo esc_attr($date); ?>" required>
-        </div>
-        <div>
-            <label><?php _e('Heure de début', 'poivre-sens'); ?></label>
-            <input type="time" name="evt_heure" value="<?php echo esc_attr($heure); ?>">
-        </div>
-        <div>
-            <label><?php _e('Heure de fin', 'poivre-sens'); ?></label>
-            <input type="time" name="evt_heure_fin" value="<?php echo esc_attr($heure_fin); ?>">
-        </div>
-        <div>
-            <label><?php _e('Type d\'événement', 'poivre-sens'); ?></label>
-            <select name="evt_type">
-                <?php foreach ($types as $k => $v): ?>
-                    <option value="<?php echo esc_attr($k); ?>" <?php selected($type, $k); ?>><?php echo esc_html($v); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="full">
-            <label><?php _e('Lieu / Nom de la salle', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_lieu" value="<?php echo esc_attr($lieu); ?>" placeholder="Ex: Théâtre du Rond-Point">
-        </div>
-        <div>
-            <label><?php _e('Adresse', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_adresse" value="<?php echo esc_attr($adresse); ?>" placeholder="Ex: 12 rue de la Paix">
-        </div>
-        <div>
-            <label><?php _e('Ville', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_ville" value="<?php echo esc_attr($ville); ?>" placeholder="Ex: Paris">
-        </div>
-        <div>
-            <label><?php _e('Tarif', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_prix" value="<?php echo esc_attr($prix); ?>" placeholder="Ex: 12€ / gratuit">
-        </div>
-        <div>
-            <label><?php _e('Lien billetterie', 'poivre-sens'); ?></label>
-            <input type="url" name="evt_billetterie" value="<?php echo esc_attr($billetterie); ?>" placeholder="https://…">
-        </div>
-        <div class="full">
-            <label class="check-row">
-                <input type="checkbox" name="evt_complet" value="1" <?php checked($complet, '1'); ?>>
-                <?php _e('Événement complet (afficher "Complet")', 'poivre-sens'); ?>
-            </label>
-        </div>
-    </div>
-    <?php
-}
-
-add_action('save_post_evenement', function ($post_id) {
-    if (!isset($_POST['ps_evt_nonce']) || !wp_verify_nonce($_POST['ps_evt_nonce'], 'ps_evt_save')) return;
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!current_user_can('edit_post', $post_id)) return;
-
-    $fields = [
-        '_evt_date'        => ['evt_date',        'sanitize_text_field'],
-        '_evt_heure'       => ['evt_heure',        'sanitize_text_field'],
-        '_evt_heure_fin'   => ['evt_heure_fin',    'sanitize_text_field'],
-        '_evt_lieu'        => ['evt_lieu',          'sanitize_text_field'],
-        '_evt_adresse'     => ['evt_adresse',       'sanitize_text_field'],
-        '_evt_ville'       => ['evt_ville',         'sanitize_text_field'],
-        '_evt_type'        => ['evt_type',          'sanitize_text_field'],
-        '_evt_prix'        => ['evt_prix',          'sanitize_text_field'],
-        '_evt_billetterie' => ['evt_billetterie',   'esc_url_raw'],
-    ];
-    foreach ($fields as $meta_key => [$field, $sanitize]) {
-        if (isset($_POST[$field])) {
-            update_post_meta($post_id, $meta_key, $sanitize($_POST[$field]));
-        }
-    }
-    // Checkbox complet
-    update_post_meta($post_id, '_evt_complet', isset($_POST['evt_complet']) ? '1' : '');
 });
 
 /* ═══════════════════════════════════════════════════════════
