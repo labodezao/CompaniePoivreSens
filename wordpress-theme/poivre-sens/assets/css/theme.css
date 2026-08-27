@@ -269,6 +269,9 @@ body.nav-open { overflow:hidden; }
 }
 .single-evt__back::before { content:'←'; }
 .single-evt__back:hover { color:var(--or); }
+.single-evt__banniere{font-size:.78rem;letter-spacing:.04em;padding:12px 18px;border-radius:2px;margin-bottom:32px}
+.single-evt__banniere--annule{color:#eb8e6f;background:rgba(158,55,16,.12);border:1px solid rgba(158,55,16,.3)}
+.single-evt__banniere--reporte{color:var(--orlt);background:rgba(194,139,54,.1);border:1px solid rgba(194,139,54,.28)}
 .single-evt__meta { margin-bottom:40px; }
 .single-evt__type {
   display:inline-block; font-size:.65rem; font-weight:400; letter-spacing:.14em;
