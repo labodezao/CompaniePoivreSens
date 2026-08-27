@@ -79,6 +79,7 @@ if ($query->have_posts()) {
             'prix'        => ps_evt_champ($id, 'prix'),
             'billetterie' => ps_evt_champ($id, 'billetterie'),
             'complet'     => ps_evt_champ($id, 'complet'),
+            'statut_event' => ps_evt_champ($id, 'statut_event') ?: 'publie',
             'thumb'       => get_the_post_thumbnail_url($id, 'evt-card'),
         ];
     }
@@ -146,7 +147,11 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
                 <span class="cal-list__type"><?= esc_html($e['type']) ?></span>
                 <?php endif; ?>
 
-                <?php if ($e['complet']): ?>
+                <?php if ($e['statut_event'] === 'annule'): ?>
+                <span class="cal-list__complet"><?= __('Annulé', 'poivre-sens') ?></span>
+                <?php elseif ($e['statut_event'] === 'reporte'): ?>
+                <span class="cal-list__complet"><?= __('Reporté', 'poivre-sens') ?></span>
+                <?php elseif ($e['complet']): ?>
                 <span class="cal-list__complet"><?= __('Complet', 'poivre-sens') ?></span>
                 <?php endif; ?>
 
@@ -186,7 +191,7 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
                     <a href="<?= esc_url($e['permalink']) ?>" class="cal-list__action-link">
                         <?= __('En savoir plus', 'poivre-sens') ?> →
                     </a>
-                    <?php if ($e['billetterie'] && !$e['complet']): ?>
+                    <?php if ($e['billetterie'] && !$e['complet'] && $e['statut_event'] === 'publie'): ?>
                     <a href="<?= esc_url($e['billetterie']) ?>" class="cal-list__action-btn" target="_blank" rel="noopener">
                         <?= __('Réserver', 'poivre-sens') ?>
                     </a>

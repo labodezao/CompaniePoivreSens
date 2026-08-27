@@ -102,9 +102,54 @@ function ps_evt_champ($post_id, $champ) {
             return (string) get_post_meta($post_id, '_cfeb_event_url', true);
 
         case 'complet':
+            // Une capacité chiffrée rend ce statut automatique : dès que les
+            // réservations confirmées l'atteignent, compute_statut() bascule
+            // sur « complet » sans que l'administrateur ait à y penser. Sans
+            // capacité (0 = illimité), on retombe sur le statut manuel.
+            if (class_exists('CF_CPT')) {
+                return CF_CPT::compute_statut($post_id) === 'complet';
+            }
             return get_post_meta($post_id, '_cfeb_statut', true) === 'complet';
+
+        case 'max_places':
+            return (int) get_post_meta($post_id, '_cfeb_max_places', true);
+
+        case 'deadline':
+            return (string) get_post_meta($post_id, '_cfeb_deadline', true);
+
+        case 'email_contact':
+            return (string) get_post_meta($post_id, '_cfeb_email_contact', true);
+
+        case 'animateur':
+            return (string) get_post_meta($post_id, '_cfeb_animateur', true);
+
+        case 'lien_visio':
+            return (string) get_post_meta($post_id, '_cfeb_lien_visio', true);
+
+        case 'all_day':
+            return (bool) get_post_meta($post_id, '_cfeb_all_day', true);
+
+        case 'featured':
+            return (bool) get_post_meta($post_id, '_cfeb_featured', true);
+
+        case 'statut_event':
+            return (string) get_post_meta($post_id, '_cfeb_statut_event', true) ?: 'publie';
     }
     return '';
+}
+
+/**
+ * Places encore libres, ou null si la capacité n'est pas renseignée
+ * (illimitée) ou si le module n'a pas cette notion (ancien CPT du thème).
+ */
+function ps_evt_places_restantes($post_id) {
+    if (!ps_evt_est_plugin($post_id)) return null;
+
+    $max = (int) get_post_meta($post_id, '_cfeb_max_places', true);
+    if ($max <= 0) return null;
+
+    $reservees = class_exists('CF_Booking') ? (int) CF_Booking::count_for_event($post_id, 'confirme') : 0;
+    return max(0, $max - $reservees);
 }
 
 /** Clé méta de la ville, pour les filtres de l'agenda. */

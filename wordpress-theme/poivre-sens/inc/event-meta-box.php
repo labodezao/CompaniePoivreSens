@@ -52,6 +52,20 @@ function ps_evt_meta_box_html($post) {
     $billetterie = ps_evt_champ($post->ID, 'billetterie');
     $complet     = ps_evt_champ($post->ID, 'complet');
 
+    // Champs propres au plugin de réservation : sans équivalent dans
+    // l'ancien module, donc affichés seulement quand il pilote l'événement.
+    $plugin_actif   = ps_evt_plugin_actif();
+    $all_day        = $plugin_actif ? ps_evt_champ($post->ID, 'all_day')       : false;
+    $lien_visio     = $plugin_actif ? ps_evt_champ($post->ID, 'lien_visio')    : '';
+    $max_places     = $plugin_actif ? ps_evt_champ($post->ID, 'max_places')    : 0;
+    $deadline       = $plugin_actif ? ps_evt_champ($post->ID, 'deadline')      : '';
+    $email_contact  = $plugin_actif ? ps_evt_champ($post->ID, 'email_contact') : '';
+    $animateur      = $plugin_actif ? ps_evt_champ($post->ID, 'animateur')     : '';
+    $statut_resa    = $plugin_actif ? (get_post_meta($post->ID, '_cfeb_statut', true) ?: 'ouvert') : '';
+    $statut_event   = $plugin_actif ? ps_evt_champ($post->ID, 'statut_event')  : 'publie';
+    $featured       = $plugin_actif ? ps_evt_champ($post->ID, 'featured')      : false;
+    $places_restantes = $plugin_actif ? ps_evt_places_restantes($post->ID) : null;
+
     // Aux types du thème s'ajoutent les catégories déjà créées côté
     // plugin, pour ne pas perdre celles nées de la migration.
     $types  = ps_evt_types() + ps_evt_liste_types();
@@ -154,6 +168,15 @@ function ps_evt_meta_box_html($post) {
                 <?php endforeach; ?>
               </select>
             </div>
+            <?php if ($plugin_actif): ?>
+            <div class="ps-evt-full">
+              <label class="ps-evt-check">
+                <input type="checkbox" id="evt_all_day" name="evt_all_day" value="1" <?= checked($all_day, true, false) ?>>
+                <?= esc_html__('Journée entière (stage, résidence sur plusieurs jours…)', 'poivre-sens') ?>
+              </label>
+              <p class="ps-evt-hint"><?= esc_html__('Les horaires ci-dessus sont alors ignorés à l\'affichage.', 'poivre-sens') ?></p>
+            </div>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -173,6 +196,13 @@ function ps_evt_meta_box_html($post) {
               <input type="text" id="evt_ville" name="evt_ville" value="<?= esc_attr($ville) ?>" placeholder="<?= esc_attr__('Saint-Nazaire', 'poivre-sens') ?>">
               <p class="ps-evt-hint"><?= esc_html__('Sert aussi de filtre dans l\'agenda.', 'poivre-sens') ?></p>
             </div>
+            <?php if ($plugin_actif): ?>
+            <div class="ps-evt-full">
+              <label class="ps-evt-lab" for="evt_lien_visio"><?= esc_html__('Lien de visioconférence', 'poivre-sens') ?></label>
+              <input type="url" id="evt_lien_visio" name="evt_lien_visio" value="<?= esc_attr($lien_visio) ?>" placeholder="https://meet.google.com/…">
+              <p class="ps-evt-hint"><?= esc_html__('Pour un atelier en ligne ou hybride. Envoyé aux personnes inscrites.', 'poivre-sens') ?></p>
+            </div>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -189,14 +219,83 @@ function ps_evt_meta_box_html($post) {
               <input type="url" id="evt_billetterie" name="evt_billetterie" value="<?= esc_attr($billetterie) ?>" placeholder="https://">
               <p class="ps-evt-hint"><?= esc_html__('Billetweb, HelloAsso… Affiche un bouton « Réserver ».', 'poivre-sens') ?></p>
             </div>
+            <?php if (!$plugin_actif): ?>
             <div class="ps-evt-full">
               <label class="ps-evt-check">
                 <input type="checkbox" id="evt_complet" name="evt_complet" value="1" <?= checked($complet, '1', false) ?>>
                 <?= esc_html__('Événement complet', 'poivre-sens') ?>
               </label>
             </div>
+            <?php endif; ?>
           </div>
         </div>
+
+        <?php if ($plugin_actif): ?>
+        <div class="ps-evt-sec">
+          <h4 class="ps-evt-sec__t">🎫 <?= esc_html__('Réservations', 'poivre-sens') ?></h4>
+          <div class="ps-evt-grid">
+            <div>
+              <label class="ps-evt-lab" for="evt_max_places"><?= esc_html__('Places disponibles', 'poivre-sens') ?></label>
+              <input type="number" id="evt_max_places" name="evt_max_places" value="<?= esc_attr($max_places) ?>" min="0" step="1">
+              <p class="ps-evt-hint">
+                <?php if ($max_places > 0 && $places_restantes !== null): ?>
+                  <?= esc_html(sprintf(
+                        /* translators: %d: number of remaining spots */
+                        _n('%d place restante à ce jour.', '%d places restantes à ce jour.', $places_restantes, 'poivre-sens'),
+                        $places_restantes
+                      )) ?>
+                <?php else: ?>
+                  <?= esc_html__('0 = illimité. Au-delà, l\'événement passe automatiquement « Complet ».', 'poivre-sens') ?>
+                <?php endif; ?>
+              </p>
+            </div>
+            <div>
+              <label class="ps-evt-lab" for="evt_statut"><?= esc_html__('Statut des réservations', 'poivre-sens') ?></label>
+              <select id="evt_statut" name="evt_statut">
+                <option value="ouvert" <?= selected($statut_resa, 'ouvert', false) ?>><?= esc_html__('Ouvert', 'poivre-sens') ?></option>
+                <option value="complet" <?= selected($statut_resa, 'complet', false) ?>><?= esc_html__('Complet (forcé manuellement)', 'poivre-sens') ?></option>
+                <option value="ferme" <?= selected($statut_resa, 'ferme', false) ?>><?= esc_html__('Fermé', 'poivre-sens') ?></option>
+              </select>
+              <p class="ps-evt-hint"><?= esc_html__('Laissez « Ouvert » si le nombre de places suffit à gérer le complet.', 'poivre-sens') ?></p>
+            </div>
+            <div>
+              <label class="ps-evt-lab" for="evt_deadline"><?= esc_html__('Date limite d\'inscription', 'poivre-sens') ?></label>
+              <input type="date" id="evt_deadline" name="evt_deadline" value="<?= esc_attr($deadline) ?>">
+              <p class="ps-evt-hint"><?= esc_html__('Ferme les réservations après cette date. Laissez vide sinon.', 'poivre-sens') ?></p>
+            </div>
+            <div>
+              <label class="ps-evt-lab" for="evt_email_contact"><?= esc_html__('Email de contact pour cet événement', 'poivre-sens') ?></label>
+              <input type="text" id="evt_email_contact" name="evt_email_contact" value="<?= esc_attr($email_contact) ?>" placeholder="<?= esc_attr__('vide = adresse habituelle', 'poivre-sens') ?>">
+              <p class="ps-evt-hint"><?= esc_html__('Reçoit les notifications de réservation pour cet événement précis.', 'poivre-sens') ?></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ps-evt-sec">
+          <h4 class="ps-evt-sec__t">👁 <?= esc_html__('Visibilité', 'poivre-sens') ?></h4>
+          <div class="ps-evt-grid">
+            <div>
+              <label class="ps-evt-lab" for="evt_statut_event"><?= esc_html__('État de l\'événement', 'poivre-sens') ?></label>
+              <select id="evt_statut_event" name="evt_statut_event">
+                <option value="publie"  <?= selected($statut_event, 'publie', false) ?>><?= esc_html__('Publié', 'poivre-sens') ?></option>
+                <option value="reporte" <?= selected($statut_event, 'reporte', false) ?>><?= esc_html__('Reporté', 'poivre-sens') ?></option>
+                <option value="annule"  <?= selected($statut_event, 'annule', false) ?>><?= esc_html__('Annulé', 'poivre-sens') ?></option>
+              </select>
+              <p class="ps-evt-hint"><?= esc_html__('« Reporté » et « Annulé » gardent la page en ligne, avec un bandeau visible.', 'poivre-sens') ?></p>
+            </div>
+            <div>
+              <label class="ps-evt-lab" for="evt_animateur"><?= esc_html__('Intervenant·e / animé par', 'poivre-sens') ?></label>
+              <input type="text" id="evt_animateur" name="evt_animateur" value="<?= esc_attr($animateur) ?>" placeholder="<?= esc_attr__('facultatif', 'poivre-sens') ?>">
+            </div>
+            <div class="ps-evt-full">
+              <label class="ps-evt-check">
+                <input type="checkbox" id="evt_featured" name="evt_featured" value="1" <?= checked($featured, true, false) ?>>
+                <?= esc_html__('Mettre en avant (mis en évidence dans l\'agenda)', 'poivre-sens') ?>
+              </label>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
 
       <aside class="ps-evt-side">
@@ -229,9 +328,18 @@ function ps_evt_meta_box_html($post) {
 
     <script>
     (function(){
-      var $ = function(id){ return document.getElementById(id); };
-      var champs = ['evt_date','evt_heure','evt_heure_fin','evt_lieu','evt_adresse','evt_ville','evt_type','evt_prix','evt_billetterie','evt_complet'];
+      var $  = function(id){ return document.getElementById(id); };
+      var val = function(id){ var el = $(id); return el ? el.value : ''; };
+      var champs = [
+        'evt_date', 'evt_heure', 'evt_heure_fin', 'evt_lieu', 'evt_adresse', 'evt_ville',
+        'evt_type', 'evt_prix', 'evt_billetterie', 'evt_complet', 'evt_all_day',
+        'evt_statut', 'evt_statut_event', 'evt_animateur', 'evt_lien_visio'
+      ];
       var LIBELLES = <?= wp_json_encode($types) ?>;
+      var ETATS = {
+        annule:  <?= wp_json_encode(__('Annulé', 'poivre-sens')) ?>,
+        reporte: <?= wp_json_encode(__('Reporté', 'poivre-sens')) ?>
+      };
 
       function titre() {
         // Gutenberg d'abord, éditeur classique en repli.
@@ -245,53 +353,76 @@ function ps_evt_meta_box_html($post) {
         return (cl && cl.value) || '';
       }
 
-      function dateLongue(iso, h, hf) {
+      function dateLongue(iso, h, hf, jourEntier) {
         if (!iso) return '';
         var d = new Date(iso + 'T' + (h || '00:00'));
         if (isNaN(d)) return '';
         var s = new Intl.DateTimeFormat('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' }).format(d);
-        if (h)  s += ' · ' + h.replace(':', 'h');
-        if (hf) s += ' — ' + hf.replace(':', 'h');
+        if (!jourEntier) {
+          if (h)  s += ' · ' + h.replace(':', 'h');
+          if (hf) s += ' — ' + hf.replace(':', 'h');
+        }
         return s;
       }
 
       function maj() {
-        var date = $('evt_date').value, h = $('evt_heure').value, hf = $('evt_heure_fin').value;
-        var lieu = $('evt_lieu').value, ville = $('evt_ville').value;
-        var prix = $('evt_prix').value, billet = $('evt_billetterie').value;
-        var complet = $('evt_complet').checked;
+        var date = val('evt_date'), h = val('evt_heure'), hf = val('evt_heure_fin');
+        var lieu = val('evt_lieu'), ville = val('evt_ville');
+        var prix = val('evt_prix'), billet = val('evt_billetterie');
+        var jourEntier = $('evt_all_day') ? $('evt_all_day').checked : false;
+        // Ancien module : case à cocher. Plugin : liste déroulante Ouvert/Complet/Fermé.
+        var statutResa = $('evt_statut') ? val('evt_statut')
+                        : ($('evt_complet') && $('evt_complet').checked ? 'complet' : 'ouvert');
+        var statutEvt  = val('evt_statut_event') || 'publie';
+        var animateur  = val('evt_animateur');
+        var visio      = val('evt_lien_visio');
         var t = titre() || <?= wp_json_encode(__('Titre de l\'événement', 'poivre-sens')) ?>;
+
+        // Griser les horaires en journée entière : évite de laisser croire
+        // qu'ils comptent alors que l'affichage les ignore.
+        [$('evt_heure'), $('evt_heure_fin')].forEach(function (el) {
+          if (el) el.disabled = jourEntier;
+        });
 
         $('ps-pv-titre').textContent = t;
         $('ps-pv-gt').textContent    = t;
 
-        var dl = dateLongue(date, h, hf);
+        var dl = dateLongue(date, h, hf, jourEntier);
         $('ps-pv-date').textContent = dl || <?= wp_json_encode(__('Date à définir', 'poivre-sens')) ?>;
 
-        $('ps-pv-type').textContent = LIBELLES[$('evt_type').value] || '';
+        $('ps-pv-type').textContent = LIBELLES[val('evt_type')] || '';
 
-        var ou = [lieu, ville].filter(Boolean).join(' · ');
-        $('ps-pv-lieu').textContent = ou ? '📍 ' + ou : '';
-        $('ps-pv-prix').textContent = prix ? '🎟 ' + prix : '';
+        var ouTxt = [lieu, ville].filter(Boolean).join(' · ');
+        if (visio) ouTxt = ouTxt ? (ouTxt + ' · ' + <?= wp_json_encode(__('en ligne', 'poivre-sens')) ?>) : <?= wp_json_encode(__('En ligne', 'poivre-sens')) ?>;
+        $('ps-pv-lieu').textContent = ouTxt ? '📍 ' + ouTxt : '';
+        $('ps-pv-prix').textContent = [prix ? '🎟 ' + prix : '', animateur ? '· ' + animateur : ''].filter(Boolean).join(' ');
 
         var etat = '';
-        if (complet)      etat = '<span class="ps-evt-card__complet"><?= esc_js(__('Complet', 'poivre-sens')) ?></span>';
-        else if (billet)  etat = '<span class="ps-evt-card__btn"><?= esc_js(__('Réserver', 'poivre-sens')) ?></span>';
+        if (statutEvt === 'annule' || statutEvt === 'reporte') {
+          etat = '<span class="ps-evt-card__complet">' + ETATS[statutEvt] + '</span>';
+        } else if (statutResa === 'complet') {
+          etat = '<span class="ps-evt-card__complet"><?= esc_js(__('Complet', 'poivre-sens')) ?></span>';
+        } else if (statutResa === 'ferme') {
+          etat = '<span class="ps-evt-card__complet"><?= esc_js(__('Réservations fermées', 'poivre-sens')) ?></span>';
+        } else if (billet) {
+          etat = '<span class="ps-evt-card__btn"><?= esc_js(__('Réserver', 'poivre-sens')) ?></span>';
+        }
         $('ps-pv-etat').innerHTML = etat;
 
         // Extrait Google : ce que les données structurées permettent d'afficher
         var rich = [];
         if (dl) rich.push('<b>' + dl + '</b>');
-        if (ou) rich.push(ou);
+        if (ouTxt) rich.push(ouTxt);
         if (prix) rich.push(prix);
         $('ps-pv-grich').innerHTML = rich.join(' · ');
-        $('ps-pv-gd').textContent = [LIBELLES[$('evt_type').value], ou].filter(Boolean).join(' — ')
+        $('ps-pv-gd').textContent = [LIBELLES[val('evt_type')], ouTxt].filter(Boolean).join(' — ')
           || <?= wp_json_encode(__('Compagnie Poivre & Sens', 'poivre-sens')) ?>;
 
         // Avertissements utiles plutôt que silence
         var avert = [];
         if (!date) avert.push(<?= wp_json_encode(__('Sans date, l\'événement n\'apparaîtra pas dans l\'agenda ni dans les résultats Google.', 'poivre-sens')) ?>);
-        if (date && !lieu && !ville) avert.push(<?= wp_json_encode(__('Ajoutez un lieu ou une ville : Google affiche l\'endroit dans ses résultats.', 'poivre-sens')) ?>);
+        if (date && !lieu && !ville && !visio) avert.push(<?= wp_json_encode(__('Ajoutez un lieu, une ville ou un lien de visio : Google affiche l\'endroit dans ses résultats.', 'poivre-sens')) ?>);
+        if (statutEvt === 'annule' || statutEvt === 'reporte') avert.push(<?= wp_json_encode(__('Un bandeau signalera ce changement sur la page de l\'événement.', 'poivre-sens')) ?>);
         var w = $('ps-pv-warn');
         w.innerHTML = avert.join('<br>');
         w.classList.toggle('on', avert.length > 0);
@@ -348,6 +479,42 @@ function ps_evt_lire_formulaire(array $post) {
     return $valeurs;
 }
 
+/**
+ * Champs propres au plugin de réservation (capacité, visibilité…), sans
+ * équivalent dans l'ancien module. Traités séparément de
+ * ps_evt_map_to_cfeb(), qui ne connaît que les champs hérités.
+ */
+function ps_evt_lire_formulaire_plugin(array $post) {
+    $valeurs = [];
+
+    if (isset($post['evt_max_places'])) {
+        $valeurs['_cfeb_max_places'] = max(0, (int) $post['evt_max_places']);
+    }
+    if (isset($post['evt_deadline'])) {
+        $valeurs['_cfeb_deadline'] = sanitize_text_field(wp_unslash($post['evt_deadline']));
+    }
+    if (isset($post['evt_email_contact'])) {
+        $valeurs['_cfeb_email_contact'] = sanitize_email(wp_unslash($post['evt_email_contact']));
+    }
+    if (isset($post['evt_animateur'])) {
+        $valeurs['_cfeb_animateur'] = sanitize_text_field(wp_unslash($post['evt_animateur']));
+    }
+    if (isset($post['evt_lien_visio'])) {
+        $valeurs['_cfeb_lien_visio'] = esc_url_raw(wp_unslash($post['evt_lien_visio']));
+    }
+    $valeurs['_cfeb_all_day']  = isset($post['evt_all_day'])  ? 1 : 0;
+    $valeurs['_cfeb_featured'] = isset($post['evt_featured']) ? 1 : 0;
+
+    if (isset($post['evt_statut']) && in_array($post['evt_statut'], ['ouvert', 'complet', 'ferme'], true)) {
+        $valeurs['_cfeb_statut'] = $post['evt_statut'];
+    }
+    if (isset($post['evt_statut_event']) && in_array($post['evt_statut_event'], ['publie', 'annule', 'reporte'], true)) {
+        $valeurs['_cfeb_statut_event'] = $post['evt_statut_event'];
+    }
+
+    return $valeurs;
+}
+
 add_action('save_post', function ($post_id) {
     if (get_post_type($post_id) !== ps_evt_cpt()) return;
     if (!isset($_POST['ps_evt_nonce']) || !wp_verify_nonce($_POST['ps_evt_nonce'], 'ps_evt_save')) return;
@@ -366,6 +533,13 @@ add_action('save_post', function ($post_id) {
 
     // Plugin : même traduction que celle de l'outil de migration.
     foreach (ps_evt_map_to_cfeb($valeurs) as $cle => $valeur) {
+        update_post_meta($post_id, $cle, $valeur);
+    }
+
+    // Champs propres au plugin (capacité, visibilité…), après la
+    // traduction ci-dessus pour que le statut choisi ici l'emporte sur
+    // le repli « ouvert » qu'elle pose par défaut.
+    foreach (ps_evt_lire_formulaire_plugin($_POST) as $cle => $valeur) {
         update_post_meta($post_id, $cle, $valeur);
     }
 

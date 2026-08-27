@@ -16,12 +16,28 @@ get_header(); ?>
     $prix        = ps_evt_champ($id, 'prix');
     $billetterie = ps_evt_champ($id, 'billetterie');
     $complet     = ps_evt_champ($id, 'complet');
+
+    // Champs propres au plugin de réservation : absents en dehors de lui.
+    $animateur      = ps_evt_champ($id, 'animateur');
+    $lien_visio     = ps_evt_champ($id, 'lien_visio');
+    $statut_event   = ps_evt_champ($id, 'statut_event') ?: 'publie';
+    $places_restantes = ps_evt_places_restantes($id);
 ?>
 <article class="single-evt">
 
     <a href="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>" class="single-evt__back">
         <?php _e('Tous les événements', 'poivre-sens'); ?>
     </a>
+
+    <?php if ($statut_event === 'annule'): ?>
+    <p class="single-evt__banniere single-evt__banniere--annule">
+        <?php _e('⚠ Cet événement est annulé.', 'poivre-sens'); ?>
+    </p>
+    <?php elseif ($statut_event === 'reporte'): ?>
+    <p class="single-evt__banniere single-evt__banniere--reporte">
+        <?php _e('⏳ Cet événement est reporté — une nouvelle date sera annoncée.', 'poivre-sens'); ?>
+    </p>
+    <?php endif; ?>
 
     <div class="single-evt__meta">
         <?php if ($type): ?>
@@ -69,6 +85,30 @@ get_header(); ?>
             <div class="single-evt__info-v"><?= esc_html($prix) ?></div>
         </div>
         <?php endif; ?>
+        <?php if ($animateur): ?>
+        <div>
+            <div class="single-evt__info-k"><?php _e('Avec', 'poivre-sens'); ?></div>
+            <div class="single-evt__info-v"><?= esc_html($animateur) ?></div>
+        </div>
+        <?php endif; ?>
+        <?php if ($lien_visio): ?>
+        <div>
+            <div class="single-evt__info-k"><?php _e('En ligne', 'poivre-sens'); ?></div>
+            <div class="single-evt__info-v"><a href="<?= esc_url($lien_visio) ?>" target="_blank" rel="noopener"><?php _e('Rejoindre la visio', 'poivre-sens'); ?></a></div>
+        </div>
+        <?php endif; ?>
+        <?php if ($places_restantes !== null && !$complet): ?>
+        <div>
+            <div class="single-evt__info-k"><?php _e('Places', 'poivre-sens'); ?></div>
+            <div class="single-evt__info-v">
+                <?= esc_html(sprintf(
+                      /* translators: %d: number of remaining spots */
+                      _n('%d place restante', '%d places restantes', $places_restantes, 'poivre-sens'),
+                      $places_restantes
+                    )) ?>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 
@@ -82,7 +122,9 @@ get_header(); ?>
         <?php the_content(); ?>
     </div>
 
-    <?php if ($billetterie && !$complet): ?>
+    <?php if ($statut_event === 'annule' || $statut_event === 'reporte'): ?>
+    <?php // Bandeau déjà affiché en tête de page : pas de bouton de réservation. ?>
+    <?php elseif ($billetterie && !$complet): ?>
     <a href="<?= esc_url($billetterie) ?>" class="single-evt__billetterie" target="_blank" rel="noopener">
         <?php _e('Réserver ma place', 'poivre-sens'); ?> →
     </a>

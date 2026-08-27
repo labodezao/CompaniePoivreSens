@@ -128,6 +128,7 @@ add_shortcode('ps_evenements', function (): string {
           $p  = ps_evt_champ($id, 'prix');
           $b  = ps_evt_champ($id, 'billetterie');
           $cp = ps_evt_champ($id, 'complet');
+          $se = ps_evt_champ($id, 'statut_event') ?: 'publie';
           $ts = $d ? strtotime($d) : 0;
         ?>
         <div class="cal-list__event <?= $d === $today ? 'cal-list__event--today' : '' ?>">
@@ -139,7 +140,9 @@ add_shortcode('ps_evenements', function (): string {
           <div class="cal-list__line" aria-hidden="true"></div>
           <div class="cal-list__body">
             <?php if ($ty) : ?><span class="cal-list__type"><?= esc_html($ty) ?></span><?php endif; ?>
-            <?php if ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>
+            <?php if ($se === 'annule') : ?><span class="cal-list__complet"><?php _e('Annulé', 'poivre-sens'); ?></span>
+            <?php elseif ($se === 'reporte') : ?><span class="cal-list__complet"><?php _e('Reporté', 'poivre-sens'); ?></span>
+            <?php elseif ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>
             <h3 class="cal-list__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
             <ul class="cal-list__meta" role="list">
               <?php if ($h) : ?><li class="cal-list__meta-item"><span class="cal-list__meta-ic">🕐</span><?= esc_html($h) ?></li><?php endif; ?>
@@ -148,7 +151,7 @@ add_shortcode('ps_evenements', function (): string {
             </ul>
             <div class="cal-list__actions">
               <a href="<?php the_permalink(); ?>" class="cal-list__action-link"><?php _e('En savoir plus', 'poivre-sens'); ?> →</a>
-              <?php if ($b && !$cp) : ?><a href="<?= esc_url($b) ?>" class="cal-list__action-btn" target="_blank" rel="noopener"><?php _e('Réserver', 'poivre-sens'); ?></a><?php endif; ?>
+              <?php if ($b && !$cp && $se === 'publie') : ?><a href="<?= esc_url($b) ?>" class="cal-list__action-btn" target="_blank" rel="noopener"><?php _e('Réserver', 'poivre-sens'); ?></a><?php endif; ?>
             </div>
           </div>
         </div>

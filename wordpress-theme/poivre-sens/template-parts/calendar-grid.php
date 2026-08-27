@@ -60,10 +60,11 @@ if ($query->have_posts()) {
         if (!$date) continue;
         $jour = (int) substr($date, 8, 2);
         $par_jour[$jour][] = [
-            'titre'   => get_the_title(),
-            'lien'    => get_permalink(),
-            'heure'   => ps_evt_champ($id, 'heure'),
-            'complet' => ps_evt_champ($id, 'complet'),
+            'titre'        => get_the_title(),
+            'lien'         => get_permalink(),
+            'heure'        => ps_evt_champ($id, 'heure'),
+            'complet'      => ps_evt_champ($id, 'complet'),
+            'statut_event' => ps_evt_champ($id, 'statut_event') ?: 'publie',
         ];
     }
     wp_reset_postdata();
@@ -105,7 +106,7 @@ $aujourdhui = date('Y-m-d', current_time('timestamp'));
       <?php if ($evts): ?>
       <div class="cal-grid__evts">
         <?php foreach ($evts as $e): ?>
-        <a href="<?= esc_url($e['lien']) ?>" class="cal-grid__evt<?= $e['complet'] ? ' cal-grid__evt--complet' : '' ?>">
+        <a href="<?= esc_url($e['lien']) ?>" class="cal-grid__evt<?= ($e['complet'] || $e['statut_event'] !== 'publie') ? ' cal-grid__evt--complet' : '' ?>">
           <?php if ($e['heure']): ?><span class="cal-grid__heure"><?= esc_html($e['heure']) ?></span><?php endif; ?>
           <span class="cal-grid__evt-titre"><?= esc_html($e['titre']) ?></span>
         </a>
