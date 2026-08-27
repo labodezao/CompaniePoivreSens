@@ -21,6 +21,27 @@ class CF_Planning {
 	══════════════════════════════════════════════════════════════ */
 	public static function register_pages() {
 
+		// Les deux pages ci-dessous existaient déjà (rendu, traitement des
+		// formulaires) mais n'apparaissaient nulle part dans le menu :
+		// add_submenu_page() n'était jamais appelée. Inaccessibles depuis
+		// l'administration, sauf à en connaître l'URL par cœur.
+		add_submenu_page(
+			'edit.php?post_type=' . CFEB_SLUG,
+			'Créneaux & Planning',
+			'🕐 Créneaux',
+			'edit_posts',
+			'cfeb-creneaux',
+			[ __CLASS__, 'page_creneaux' ]
+		);
+		add_submenu_page(
+			'edit.php?post_type=' . CFEB_SLUG,
+			'Périodes de fermeture',
+			'🚫 Fermetures',
+			'edit_posts',
+			'cfeb-closures',
+			[ __CLASS__, 'page_closures' ]
+		);
+
 		add_action( 'admin_init', [ __CLASS__, 'handle_save_template' ] );
 		add_action( 'admin_init', [ __CLASS__, 'handle_delete_template' ] );
 		add_action( 'admin_init', [ __CLASS__, 'handle_generate_events' ] );
