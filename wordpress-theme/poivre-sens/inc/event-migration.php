@@ -142,39 +142,6 @@ function ps_evt_a_migrer() {
     ]);
 }
 
-/* ── Modules optionnels du plugin ──────────────────────────
-   Le plugin embarque des modules conçus pour un autre site
-   (suivi de séances, programme, fiche d'accueil) et une
-   newsletter complète qui ferait doublon avec celle du thème.
-   On les laisse désactivés par défaut ici, tout en permettant
-   de les rallumer.
-   ─────────────────────────────────────────────────────────── */
-function ps_cfeb_modules() {
-    return [
-        'newsletter'   => [
-            __('Newsletter du plugin', 'poivre-sens'),
-            __('Doublon : le thème gère déjà les inscriptions, les listes et les campagnes.', 'poivre-sens'),
-        ],
-        'post-seance'  => [
-            __('Post-séance', 'poivre-sens'),
-            __('Séquence d\'emails après une séance individuelle.', 'poivre-sens'),
-        ],
-        'pleine-vie'   => [
-            __('Programme Pleine Vie', 'poivre-sens'),
-            __('Inscriptions et emails de suivi d\'un programme.', 'poivre-sens'),
-        ],
-        'fiche-intake' => [
-            __('Fiche d\'accueil', 'poivre-sens'),
-            __('Formulaire de préparation rempli en ligne.', 'poivre-sens'),
-        ],
-    ];
-}
-
-/** À l'activation du thème, on part d'un plugin réduit aux événements. */
-add_action('after_switch_theme', function () {
-    add_option('cfeb_modules_off', array_keys(ps_cfeb_modules()));
-});
-
 /* ── Page d'outil dans l'administration ───────────────────── */
 add_action('admin_menu', function () {
     add_submenu_page(
@@ -200,18 +167,8 @@ function ps_evt_page_migration() {
             : '<div class="notice notice-info"><p>' . esc_html__('Rien à migrer.', 'poivre-sens') . '</p></div>';
     }
 
-    if (isset($_POST['ps_modules']) && check_admin_referer('ps_evt_modules')) {
-        $garder = array_map('sanitize_text_field', (array) ($_POST['ps_module'] ?? []));
-        $off    = array_values(array_diff(array_keys(ps_cfeb_modules()), $garder));
-        update_option('cfeb_modules_off', $off);
-        $notice .= '<div class="notice notice-success"><p>'
-                 . esc_html__('Modules enregistrés. Le changement prend effet au prochain chargement de page.', 'poivre-sens')
-                 . '</p></div>';
-    }
-
     $restants = ps_evt_a_migrer();
     $actif    = ps_cfeb_actif();
-    $off      = (array) get_option('cfeb_modules_off', []);
     ?>
     <div class="wrap">
       <h1><?= esc_html__('Migration des événements vers le plugin CF', 'poivre-sens') ?></h1>
@@ -237,33 +194,6 @@ function ps_evt_page_migration() {
         <?php wp_nonce_field('ps_evt_migration'); ?>
         <button type="submit" name="ps_migrer" class="button button-primary" <?= (!$actif || !$restants) ? 'disabled' : '' ?>>
           <?= esc_html__('Lancer la migration', 'poivre-sens') ?>
-        </button>
-      </form>
-
-      <h2 style="margin-top:40px"><?= esc_html__('Modules du plugin', 'poivre-sens') ?></h2>
-      <p style="max-width:46em">
-        <?= esc_html__('Le plugin apporte d\'autres fonctions, conçues pour un autre site. Elles sont éteintes ici pour ne pas encombrer l\'administration ni faire doublon.', 'poivre-sens') ?>
-      </p>
-
-      <form method="post">
-        <?php wp_nonce_field('ps_evt_modules'); ?>
-        <table class="form-table" role="presentation"><tbody>
-        <?php foreach (ps_cfeb_modules() as $id => $module): ?>
-          <tr>
-            <th scope="row"><?= esc_html($module[0]) ?></th>
-            <td>
-              <label>
-                <input type="checkbox" name="ps_module[]" value="<?= esc_attr($id) ?>"
-                       <?= checked(!in_array($id, $off, true), true, false) ?>>
-                <?= esc_html__('Activer', 'poivre-sens') ?>
-              </label>
-              <p class="description"><?= esc_html($module[1]) ?></p>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-        </tbody></table>
-        <button type="submit" name="ps_modules" class="button">
-          <?= esc_html__('Enregistrer les modules', 'poivre-sens') ?>
         </button>
       </form>
     </div>

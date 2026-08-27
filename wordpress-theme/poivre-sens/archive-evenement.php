@@ -1,6 +1,6 @@
 <?php
 /**
- * archive-evenement.php — Calendrier événements mode LISTE
+ * archive-evenement.php — Agenda des événements, en liste ou en calendrier
  * URL : /evenements/
  */
 get_header();
@@ -9,6 +9,18 @@ get_header();
 $filtre_type  = sanitize_text_field($_GET['type']  ?? '');
 $filtre_ville = sanitize_text_field($_GET['ville'] ?? '');
 $show_past    = isset($_GET['passes']);
+$vue          = ($_GET['vue'] ?? '') === 'calendrier' ? 'calendrier' : 'liste';
+$base         = get_post_type_archive_link(ps_evt_cpt());
+
+// Mois affiché en vue calendrier (paramètre « mois », format AAAA-MM)
+$mois_param = (string) ($_GET['mois'] ?? '');
+if (preg_match('/^(\d{4})-(\d{2})$/', $mois_param, $m)) {
+    $cal_year  = (int) $m[1];
+    $cal_month = (int) $m[2];
+} else {
+    $cal_year  = (int) date('Y');
+    $cal_month = (int) date('n');
+}
 
 // Liste des villes disponibles (pour le filtre)
 global $wpdb;
@@ -31,8 +43,24 @@ $villes = $wpdb->get_col($wpdb->prepare("
         </p>
     </div>
 
+    <!-- Vue : liste ou calendrier -->
+    <div class="cal-list__vues">
+        <a href="<?= esc_url(add_query_arg(array_filter(['vue' => 'liste', 'type' => $filtre_type, 'ville' => $filtre_ville, 'passes' => $show_past ? '1' : '']), $base)) ?>"
+           class="cal-list__vue-lien<?= $vue === 'liste' ? ' cal-list__vue-lien--actif' : '' ?>">
+            <?php _e('Liste', 'poivre-sens'); ?>
+        </a>
+        <a href="<?= esc_url(ps_evt_url_calendrier($base, $cal_year, $cal_month, $filtre_type, $filtre_ville)) ?>"
+           class="cal-list__vue-lien<?= $vue === 'calendrier' ? ' cal-list__vue-lien--actif' : '' ?>">
+            <?php _e('Calendrier', 'poivre-sens'); ?>
+        </a>
+    </div>
+
     <!-- Filtres -->
-    <form class="cal-list__filters" method="get" action="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>">
+    <form class="cal-list__filters" method="get" action="<?= esc_url($base) ?>">
+        <input type="hidden" name="vue" value="<?= esc_attr($vue) ?>">
+        <?php if ($vue === 'calendrier'): ?>
+        <input type="hidden" name="mois" value="<?= esc_attr(sprintf('%04d-%02d', $cal_year, $cal_month)) ?>">
+        <?php endif; ?>
         <div class="cal-list__filter-row">
 
             <select name="type" onchange="this.form.submit()">
@@ -51,26 +79,34 @@ $villes = $wpdb->get_col($wpdb->prepare("
             </select>
             <?php endif; ?>
 
+            <?php if ($vue === 'liste'): ?>
             <label class="cal-list__filter-check">
                 <input type="checkbox" name="passes" value="1" onchange="this.form.submit()" <?= $show_past ? 'checked' : '' ?>>
                 <?php _e('Inclure les événements passés', 'poivre-sens'); ?>
             </label>
+            <?php endif; ?>
 
             <?php if ($filtre_type || $filtre_ville || $show_past): ?>
-            <a href="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>" class="cal-list__filter-reset">
+            <a href="<?= esc_url(add_query_arg('vue', $vue, $base)) ?>" class="cal-list__filter-reset">
                 ✕ <?php _e('Réinitialiser', 'poivre-sens'); ?>
             </a>
             <?php endif; ?>
         </div>
     </form>
 
-    <!-- Calendrier liste -->
-    <?php
-    set_query_var('ps_cal_all',   $show_past);
-    set_query_var('ps_cal_type',  $filtre_type);
-    set_query_var('ps_cal_ville', $filtre_ville);
-    get_template_part('template-parts/calendar-list');
-    ?>
+    <?php if ($vue === 'calendrier'):
+        set_query_var('ps_cal_year',  $cal_year);
+        set_query_var('ps_cal_month', $cal_month);
+        set_query_var('ps_cal_type',  $filtre_type);
+        set_query_var('ps_cal_ville', $filtre_ville);
+        set_query_var('ps_cal_base',  $base);
+        get_template_part('template-parts/calendar-grid');
+    else:
+        set_query_var('ps_cal_all',   $show_past);
+        set_query_var('ps_cal_type',  $filtre_type);
+        set_query_var('ps_cal_ville', $filtre_ville);
+        get_template_part('template-parts/calendar-list');
+    endif; ?>
 
     <?php if (current_user_can('publish_posts')): ?>
     <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--bord);text-align:center">

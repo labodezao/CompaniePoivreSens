@@ -2113,7 +2113,6 @@ class CF_ApptType {
 					</fieldset>
 					<?php endif; ?>
 					<?php if ( class_exists( 'CF_Vouchers' ) ) CF_Vouchers::render_field( $m['prix'] ); ?>
-					<?php if ( class_exists( 'CF_MailPoet' ) ) CF_MailPoet::render_checkbox_field(); ?>
 					<p>
 						<button type="submit" class="cf-rdv-submit">Confirmer la réservation</button>
 						<button type="button" class="cf-rdv-cancel button-link">Annuler</button>

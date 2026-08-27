@@ -180,10 +180,6 @@ class CF_Ajax {
 			CF_Email::confirmation_user( $result, null );
 			CF_Email::notification_admin( $result, null );
 
-			if ( class_exists( 'CF_MailPoet' ) ) {
-				CF_MailPoet::maybe_subscribe_from_request( $email, $prenom, $nom );
-			}
-
 			if ( 'confirme' === $statut_resa && class_exists( 'CF_GoogleCalendar' ) && CF_GoogleCalendar::is_connected() ) {
 				$gcal_sync_slot = $m['gcal_enabled'] || ! empty( CF_Admin::get_options()['gcal_sync_all'] );
 				if ( $gcal_sync_slot ) {
@@ -315,10 +311,6 @@ class CF_Ajax {
 
 		CF_Email::confirmation_user( $result, $event );
 		CF_Email::notification_admin( $result, $event );
-
-		if ( class_exists( 'CF_MailPoet' ) ) {
-			CF_MailPoet::maybe_subscribe_from_request( $email, $prenom, $nom );
-		}
 
 		if ( 'confirme' === $statut_resa && class_exists( 'CF_GoogleCalendar' ) && CF_GoogleCalendar::is_configured() ) {
 			$gcal_type_id = (int) get_post_meta( $event_id, '_cfeb_appt_type_id', true );

@@ -1,10 +1,8 @@
 <?php
 /**
  * Plugin Name:  CF Événements & Réservations
- * Plugin URI:   https://soins.ewendaviau.com/
- * Description:  Gestion légère des événements de groupe et réservations en 2 clics, avec module Post-Séance intégré (séquence de 4 emails, validation GO/NO-GO) et acompte SumUp. Shortcodes : [cf_events] [cf_calendrier] [cf_mes_reservations]
+ * Description:  Gestion des événements de la compagnie (spectacles, jams, ateliers, résidences) et réservations en 2 clics. Shortcodes : [cf_events] [cf_calendrier] [cf_mes_reservations]
  * Version:      1.13.0
- * Author:       Ewen Daviau — Constellations Familiales
  * License:      GPL-2.0-or-later
  * Text Domain:  cf-events
  *
@@ -28,14 +26,10 @@
  *  Shortcodes disponibles :
  *  [cf_events]                         → liste des prochains événements
  *  [cf_events nombre="6"]              → limiter le nombre affiché
- *  [cf_events categorie="constellation"] → filtrer par catégorie
+ *  [cf_events categorie="jam"]         → filtrer par catégorie
  *  [cf_events vue="calendrier"]        → vue calendrier mensuel
  *  [cf_calendrier]                     → alias vue calendrier
  *  [cf_mes_reservations]               → réservations de l'utilisateur
- *  [cf_rdv type="slug-ou-id"]          → widget rendez-vous (créneaux)
- *  [cf_rdv type="slug-a,slug-b"]       → cumuler plusieurs types (aussi « + »)
- *  [cf_rdv type="slug" vue="liste"]    → forcer la vue (liste | semaine)
- *  [cf_rdv type="a,b" titre="Ateliers"]→ titre personnalisé (titre="none" = masqué)
  * ═══════════════════════════════════════════════════════════════════
  */
 
@@ -52,11 +46,6 @@ if ( ! defined( 'CFEB_URL' ) ) {
 define( 'CFEB_TABLE',      'cf_bookings' );
 define( 'CFEB_SLUG',       'cf_event' );
 define( 'CFEB_TAX',        'cf_event_cat' );
-
-// Avis Google — fiche « Constellations systémiques et familiales St Nazaire ».
-// Valeur par défaut utilisée partout où l'URL n'est pas surchargée par un
-// réglage admin (CF Post-Séance → Paramètres → « URL avis Google »).
-define( 'CFEB_GOOGLE_REVIEW_URL', 'https://g.page/r/CWGmDTN61wuzEAE/review' );
 
 /* ── Chargement des classes ─────────────────────────────────────── */
 foreach ( [
@@ -77,7 +66,6 @@ foreach ( [
 	'class-cf-google-calendar',
 	'class-cf-appt-type',
 	'class-cf-sumup',
-	'class-cf-mailpoet',
 	'class-cf-vouchers',
 	'class-cf-testimonials',
 	'class-cf-privacy',
@@ -86,28 +74,6 @@ foreach ( [
 ] as $f ) {
 	require_once CFEB_DIR . 'includes/' . $f . '.php';
 }
-
-/* ── Modules optionnels ─────────────────────────────────────────
- * Tous chargés par défaut. Un site qui n'a besoin que des
- * événements et des réservations — ou qui gère déjà sa newsletter
- * ailleurs — peut en désactiver par l'option « cfeb_modules_off »,
- * un tableau d'identifiants pris parmi ceux ci-dessous.
- * ─────────────────────────────────────────────────────────────── */
-$cfeb_modules = [
-	// identifiant   => fichier
-	'post-seance'    => 'modules/post-seance/cf-post-seance.php',    // séquence de 4 emails après séance
-	'newsletter'     => 'modules/newsletter/cf-newsletter.php',      // emailing maison, listes, envoi par lots
-	'pleine-vie'     => 'modules/pleine-vie/cf-pleine-vie.php',      // inscriptions + emails de suivi
-	'fiche-intake'   => 'modules/fiche-intake/cf-fiche-intake.php',  // formulaire en ligne, ex-PDF
-];
-$cfeb_off = (array) get_option( 'cfeb_modules_off', [] );
-
-foreach ( $cfeb_modules as $cfeb_id => $cfeb_fichier ) {
-	if ( ! in_array( $cfeb_id, $cfeb_off, true ) ) {
-		require_once CFEB_DIR . $cfeb_fichier;
-	}
-}
-unset( $cfeb_modules, $cfeb_off, $cfeb_id, $cfeb_fichier );
 
 /* ── Activation : création de la table bookings ─────────────────── */
 register_activation_hook( __FILE__, 'cfeb_activate' );
@@ -118,23 +84,11 @@ function cfeb_activate() {
 	if ( class_exists( 'CF_Reminders' ) ) {
 		CF_Reminders::schedule();
 	}
-	if ( class_exists( 'CFPS_Install' ) ) {
-		CFPS_Install::activate();
-	}
-	if ( class_exists( 'CFNL_Install' ) ) {
-		CFNL_Install::activate();
-	}
 	if ( class_exists( 'CF_Vouchers' ) ) {
 		CF_Vouchers::create_table();
 	}
 	if ( class_exists( 'CF_Privacy' ) ) {
 		CF_Privacy::schedule();
-	}
-	if ( class_exists( 'CFPV_Install' ) ) {
-		CFPV_Install::activate();
-	}
-	if ( class_exists( 'CFI_Install' ) ) {
-		CFI_Install::activate();
 	}
 }
 
@@ -234,15 +188,6 @@ register_deactivation_hook( __FILE__, function () {
 	if ( class_exists( 'CF_Reminders' ) ) {
 		CF_Reminders::unschedule();
 	}
-	if ( class_exists( 'CFPS_Install' ) ) {
-		CFPS_Install::deactivate();
-	}
-	if ( class_exists( 'CFNL_Install' ) ) {
-		CFNL_Install::deactivate();
-	}
-	if ( class_exists( 'CFPV_Sequence' ) ) {
-		CFPV_Sequence::unschedule();
-	}
 	flush_rewrite_rules();
 } );
 
@@ -255,22 +200,6 @@ function cfeb_maybe_migrate() {
 		cfeb_create_table();
 	}
 
-	// Module Post-Séance : rejoue l'installation si le cron a disparu
-	// (mise à jour du plugin par écrasement FTP, sans réactivation)
-	if ( class_exists( 'CFPS_Install' ) && ! wp_next_scheduled( 'cfps_daily_cron' ) ) {
-		CFPS_Install::activate();
-	}
-	// Module Newsletter : idem (tables + cron d'envoi)
-	if ( class_exists( 'CFNL_Install' ) && ! wp_next_scheduled( 'cfnl_send_cron' ) ) {
-		CFNL_Install::activate();
-	}
-	// Module Newsletter : migration de schéma versionnée (ajout de colonnes
-	// lors d'une mise à jour par écrasement FTP, sans réactivation).
-	if ( class_exists( 'CFNL_Install' ) && defined( 'CFNL_VERSION' )
-		&& get_option( 'cfnl_db_version' ) !== CFNL_VERSION ) {
-		CFNL_Install::create_tables();
-		update_option( 'cfnl_db_version', CFNL_VERSION );
-	}
 	// Bons cadeaux + purge RGPD : auto-réparation après update FTP
 	if ( class_exists( 'CF_Vouchers' ) && get_option( 'cfeb_vouchers_db' ) !== '1' ) {
 		CF_Vouchers::create_table();
@@ -278,23 +207,6 @@ function cfeb_maybe_migrate() {
 	}
 	if ( class_exists( 'CF_Privacy' ) && ! wp_next_scheduled( 'cfeb_privacy_cron' ) ) {
 		CF_Privacy::schedule();
-	}
-	// Module Pleine Vie : crée la table si absente (update FTP sans réactivation)
-	if ( class_exists( 'CFPV_Install' ) && get_option( 'cfpv_db' ) !== '2' ) {
-		CFPV_Install::create_table();
-		if ( ! get_option( 'cfpv_settings' ) ) {
-			update_option( 'cfpv_settings', CFPV_Install::default_settings() );
-		}
-		update_option( 'cfpv_db', '2' );
-	}
-	// Cron de la séquence d'accompagnement Pleine Vie
-	if ( class_exists( 'CFPV_Sequence' ) && ! wp_next_scheduled( 'cfpv_daily_cron' ) ) {
-		CFPV_Sequence::schedule();
-	}
-	// Module Fiche thèmes constellations : crée la table si absente (update FTP sans réactivation)
-	if ( class_exists( 'CFI_Install' ) && get_option( 'cfi_db' ) !== '1' ) {
-		CFI_Install::create_table();
-		update_option( 'cfi_db', '1' );
 	}
 }
 // plugins_loaded est déjà passé quand le code est chargé depuis le thème
