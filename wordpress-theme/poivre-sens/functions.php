@@ -18,6 +18,15 @@ require_once get_template_directory() . '/inc/construction-popup.php';
 // Balises description / Open Graph / données structurées
 require_once get_template_directory() . '/inc/seo.php';
 
+// Où lire les événements : module du thème ou plugin CF
+require_once get_template_directory() . '/inc/event-data.php';
+
+// Interface d'édition d'un événement (champs + aperçu en direct)
+require_once get_template_directory() . '/inc/event-meta-box.php';
+
+// Bascule des événements du thème vers le plugin CF (outil de migration)
+require_once get_template_directory() . '/inc/event-migration.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
@@ -192,6 +201,12 @@ add_action('wp_enqueue_scripts', function () {
    3. CUSTOM POST TYPE — ÉVÉNEMENT
    ═══════════════════════════════════════════════════════════ */
 add_action('init', function () {
+    // Quand le plugin CF prend la main, l'ancien module s'efface :
+    // il n'apparaît plus dans l'administration et rend l'adresse
+    // /evenements/ au plugin. Les contenus d'origine restent en
+    // base — l'outil « Outils › Migration événements » les recopie.
+    $remplace = ps_evt_plugin_actif();
+
     register_post_type('evenement', [
         'labels' => [
             'name'               => __('Événements',          'poivre-sens'),
@@ -206,19 +221,24 @@ add_action('init', function () {
             'not_found_in_trash' => __('Aucun événement dans la corbeille.', 'poivre-sens'),
             'menu_name'          => __('Événements',          'poivre-sens'),
         ],
-        'public'            => true,
-        'has_archive'       => true,
-        'rewrite'           => ['slug' => 'evenements'],
+        'public'            => !$remplace,
+        'publicly_queryable'=> !$remplace,
+        'show_ui'           => !$remplace,
+        'show_in_menu'      => !$remplace,
+        'has_archive'       => !$remplace,
+        'rewrite'           => $remplace ? false : ['slug' => 'evenements'],
         'menu_icon'         => 'dashicons-calendar-alt',
         'menu_position'     => 5,
         'supports'          => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
-        'show_in_rest'      => true,   // Gutenberg
+        'show_in_rest'      => !$remplace,   // Gutenberg
         'taxonomies'        => ['evt_type'],
     ]);
 });
 
 /* ── Taxonomie type d'événement ──────────────────────────── */
 add_action('init', function () {
+    $remplace = ps_evt_plugin_actif();
+
     register_taxonomy('evt_type', 'evenement', [
         'labels' => [
             'name'          => __('Types',              'poivre-sens'),
@@ -227,9 +247,10 @@ add_action('init', function () {
             'edit_item'     => __('Modifier le type',   'poivre-sens'),
         ],
         'hierarchical'  => true,
-        'public'        => true,
-        'show_in_rest'  => true,
-        'rewrite'       => ['slug' => 'type-evenement'],
+        'public'        => !$remplace,
+        'show_ui'       => !$remplace,
+        'show_in_rest'  => !$remplace,
+        'rewrite'       => $remplace ? false : ['slug' => 'type-evenement'],
     ]);
 });
 
@@ -254,126 +275,6 @@ add_action('init', function () {
         'supports'      => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest'  => true,
     ]);
-});
-
-/* ═══════════════════════════════════════════════════════════
-   5. META BOXES — ÉVÉNEMENT
-   ═══════════════════════════════════════════════════════════ */
-add_action('add_meta_boxes', function () {
-    add_meta_box(
-        'ps_evt_details',
-        __('Détails de l\'événement', 'poivre-sens'),
-        'ps_evt_meta_box_html',
-        'evenement',
-        'normal',
-        'high'
-    );
-});
-
-function ps_evt_meta_box_html($post) {
-    wp_nonce_field('ps_evt_save', 'ps_evt_nonce');
-    $date        = get_post_meta($post->ID, '_evt_date',        true);
-    $heure       = get_post_meta($post->ID, '_evt_heure',       true);
-    $heure_fin   = get_post_meta($post->ID, '_evt_heure_fin',   true);
-    $lieu        = get_post_meta($post->ID, '_evt_lieu',        true);
-    $adresse     = get_post_meta($post->ID, '_evt_adresse',     true);
-    $ville       = get_post_meta($post->ID, '_evt_ville',       true);
-    $type        = get_post_meta($post->ID, '_evt_type',        true);
-    $prix        = get_post_meta($post->ID, '_evt_prix',        true);
-    $billetterie = get_post_meta($post->ID, '_evt_billetterie', true);
-    $complet     = get_post_meta($post->ID, '_evt_complet',     true);
-
-    $types = [
-        'spectacle'  => 'Spectacle vivant',
-        'jam'        => 'Jam contact-improvisation',
-        'atelier'    => 'Atelier / Stage',
-        'residence'  => 'Résidence',
-        'concert'    => 'Concert',
-        'autre'      => 'Autre',
-    ];
-    ?>
-    <style>
-        .ps-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;padding:4px 0}
-        .ps-meta-grid label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#555;margin-bottom:4px;font-weight:600}
-        .ps-meta-grid input,.ps-meta-grid select,.ps-meta-grid textarea{width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px}
-        .ps-meta-grid .full{grid-column:1/-1}
-        .ps-meta-grid .check-row{display:flex;align-items:center;gap:8px}
-        .ps-meta-grid .check-row input{width:auto}
-    </style>
-    <div class="ps-meta-grid">
-        <div>
-            <label><?php _e('Date', 'poivre-sens'); ?></label>
-            <input type="date" name="evt_date" value="<?php echo esc_attr($date); ?>" required>
-        </div>
-        <div>
-            <label><?php _e('Heure de début', 'poivre-sens'); ?></label>
-            <input type="time" name="evt_heure" value="<?php echo esc_attr($heure); ?>">
-        </div>
-        <div>
-            <label><?php _e('Heure de fin', 'poivre-sens'); ?></label>
-            <input type="time" name="evt_heure_fin" value="<?php echo esc_attr($heure_fin); ?>">
-        </div>
-        <div>
-            <label><?php _e('Type d\'événement', 'poivre-sens'); ?></label>
-            <select name="evt_type">
-                <?php foreach ($types as $k => $v): ?>
-                    <option value="<?php echo esc_attr($k); ?>" <?php selected($type, $k); ?>><?php echo esc_html($v); ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="full">
-            <label><?php _e('Lieu / Nom de la salle', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_lieu" value="<?php echo esc_attr($lieu); ?>" placeholder="Ex: Théâtre du Rond-Point">
-        </div>
-        <div>
-            <label><?php _e('Adresse', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_adresse" value="<?php echo esc_attr($adresse); ?>" placeholder="Ex: 12 rue de la Paix">
-        </div>
-        <div>
-            <label><?php _e('Ville', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_ville" value="<?php echo esc_attr($ville); ?>" placeholder="Ex: Paris">
-        </div>
-        <div>
-            <label><?php _e('Tarif', 'poivre-sens'); ?></label>
-            <input type="text" name="evt_prix" value="<?php echo esc_attr($prix); ?>" placeholder="Ex: 12€ / gratuit">
-        </div>
-        <div>
-            <label><?php _e('Lien billetterie', 'poivre-sens'); ?></label>
-            <input type="url" name="evt_billetterie" value="<?php echo esc_attr($billetterie); ?>" placeholder="https://…">
-        </div>
-        <div class="full">
-            <label class="check-row">
-                <input type="checkbox" name="evt_complet" value="1" <?php checked($complet, '1'); ?>>
-                <?php _e('Événement complet (afficher "Complet")', 'poivre-sens'); ?>
-            </label>
-        </div>
-    </div>
-    <?php
-}
-
-add_action('save_post_evenement', function ($post_id) {
-    if (!isset($_POST['ps_evt_nonce']) || !wp_verify_nonce($_POST['ps_evt_nonce'], 'ps_evt_save')) return;
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!current_user_can('edit_post', $post_id)) return;
-
-    $fields = [
-        '_evt_date'        => ['evt_date',        'sanitize_text_field'],
-        '_evt_heure'       => ['evt_heure',        'sanitize_text_field'],
-        '_evt_heure_fin'   => ['evt_heure_fin',    'sanitize_text_field'],
-        '_evt_lieu'        => ['evt_lieu',          'sanitize_text_field'],
-        '_evt_adresse'     => ['evt_adresse',       'sanitize_text_field'],
-        '_evt_ville'       => ['evt_ville',         'sanitize_text_field'],
-        '_evt_type'        => ['evt_type',          'sanitize_text_field'],
-        '_evt_prix'        => ['evt_prix',          'sanitize_text_field'],
-        '_evt_billetterie' => ['evt_billetterie',   'esc_url_raw'],
-    ];
-    foreach ($fields as $meta_key => [$field, $sanitize]) {
-        if (isset($_POST[$field])) {
-            update_post_meta($post_id, $meta_key, $sanitize($_POST[$field]));
-        }
-    }
-    // Checkbox complet
-    update_post_meta($post_id, '_evt_complet', isset($_POST['evt_complet']) ? '1' : '');
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -638,12 +539,18 @@ function ps_format_date($date_str, $format = 'j F Y') {
 /** Retourne les 3 prochains événements */
 function ps_get_upcoming_events($limit = 3) {
     return new WP_Query([
-        'post_type'      => 'evenement',
+        'post_type'      => ps_evt_cpt(),
         'post_status'    => 'publish',
         'posts_per_page' => $limit,
-        'meta_key'       => '_evt_date',
-        'meta_value'     => date('Y-m-d'),
-        'meta_compare'   => '>=',
+        'meta_key'       => ps_evt_cle_date(),
+        'meta_query'     => [[
+            'key'     => ps_evt_cle_date(),
+            'value'   => ps_evt_borne_debut(date('Y-m-d')),
+            'compare' => '>=',
+            // Comparaison de chaînes : les deux formats de stockage
+            // (2026-09-12 et 2026-09-12T20:30) se trient correctement.
+            'type'    => 'CHAR',
+        ]],
         'orderby'        => 'meta_value',
         'order'          => 'ASC',
     ]);
@@ -654,15 +561,15 @@ function ps_get_events_for_month($year, $month) {
     $start = sprintf('%04d-%02d-01', $year, $month);
     $end   = date('Y-m-t', strtotime($start));
     return new WP_Query([
-        'post_type'      => 'evenement',
+        'post_type'      => ps_evt_cpt(),
         'post_status'    => 'publish',
         'posts_per_page' => -1,
-        'meta_key'       => '_evt_date',
+        'meta_key'       => ps_evt_cle_date(),
         'meta_query'     => [[
-            'key'     => '_evt_date',
-            'value'   => [$start, $end],
+            'key'     => ps_evt_cle_date(),
+            'value'   => [ps_evt_borne_debut($start), ps_evt_borne_fin($end)],
             'compare' => 'BETWEEN',
-            'type'    => 'DATE',
+            'type'    => 'CHAR',
         ]],
         'orderby'        => 'meta_value',
         'order'          => 'ASC',
@@ -671,8 +578,11 @@ function ps_get_events_for_month($year, $month) {
 
 /* ═══════════════════════════════════════════════════════════
    10. COLONNES ADMIN ÉVÉNEMENTS
+   ───────────────────────────────────────────────────────────
+   Sur la liste du module en service, quel qu'il soit : le
+   plugin n'affiche par défaut que le titre.
    ═══════════════════════════════════════════════════════════ */
-add_filter('manage_evenement_posts_columns', function ($cols) {
+add_filter('manage_' . ps_evt_cpt() . '_posts_columns', function ($cols) {
     $new = [];
     foreach ($cols as $k => $v) {
         $new[$k] = $v;
@@ -685,13 +595,13 @@ add_filter('manage_evenement_posts_columns', function ($cols) {
     return $new;
 });
 
-add_action('manage_evenement_posts_custom_column', function ($col, $post_id) {
-    if ($col === 'evt_date') echo esc_html(ps_format_date(get_post_meta($post_id, '_evt_date', true)));
-    if ($col === 'evt_lieu') echo esc_html(get_post_meta($post_id, '_evt_lieu', true) . ' ' . get_post_meta($post_id, '_evt_ville', true));
-    if ($col === 'evt_type') echo esc_html(ps_evt_type_label(get_post_meta($post_id, '_evt_type', true)));
+add_action('manage_' . ps_evt_cpt() . '_posts_custom_column', function ($col, $post_id) {
+    if ($col === 'evt_date') echo esc_html(ps_format_date(ps_evt_champ($post_id, 'date')));
+    if ($col === 'evt_lieu') echo esc_html(trim(ps_evt_champ($post_id, 'lieu') . ' ' . ps_evt_champ($post_id, 'ville')));
+    if ($col === 'evt_type') echo esc_html(ps_evt_champ($post_id, 'type_label'));
 }, 10, 2);
 
-add_filter('manage_edit-evenement_sortable_columns', function ($cols) {
+add_filter('manage_edit-' . ps_evt_cpt() . '_sortable_columns', function ($cols) {
     $cols['evt_date'] = 'evt_date';
     return $cols;
 });

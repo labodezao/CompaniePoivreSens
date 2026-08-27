@@ -358,12 +358,43 @@ Avec **Yoast** :
 | Image de partage réseaux sociaux | Encadré Yoast de la page → onglet **Réseaux sociaux** |
 
 > Le thème complète malgré tout les données structurées de Yoast avec les
-> **variantes du nom** (« Compagnie Poivre & Sens », « Poivre et Sens »…),
-> sans rien écraser de ce que vous y avez renseigné.
+> **variantes du nom**, sans rien écraser de ce que vous y avez renseigné.
+
+Ces variantes se modifient dans **Apparence › Personnaliser ›
+« Référencement (SEO) » › Autres façons d'écrire le nom** — une par ligne.
+Elles servent à ce que Google reconnaisse la compagnie quelle que soit
+l'orthographe employée (« Poivre & Sens », « Poivre et Sens », « Cie
+Poivre & Sens »…). Videz le champ pour n'en déclarer aucune.
 
 **Sans extension SEO**, le thème génère lui-même description, Open Graph et
 données structurées à partir du **titre** et de l'**accroche** du site
 (Réglages › Général) et des extraits de page.
+
+### Événements dans les résultats Google
+
+Chaque événement publié émet automatiquement des **données structurées
+`Event`** : date et heure, lieu et adresse, tarif, lien de billetterie,
+et mention « complet » le cas échéant. Google peut alors afficher ces
+informations directement dans ses résultats.
+
+Ce bloc est produit **même si Yoast est installé** : aucune extension SEO,
+y compris en version payante, ne génère de schéma d'événement pour un type
+de contenu personnalisé — il n'y a donc pas de doublon.
+
+Rien à configurer : remplissez simplement les champs du bloc **Détails de
+l'événement**. Quelques précisions utiles :
+
+- **Sans date**, aucun schéma n'est émis (Google refuserait un événement
+  sans date) ;
+- le **tarif** est interprété quand c'est possible (`12€` → 12, `gratuit`
+  → 0). Un texte non chiffrable (« sur réservation ») n'invente aucun prix ;
+- une **heure de fin antérieure à l'heure de début** est comprise comme un
+  passage après minuit ;
+- **Complet** coché ⇒ l'événement est annoncé comme complet.
+
+Vous pouvez contrôler le rendu avec le
+[test des résultats enrichis de Google](https://search.google.com/test/rich-results)
+en y collant l'adresse d'un événement.
 
 ### Indexation Google des pages utilitaires
 

@@ -102,7 +102,7 @@ add_shortcode('ps_galerie', function (): string {
     return ob_get_clean();
 });
 
-/** [ps_evenements] — Prochains événements depuis le CPT "evenement" */
+/** [ps_evenements] — Prochains événements, quelle qu'en soit la source */
 add_shortcode('ps_evenements', function (): string {
     ob_start();
     $q        = ps_get_upcoming_events(3);
@@ -119,14 +119,15 @@ add_shortcode('ps_evenements', function (): string {
       <?php if ($q->have_posts()) : ?>
       <div class="cal-list cal-list--compact">
         <?php while ($q->have_posts()) : $q->the_post();
-          $d  = get_post_meta(get_the_ID(), '_evt_date',        true);
-          $h  = get_post_meta(get_the_ID(), '_evt_heure',       true);
-          $l  = get_post_meta(get_the_ID(), '_evt_lieu',        true);
-          $v  = get_post_meta(get_the_ID(), '_evt_ville',       true);
-          $ty = get_post_meta(get_the_ID(), '_evt_type',        true);
-          $p  = get_post_meta(get_the_ID(), '_evt_prix',        true);
-          $b  = get_post_meta(get_the_ID(), '_evt_billetterie', true);
-          $cp = get_post_meta(get_the_ID(), '_evt_complet',     true);
+          $id = get_the_ID();
+          $d  = ps_evt_champ($id, 'date');
+          $h  = ps_evt_champ($id, 'heure');
+          $l  = ps_evt_champ($id, 'lieu');
+          $v  = ps_evt_champ($id, 'ville');
+          $ty = ps_evt_champ($id, 'type_label');
+          $p  = ps_evt_champ($id, 'prix');
+          $b  = ps_evt_champ($id, 'billetterie');
+          $cp = ps_evt_champ($id, 'complet');
           $ts = $d ? strtotime($d) : 0;
         ?>
         <div class="cal-list__event <?= $d === $today ? 'cal-list__event--today' : '' ?>">
@@ -137,7 +138,7 @@ add_shortcode('ps_evenements', function (): string {
           </div>
           <div class="cal-list__line" aria-hidden="true"></div>
           <div class="cal-list__body">
-            <?php if ($ty) : ?><span class="cal-list__type"><?= esc_html(ps_evt_type_label($ty)) ?></span><?php endif; ?>
+            <?php if ($ty) : ?><span class="cal-list__type"><?= esc_html($ty) ?></span><?php endif; ?>
             <?php if ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>
             <h3 class="cal-list__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
             <ul class="cal-list__meta" role="list">
@@ -153,12 +154,12 @@ add_shortcode('ps_evenements', function (): string {
         </div>
         <?php endwhile; wp_reset_postdata(); ?>
       </div>
-      <a href="<?= esc_url(get_post_type_archive_link('evenement')) ?>" class="evts__lien"><?php _e("Voir tout l'agenda", 'poivre-sens'); ?></a>
+      <a href="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>" class="evts__lien"><?php _e("Voir tout l'agenda", 'poivre-sens'); ?></a>
       <?php else : ?>
       <div style="padding:48px 0;text-align:center;color:var(--gris);font-size:.9rem">
         <?php _e('Aucun événement programmé pour le moment.', 'poivre-sens'); ?>
         <?php if (current_user_can('publish_posts')) : ?>
-        <br><br><a href="<?= esc_url(admin_url('post-new.php?post_type=evenement')) ?>" class="evts__lien">+ <?php _e('Créer un événement', 'poivre-sens'); ?></a>
+        <br><br><a href="<?= esc_url(admin_url('post-new.php?post_type=' . ps_evt_cpt())) ?>" class="evts__lien">+ <?php _e('Créer un événement', 'poivre-sens'); ?></a>
         <?php endif; ?>
       </div>
       <?php endif; ?>

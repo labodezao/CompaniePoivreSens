@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CF Événements & Réservations — Documentation</title>
+<style>
+  :root {
+    --paper:   #f7f6f9;
+    --card:    #ffffff;
+    --ink:     #241f2b;
+    --muted:   #6b6577;
+    --faint:   #938da0;
+    --line:    #e6e1ec;
+    --plum:    #5a3e6b;
+    --plum-dk: #3f2a4d;
+    --plum-sf: #f0eaf4;
+    --blue:    #1a3c5e;
+    --ok:      #2d8a4e;
+    --warn:    #b7791f;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Layout ─────────────────────────────────────────── */
+  .wrap { display: grid; grid-template-columns: 264px 1fr; gap: 0; max-width: 1180px; margin: 0 auto; }
+  .side {
+    position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+    padding: 40px 24px 40px 32px; border-right: 1px solid var(--line);
+  }
+  .main { padding: 56px 56px 120px; max-width: 820px; }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: 1fr; }
+    .side { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); padding: 24px; }
+    .main { padding: 32px 22px 80px; }
+  }
+
+  /* ── Sidebar ────────────────────────────────────────── */
+  .brand { font-family: var(--serif); font-size: 19px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; color: var(--plum-dk); margin: 0 0 4px; }
+  .brand small { display: block; font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-top: 8px; }
+  nav.toc { margin-top: 28px; font-size: 13.5px; }
+  nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 5px 10px; border-radius: 6px; border-left: 2px solid transparent; margin-left: -2px; }
+  nav.toc a:hover { color: var(--plum); background: var(--plum-sf); }
+  nav.toc a.active { color: var(--plum-dk); background: var(--plum-sf); border-left-color: var(--plum); font-weight: 600; }
+  nav.toc .grp { font-size: 10.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--faint); margin: 20px 0 6px 10px; }
+  nav.toc a:focus-visible { outline: 2px solid var(--plum); outline-offset: 2px; }
+
+  /* ── Header block ───────────────────────────────────── */
+  .lede { border-bottom: 1px solid var(--line); padding-bottom: 34px; margin-bottom: 44px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--plum); margin-bottom: 14px; }
+  h1 { font-family: var(--serif); font-weight: 700; font-size: 42px; line-height: 1.08; letter-spacing: -.02em; margin: 0 0 16px; text-wrap: balance; }
+  .lede p { font-size: 18px; color: var(--muted); margin: 0; max-width: 62ch; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .badge { font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 999px; background: var(--plum-sf); color: var(--plum-dk); }
+  .badge.v { background: var(--plum); color: #fff; }
+
+  /* ── Sections ───────────────────────────────────────── */
+  section { scroll-margin-top: 24px; padding-top: 18px; margin-bottom: 40px; }
+  h2 { font-family: var(--serif); font-weight: 700; font-size: 27px; letter-spacing: -.015em; margin: 22px 0 8px; text-wrap: balance; }
+  h2 .num { color: var(--faint); font-size: 18px; font-weight: 400; margin-right: 12px; font-variant-numeric: tabular-nums; }
+  h3 { font-family: var(--sans); font-weight: 700; font-size: 16.5px; margin: 30px 0 6px; color: var(--plum-dk); }
+  p { margin: 0 0 15px; }
+  .main a { color: var(--plum); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+  strong { font-weight: 650; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  li::marker { color: var(--plum); }
+
+  /* ── Code & shortcodes ──────────────────────────────── */
+  code { font-family: var(--mono); font-size: 13.5px; background: var(--plum-sf); color: var(--plum-dk); padding: 1.5px 6px; border-radius: 5px; }
+  pre { background: #2a2233; color: #ece6f2; font-family: var(--mono); font-size: 13.5px; line-height: 1.6; padding: 16px 18px; border-radius: 10px; overflow-x: auto; margin: 0 0 18px; }
+  pre code { background: none; color: inherit; padding: 0; }
+  pre .c { color: #a99cb8; }
+  pre .t { color: #d9b6ff; }
+
+  /* ── Cards & callouts ───────────────────────────────── */
+  .note { display: flex; gap: 13px; background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--plum); border-radius: 10px; padding: 15px 18px; margin: 0 0 18px; font-size: 14.5px; }
+  .note.blue { border-left-color: var(--blue); }
+  .note.warn { border-left-color: var(--warn); }
+  .note.ok { border-left-color: var(--ok); }
+  .note .ic { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
+  .note p { margin: 0; color: var(--muted); }
+  .note strong { color: var(--ink); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 4px 0 22px; }
+  .mod { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .mod h4 { font-family: var(--sans); font-size: 15px; font-weight: 700; margin: 0 0 6px; color: var(--plum-dk); }
+  .mod p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+  /* ── Tables ─────────────────────────────────────────── */
+  .tbl-wrap { overflow-x: auto; margin: 0 0 22px; border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 11px 15px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--plum-sf); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--plum-dk); }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 12.5px; white-space: nowrap; }
+  .tbl-wrap tbody tr:hover td { background: #faf9fc; }
+
+  /* ── Footer ─────────────────────────────────────────── */
+  footer { margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+  footer strong { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <aside class="side">
+    <div class="brand">CF Événements<br>& Réservations<small>Documentation</small></div>
+    <nav class="toc" aria-label="Sommaire">
+      <a href="#apercu">Vue d'ensemble</a>
+      <a href="#install">Installation</a>
+
+      <div class="grp">Réservations</div>
+      <a href="#evenements">Événements & ateliers</a>
+      <a href="#rdv">Rendez-vous individuels</a>
+      <a href="#paiement">Acompte SumUp</a>
+      <a href="#agenda">Google Agenda</a>
+      <a href="#emails">Emails automatiques</a>
+
+      <div class="grp">Modules</div>
+      <a href="#post-seance">Suivi post-séance</a>
+      <a href="#newsletter">Newsletter</a>
+
+      <div class="grp">Référence</div>
+      <a href="#shortcodes">Codes courts</a>
+      <a href="#tables">Base de données</a>
+      <a href="#cron">Tâches planifiées</a>
+      <a href="#depannage">Dépannage</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="lede">
+      <div class="eyebrow">Manuel du praticien &amp; guide technique</div>
+      <h1>Tout le site tient dans une seule extension</h1>
+      <p>Réservations en deux clics, rendez-vous individuels, acompte en ligne, suivi après séance et newsletter maison — réunis dans un plugin sur mesure, sans dépendance payante, pensé pour soins.ewendaviau.com.</p>
+      <div class="badges">
+        <span class="badge v">Version 1.9.0</span>
+        <span class="badge">Réservations</span>
+        <span class="badge">Post-Séance</span>
+        <span class="badge">Newsletter</span>
+        <span class="badge">SumUp</span>
+        <span class="badge">Google Agenda</span>
+      </div>
+    </div>
+
+    <!-- ── Vue d'ensemble ───────────────────────────── -->
+    <section id="apercu">
+      <h2><span class="num">01</span>Vue d'ensemble</h2>
+      <p>Ce plugin remplace à lui seul plusieurs extensions habituellement séparées (The Events Calendar, un plugin de réservation, un outil d'emailing). Il est organisé en un cœur « réservations » et deux modules autonomes qui s'activent avec lui.</p>
+      <div class="grid">
+        <div class="mod"><h4>Cœur — Réservations</h4><p>Événements de groupe, rendez-vous individuels hebdomadaires, liste d'attente, emails, statistiques, synchronisation Google Agenda.</p></div>
+        <div class="mod"><h4>Module — Post-Séance</h4><p>Séquence automatique de 4 emails après une séance individuelle. Le 4ᵉ (invitation) reste une validation manuelle, jamais un envoi automatique.</p></div>
+        <div class="mod"><h4>Module — Newsletter</h4><p>Système d'emailing maison complet : abonnés, campagnes, envoi par lots, statistiques, A/B testing, automatisations — sans MailPoet.</p></div>
+      </div>
+      <div class="note blue"><span class="ic">◆</span><p>Les trois parties partagent le même code et la même base de données. Activer le plugin installe et met à jour automatiquement les tables et les tâches planifiées des deux modules.</p></div>
+    </section>
+
+    <!-- ── Installation ─────────────────────────────── -->
+    <section id="install">
+      <h2><span class="num">02</span>Installation &amp; mise à jour</h2>
+      <p>Deux méthodes, au choix.</p>
+      <h3>Par l'interface WordPress (recommandé)</h3>
+      <ol>
+        <li>Extensions → <strong>Ajouter</strong> → <strong>Téléverser une extension</strong>.</li>
+        <li>Choisir le fichier <code>cf-events-booking.zip</code>, puis <strong>Installer</strong>.</li>
+        <li>Pour une mise à jour, WordPress propose « Remplacer l'extension actuelle » : les données (réservations, abonnés, réglages) sont conservées.</li>
+        <li><strong>Activer</strong> l'extension.</li>
+      </ol>
+      <h3>Par FTP</h3>
+      <p>Déposer le dossier <code>cf-events-booking/</code> dans <code>wp-content/plugins/</code>, puis activer depuis l'écran Extensions.</p>
+      <div class="note ok"><span class="ic">✓</span><p><strong>Migrations automatiques.</strong> Après une mise à jour par simple écrasement des fichiers, les nouvelles colonnes et tâches planifiées se créent d'elles-mêmes au premier chargement de l'administration — aucune réactivation nécessaire.</p></div>
+    </section>
+
+    <!-- ── Événements ───────────────────────────────── -->
+    <section id="evenements">
+      <h2><span class="num">03</span>Événements &amp; ateliers</h2>
+      <p>Les événements de groupe (soirées constellation, ateliers) se créent depuis le menu <strong>Événements</strong>. Chaque événement gère ses places, son prix, son lieu, sa liste d'attente et la date limite d'inscription.</p>
+      <h3>Afficher les événements sur une page</h3>
+      <pre><code><span class="c">// Liste des prochains événements</span>
+[cf_events]
+
+<span class="c">// Limiter le nombre affiché</span>
+[cf_events nombre=<span class="t">"6"</span>]
+
+<span class="c">// Filtrer par catégorie</span>
+[cf_events categorie=<span class="t">"constellation"</span>]
+
+<span class="c">// Vue calendrier mensuel</span>
+[cf_events vue=<span class="t">"calendrier"</span>]   <span class="c">ou</span>   [cf_calendrier]</code></pre>
+      <p>La réservation se fait dans une fenêtre modale, sans quitter la page. Le visiteur reçoit un email de confirmation avec un fichier <code>.ics</code> pour son agenda ; une notification part vers l'administratrice.</p>
+    </section>
+
+    <!-- ── RDV ──────────────────────────────────────── -->
+    <section id="rdv">
+      <h2><span class="num">04</span>Rendez-vous individuels</h2>
+      <p>Les séances individuelles fonctionnent par <strong>types de rendez-vous</strong> (menu <em>Types RDV</em>) : chaque type définit une durée, un prix, un lieu, et des créneaux hebdomadaires récurrents via le <strong>Planning</strong>.</p>
+      <pre><code><span class="c">// Widget de prise de rendez-vous pour un type donné</span>
+[cf_rdv type=<span class="t">"constellation-individuelle"</span>]
+
+<span class="c">// Réservations de la personne connectée</span>
+[cf_mes_reservations]</code></pre>
+      <div class="note"><span class="ic">◆</span><p>Le <code>type</code> accepte le <em>slug</em> (nom d'URL) ou l'identifiant numérique du type de rendez-vous. Le slug est visible dans la liste des types de RDV.</p></div>
+    </section>
+
+    <!-- ── Paiement ─────────────────────────────────── -->
+    <section id="paiement">
+      <h2><span class="num">05</span>Acompte en ligne (SumUp)</h2>
+      <p>Pour sécuriser les créneaux et limiter les annulations, un acompte peut être demandé à la réservation. Réglages → onglet <strong>💳 Paiement</strong>.</p>
+      <ol>
+        <li>Cocher <strong>Demander un acompte à la réservation</strong>.</li>
+        <li>Coller le <strong>Personal Access Token</strong> SumUp (SumUp → Intégrations → Clés API) et l'email du compte SumUp.</li>
+        <li>Fixer le montant de l'acompte (ex. 30&nbsp;€), déduit du total en séance.</li>
+        <li>Cocher les <strong>types de RDV concernés</strong> par l'acompte.</li>
+      </ol>
+      <p>Après une réservation confirmée d'un type coché, la page de succès affiche un bouton de paiement et redirige vers SumUp au bout de 5&nbsp;secondes ; le lien figure aussi dans l'email de confirmation.</p>
+      <div class="note warn"><span class="ic">!</span><p>La redirection n'est autorisée que vers <code>pay.sumup.com</code>. Tant qu'aucun token n'est renseigné, aucun paiement n'est demandé et le formulaire reste inchangé.</p></div>
+    </section>
+
+    <!-- ── Agenda ───────────────────────────────────── -->
+    <section id="agenda">
+      <h2><span class="num">06</span>Synchronisation Google Agenda</h2>
+      <p>Réglages → onglet <strong>📅 Google Agenda</strong> connecte un ou plusieurs agendas Google. Les créneaux déjà occupés y sont automatiquement retirés des disponibilités, et chaque nouvelle réservation crée un événement dans l'agenda.</p>
+      <div class="note ok"><span class="ic">✓</span><p><strong>Événements « toute la journée » pris en compte.</strong> Un bloc de type journée entière (posé souvent depuis le mobile) rend indisponibles tous les créneaux du jour, même quand Google le marque « Disponible ».</p></div>
+    </section>
+
+    <!-- ── Emails ───────────────────────────────────── -->
+    <section id="emails">
+      <h2><span class="num">07</span>Emails automatiques</h2>
+      <p>Réglages → onglet <strong>📧 Emails</strong> centralise les messages transactionnels liés aux réservations.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Email</th><th>Déclencheur</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Confirmation</strong></td><td>À la réservation (avec fichier iCal joint).</td></tr>
+          <tr><td><strong>Rappel</strong></td><td>X heures avant l'événement (réglable, 0 = désactivé).</td></tr>
+          <tr><td><strong>Suivi</strong></td><td>X heures après la fin de l'événement.</td></tr>
+          <tr><td><strong>Annulation</strong></td><td>Quand l'administratrice annule une réservation.</td></tr>
+          <tr><td><strong>Liste d'attente</strong></td><td>Quand une place se libère et qu'une personne est promue.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Variables disponibles dans les modèles : <code>{prenom}</code> <code>{nom}</code> <code>{email}</code> <code>{evenement}</code> <code>{date}</code> <code>{lieu}</code>.</p>
+    </section>
+
+    <!-- ── Post-Séance ──────────────────────────────── -->
+    <section id="post-seance">
+      <h2><span class="num">08</span>Module — Suivi post-séance</h2>
+      <p>Après une <strong>constellation individuelle</strong>, une séquence de quatre emails accompagne la personne. Menu <strong>Post-Séance</strong>.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Étape</th><th>Délai</th><th>Rôle</th><th>Envoi</th></tr></thead>
+        <tbody>
+          <tr><td>Email 1 — Le soin</td><td>J+1</td><td>Prendre soin de soi après la séance</td><td>Automatique</td></tr>
+          <tr><td>Email 2 — Les nouvelles</td><td>J+7</td><td>Prise de contact + article + WhatsApp</td><td>Automatique</td></tr>
+          <tr><td>Email 3 — Le témoignage</td><td>J+14</td><td>Demande d'un retour</td><td>Automatique</td></tr>
+          <tr><td>Email 4 — L'invitation</td><td>J+28</td><td>Proposition « Pleine Vie »</td><td><strong>Validation GO / NO-GO</strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note warn"><span class="ic">!</span><p><strong>Le 4ᵉ email ne part jamais tout seul.</strong> À J+28, une notification arrive à l'administratrice avec un brouillon et deux boutons. Chaque lien ouvre une page de confirmation (un simple clic d'un logiciel anti-spam ne peut pas déclencher l'envoi).</p></div>
+      <p>La détection se fait chaque jour à 8&nbsp;h : les séances de la veille (statut confirmé ou présent) entrent dans la séquence. Un lien de désinscription figure sur chaque email client. Les thèmes d'article se règlent par ligne dans <em>Post-Séance → Séquences</em>, les URL des articles piliers dans les <em>Paramètres</em>.</p>
+    </section>
+
+    <!-- ── Newsletter ───────────────────────────────── -->
+    <section id="newsletter">
+      <h2><span class="num">09</span>Module — Newsletter</h2>
+      <p>Un système d'emailing maison, gratuit, sans MailPoet. Menu <strong>Newsletter</strong>, réparti en quatre écrans : Campagnes, Abonnés, Automatisations, Réglages.</p>
+
+      <h3>Abonnés &amp; inscription</h3>
+      <p>Formulaire d'inscription à poser sur n'importe quelle page :</p>
+      <pre><code>[cf_newsletter]</code></pre>
+      <p>Double opt-in (confirmation par email), choix du rythme <strong>Quinzaine</strong> ou <strong>Mensuel</strong>, désinscription et page de gestion en un clic. Import / export CSV depuis l'écran Abonnés. La case à cocher du formulaire de réservation alimente directement cette liste.</p>
+
+      <h3>Campagnes</h3>
+      <p>Rédaction en brouillon (objet + corps, variables <code>{{prenom}}</code> <code>{{nom}}</code> <code>{{email}}</code>), puis choix de la cible et du segment. Rien ne part sans un clic explicite sur <strong>Lancer l'envoi</strong> — ou une programmation à une date choisie.</p>
+      <div class="note ok"><span class="ic">✓</span><p><strong>Compatible copier-coller MailPoet.</strong> Un HTML copié depuis MailPoet (aperçu navigateur → code source) peut être collé tel quel dans le corps : le contenu utile est extrait, les variables MailPoet converties, son pied de désinscription retiré, et les mises en page en tableaux préservées à l'envoi.</p></div>
+      <ul>
+        <li><strong>Cible</strong> — Quinzaine + Mensuel (édition du 1ᵉʳ), Quinzaine seule (édition du 15), ou Mensuel seul.</li>
+        <li><strong>Segment</strong> — tous, <em>engagés</em> (actifs sur 90&nbsp;jours) ou <em>inactifs</em> (réengagement).</li>
+        <li><strong>Email de test</strong> — s'envoyer le rendu réel avant de lancer.</li>
+        <li><strong>Renvoi aux non-ouvreurs</strong> — relancer en un clic ceux qui n'ont pas ouvert.</li>
+      </ul>
+
+      <h3>A/B testing d'objet</h3>
+      <p>Deux objets sont testés sur un échantillon (30&nbsp;% par défaut, réparti moitié/moitié). Après 4&nbsp;heures, l'objet le plus ouvert est envoyé automatiquement au reste des abonnés.</p>
+
+      <h3>Automatisations</h3>
+      <div class="grid">
+        <div class="mod"><h4>Email de bienvenue</h4><p>Envoyé dès qu'un abonné confirme son inscription.</p></div>
+        <div class="mod"><h4>Notification d'article</h4><p>À chaque nouvel article de blog publié, une newsletter est générée (brouillon à valider, ou envoi direct).</p></div>
+      </div>
+
+      <h3>Modèles annuels (12 newsletters prêtes)</h3>
+      <p>L'écran <strong>Newsletter → Modèles annuels</strong> contient les 12 éditions mensuelles déjà rédigées (une par mois, avec objet, corps et lien vers l'article pilier). Pour chaque édition, trois actions :</p>
+      <ul>
+        <li><strong>Créer le brouillon MailPoet</strong> — insère directement un brouillon dans MailPoet et ouvre son éditeur (visible si MailPoet est installé).</li>
+        <li><strong>Créer dans le module intégré</strong> — crée une campagne dans le module Newsletter maison.</li>
+        <li><strong>Copier le contenu</strong> — copie le HTML dans le presse-papier, à coller n'importe où.</li>
+      </ul>
+      <div class="note"><span class="ic">◆</span><p>MailPoet n'offre pas d'API officielle de création de newsletter ; le brouillon est écrit dans sa table interne au format bloc « Texte ». Si une version de MailPoet refuse ce format, l'action le signale — utilisez alors « Copier le contenu ».</p></div>
+
+      <h3>Envoi &amp; délivrabilité</h3>
+      <p>L'envoi se fait <strong>par lots toutes les 5 minutes</strong> avec un plafond quotidien, via une tâche planifiée. Les ouvertures (pixel) et les clics (redirection) sont suivis ; les liens vers le site sont balisés en UTM pour Google Analytics.</p>
+      <div class="note"><span class="ic">◆</span><p><strong>SMTP intégré.</strong> Réglages → renseigner un compte email OVH (<code>ssl0.ovh.net</code>) : tous les emails du site partent alors par ce serveur authentifié, sans plugin tiers. Un envoi de masse fiable exige toujours un SMTP authentifié — ici, c'est votre propre boîte mail.</p></div>
+    </section>
+
+    <!-- ── Shortcodes ───────────────────────────────── -->
+    <section id="shortcodes">
+      <h2><span class="num">10</span>Référence des codes courts</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Code court</th><th>Effet</th></tr></thead>
+        <tbody>
+          <tr><td><code>[cf_events]</code></td><td>Liste des prochains événements.</td></tr>
+          <tr><td><code>[cf_events nombre="6"]</code></td><td>Limite le nombre d'événements affichés.</td></tr>
+          <tr><td><code>[cf_events categorie="…"]</code></td><td>Filtre par catégorie d'événement.</td></tr>
+          <tr><td><code>[cf_events vue="calendrier"]</code></td><td>Vue calendrier mensuel.</td></tr>
+          <tr><td><code>[cf_calendrier]</code></td><td>Alias de la vue calendrier.</td></tr>
+          <tr><td><code>[cf_rdv type="…"]</code></td><td>Widget de rendez-vous hebdomadaire (slug ou ID).</td></tr>
+          <tr><td><code>[cf_mes_reservations]</code></td><td>Réservations de l'utilisateur connecté.</td></tr>
+          <tr><td><code>[cf_newsletter]</code></td><td>Formulaire d'inscription à la newsletter.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ── Tables ───────────────────────────────────── -->
+    <section id="tables">
+      <h2><span class="num">11</span>Tables de base de données</h2>
+      <p>Toutes les tables sont préfixées par le préfixe WordPress du site (souvent <code>wp_</code>).</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Table</th><th>Contenu</th></tr></thead>
+        <tbody>
+          <tr><td><code>cf_bookings</code></td><td>Réservations (événements et rendez-vous), statut, paiement, lien d'acompte.</td></tr>
+          <tr><td><code>cfps_sequence</code></td><td>Séquences post-séance : étapes envoyées, jetons GO/NO-GO.</td></tr>
+          <tr><td><code>cfnl_subscribers</code></td><td>Abonnés newsletter : statut, fréquence, engagement, jeton.</td></tr>
+          <tr><td><code>cfnl_campaigns</code></td><td>Campagnes : objet, corps, cible, segment, A/B, statistiques.</td></tr>
+          <tr><td><code>cfnl_queue</code></td><td>File d'attente d'envoi : destinataire, variante A/B, ouverture, clics.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ── Cron ─────────────────────────────────────── -->
+    <section id="cron">
+      <h2><span class="num">12</span>Tâches planifiées</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Tâche</th><th>Fréquence</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td><code>cfps_daily_cron</code></td><td>Chaque jour, 8&nbsp;h</td><td>Détecte les séances de la veille, envoie les étapes post-séance dues.</td></tr>
+          <tr><td><code>cfnl_send_cron</code></td><td>Toutes les 5&nbsp;min</td><td>Vide la file newsletter par lots, déclenche campagnes programmées &amp; décision A/B.</td></tr>
+          <tr><td><em>Rappels réservations</em></td><td>Horaire</td><td>Envoie rappels et emails de suivi des événements.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note blue"><span class="ic">◆</span><p>Le cron WordPress se déclenche au trafic du site. Sur un site peu visité, un <strong>cron serveur</strong> (OVH) appelant <code>wp-cron.php</code> régulièrement garantit des envois à l'heure.</p></div>
+    </section>
+
+    <!-- ── Dépannage ────────────────────────────────── -->
+    <section id="depannage">
+      <h2><span class="num">13</span>Dépannage</h2>
+      <h3>Les emails arrivent en spam ou ne partent pas</h3>
+      <p>Configurer le <strong>SMTP intégré</strong> (Newsletter → Réglages) avec un compte email OVH. C'est la cause la plus fréquente : l'envoi PHP brut depuis un hébergement mutualisé est peu fiable.</p>
+      <h3>Un affichage semble figé après une mise à jour</h3>
+      <p>Vider le cache du navigateur et celui de WP-Optimize. Le numéro de version force normalement le rechargement des fichiers CSS/JS.</p>
+      <h3>Les créneaux ne tiennent pas compte de Google Agenda</h3>
+      <p>Vérifier la connexion dans Réglages → Google Agenda et que l'agenda concerné est bien coché. Le cache des disponibilités est de 5&nbsp;minutes.</p>
+      <h3>Une newsletter reste bloquée en « envoi en cours »</h3>
+      <p>Vérifier que <code>cfnl_send_cron</code> s'exécute (trafic du site ou cron serveur) et que le plafond quotidien n'est pas atteint.</p>
+
+      <footer>
+        <p><strong>CF Événements &amp; Réservations</strong> — plugin sur mesure pour soins.ewendaviau.com.<br>
+        Cœur réservations · module Post-Séance · module Newsletter. Documentation de la version 1.9.0.</p>
+      </footer>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+    if (!('IntersectionObserver' in window)) return;
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var active = map[e.target.id];
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+    sections.forEach(function (s) { obs.observe(s); });
+  })();
+</script>
+</body>
+</html>

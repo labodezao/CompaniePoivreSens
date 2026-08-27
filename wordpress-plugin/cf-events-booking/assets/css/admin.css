@@ -1,0 +1,448 @@
+/* ============================================================
+   CF Événements & Réservations — Admin CSS v1.2
+   Design moderne inspiré SSA
+   ============================================================ */
+
+/* ── Variables ─────────────────────────────────────────────── */
+:root {
+  --cfeb-blue:       #1a3c5e;
+  --cfeb-blue-mid:   #2271b1;
+  --cfeb-blue-light: #e8f0fe;
+  --cfeb-green:      #166534;
+  --cfeb-green-bg:   #dcfce7;
+  --cfeb-amber:      #92400e;
+  --cfeb-amber-bg:   #fef3c7;
+  --cfeb-red:        #991b1b;
+  --cfeb-red-bg:     #fee2e2;
+  --cfeb-gray:       #6b7280;
+  --cfeb-gray-bg:    #f3f4f6;
+  --cfeb-border:     #e5e7eb;
+  --cfeb-radius:     8px;
+  --cfeb-shadow:     0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+}
+
+/* ── Wrap global ────────────────────────────────────────────── */
+.cfeb-admin-wrap { max-width: 1300px; }
+
+/* ══════════════════════════════════════════════════════════════
+   EN-TÊTE DE PAGE
+══════════════════════════════════════════════════════════════ */
+.cfeb-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 16px;
+  border-bottom: 2px solid var(--cfeb-blue);
+  margin-bottom: 0;
+}
+.cfeb-page-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cfeb-blue);
+  margin: 0;
+  line-height: 1.2;
+}
+.cfeb-page-header-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── Boutons custom ─────────────────────────────────────────── */
+.cfeb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid var(--cfeb-border);
+  background: #fff;
+  color: #374151;
+  transition: all .15s;
+}
+.cfeb-btn:hover { background: var(--cfeb-gray-bg); color: #1d2327; }
+.cfeb-btn-primary {
+  background: var(--cfeb-blue);
+  color: #fff;
+  border-color: var(--cfeb-blue);
+}
+.cfeb-btn-primary:hover { background: #234f7a; color: #fff; }
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATION À ONGLETS
+══════════════════════════════════════════════════════════════ */
+.cfeb-tab-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  background: var(--cfeb-gray-bg);
+  border: 1px solid var(--cfeb-border);
+  border-radius: var(--cfeb-radius);
+  padding: 4px;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+.cfeb-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cfeb-gray);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.cfeb-tab:hover { background: #fff; color: #1d2327; }
+.cfeb-tab-active {
+  background: #fff;
+  color: var(--cfeb-blue) !important;
+  font-weight: 600;
+  box-shadow: var(--cfeb-shadow);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FILTRES
+══════════════════════════════════════════════════════════════ */
+.cfeb-filters {
+  background: #fff;
+  border: 1px solid var(--cfeb-border);
+  border-radius: var(--cfeb-radius);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--cfeb-shadow);
+}
+.cfeb-filters input[type="search"],
+.cfeb-filters input[type="date"],
+.cfeb-filters select { font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════════════
+   TABLEAU DES RÉSERVATIONS
+══════════════════════════════════════════════════════════════ */
+.cfeb-table { border-collapse: collapse; border: 1px solid var(--cfeb-border) !important; border-radius: var(--cfeb-radius); overflow: hidden; box-shadow: var(--cfeb-shadow); }
+.cfeb-table th { background: var(--cfeb-blue) !important; color: #fff !important; font-weight: 600; font-size: 12px; padding: 10px 12px !important; text-transform: uppercase; letter-spacing: .03em; }
+.cfeb-table td { vertical-align: middle !important; padding: 10px 12px !important; font-size: 13px; border-bottom: 1px solid #f0f0f0 !important; }
+.cfeb-table tr:last-child td { border-bottom: none !important; }
+.cfeb-table tbody tr:hover > td { background: var(--cfeb-blue-light) !important; }
+
+/* Ligne cliquable */
+.cfeb-booking-row { cursor: pointer; transition: background .12s; }
+.cfeb-booking-row.cfeb-row-open > td { background: var(--cfeb-blue-light) !important; }
+.cfeb-booking-row .cfeb-statut-select,
+.cfeb-booking-row .cfeb-paye-toggle,
+.cfeb-booking-row input[type="checkbox"] { cursor: default; }
+
+.cfeb-statut-select { max-width: 145px; font-size: 12px; }
+.cfeb-delete { color: var(--cfeb-red); text-decoration: none; font-size: 16px; opacity: .7; }
+.cfeb-delete:hover { opacity: 1; color: var(--cfeb-red); }
+.cfeb-row-name { font-weight: 600; font-size: 13px; }
+
+/* ── Badges statut ─────────────────────────────────────────── */
+.cfeb-statut-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+.cfeb-statut-ouvert        { background: var(--cfeb-green-bg);  color: var(--cfeb-green); }
+.cfeb-statut-presque_plein { background: var(--cfeb-amber-bg);  color: var(--cfeb-amber); }
+.cfeb-statut-complet       { background: var(--cfeb-red-bg);    color: var(--cfeb-red); }
+.cfeb-statut-annule        { background: var(--cfeb-gray-bg);   color: #374151; }
+.cfeb-statut-passe         { background: #f1f5f9;               color: #94a3b8; }
+.cfeb-badge--draft         { background: var(--cfeb-amber-bg);  color: var(--cfeb-amber); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; vertical-align: middle; }
+
+/* Barre de places */
+.cfeb-places-bar      { background: var(--cfeb-border); border-radius: 4px; height: 5px; margin-top: 4px; overflow: hidden; width: 80px; }
+.cfeb-places-bar-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+
+/* ── Paiement ─────────────────────────────────────────────── */
+.cfeb-paye-toggle {
+  padding: 3px 10px !important;
+  font-size: 14px !important;
+  min-width: 42px;
+  text-align: center;
+  border-radius: 20px !important;
+  cursor: pointer;
+}
+.cfeb-paye-toggle.cfeb-paye-oui {
+  background: var(--cfeb-green-bg) !important;
+  border-color: #86efac !important;
+  color: var(--cfeb-green) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PANNEAU DE DÉTAIL (inline accordion)
+══════════════════════════════════════════════════════════════ */
+.cfeb-detail-row td { padding: 0 !important; }
+.cfeb-detail-panel {
+  padding: 20px 24px;
+  background: #fafbfc;
+  border-top: 3px solid var(--cfeb-blue-mid);
+  animation: cfeb-slide-in .18s ease;
+}
+@keyframes cfeb-slide-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cfeb-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .cfeb-detail-grid { grid-template-columns: 1fr; } }
+.cfeb-detail-section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--cfeb-gray); margin: 0 0 10px; font-weight: 600; }
+.cfeb-detail-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.cfeb-detail-table td { padding: 5px 0; vertical-align: top; }
+.cfeb-detail-table td:first-child { color: var(--cfeb-gray); width: 120px; font-size: 12px; }
+.cfeb-detail-notes { background: #fff; border: 1px solid var(--cfeb-border); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #374151; }
+.cfeb-detail-notes--danger { border-color: #fca5a5; background: #fff5f5; color: var(--cfeb-red); }
+.cfeb-detail-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ══════════════════════════════════════════════════════════════
+   BARRE ACTIONS EN MASSE
+══════════════════════════════════════════════════════════════ */
+.cfeb-bulk-bar { margin: 10px 0; }
+.cfeb-bulk-bar .bulkactions { display: flex; align-items: center; gap: 8px; }
+.cfeb-total { color: var(--cfeb-gray); font-size: 13px; }
+
+/* ══════════════════════════════════════════════════════════════
+   FORMULAIRE AJOUT MANUEL
+══════════════════════════════════════════════════════════════ */
+.cfeb-add-booking-form {
+  background: #fff;
+  border: 1px solid var(--cfeb-border);
+  border-radius: var(--cfeb-radius);
+  box-shadow: var(--cfeb-shadow);
+  padding: 24px;
+  margin: 0 0 20px;
+}
+.cfeb-add-booking-form h2 { margin: 0 0 16px; font-size: 16px; color: var(--cfeb-blue); }
+.cfeb-form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px 20px; }
+.cfeb-form-field { display: flex; flex-direction: column; gap: 5px; }
+.cfeb-form-field label { font-weight: 600; font-size: 12px; color: #374151; text-transform: uppercase; letter-spacing: .03em; }
+.cfeb-form-field input,
+.cfeb-form-field select,
+.cfeb-form-field textarea { width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 6px; border-color: var(--cfeb-border); }
+.cfeb-form-field--full { grid-column: 1 / -1; }
+.cfeb-form-field .required { color: #dc2626; }
+
+/* ══════════════════════════════════════════════════════════════
+   LIST VIEW ÉVÉNEMENTS
+══════════════════════════════════════════════════════════════ */
+.cfeb-list-view { font-size: 13px; }
+.cfeb-list-view td, .cfeb-list-view th { padding: 10px 12px !important; }
+.cfeb-list-view .row-actions { font-size: 12px; margin-top: 3px; }
+
+/* ══════════════════════════════════════════════════════════════
+   HISTORIQUE CLIENT
+══════════════════════════════════════════════════════════════ */
+.cfeb-client-stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.cfeb-client-stat-card {
+  background: #fff;
+  border: 1px solid var(--cfeb-border);
+  border-radius: var(--cfeb-radius);
+  padding: 14px 20px;
+  min-width: 130px;
+  text-align: center;
+  box-shadow: var(--cfeb-shadow);
+}
+.cfeb-client-stat-num   { font-size: 26px; font-weight: 700; color: var(--cfeb-blue); }
+.cfeb-client-stat-label { font-size: 12px; color: var(--cfeb-gray); margin-top: 3px; }
+
+/* ══════════════════════════════════════════════════════════════
+   TYPES RDV — META BOXES
+══════════════════════════════════════════════════════════════ */
+.cfat-section { padding: 4px 0 12px; }
+.cfat-field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.cfat-field-row label {
+  min-width: 200px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1d2327;
+  padding-top: 6px;
+}
+.cfat-field-row input[type="text"],
+.cfat-field-row input[type="number"],
+.cfat-field-row input[type="url"],
+.cfat-field-row select,
+.cfat-field-row textarea { flex: 1; min-width: 180px; max-width: 400px; }
+.cfat-field-row textarea { resize: vertical; min-height: 70px; }
+.cfat-field-row .description { width: 100%; margin: 2px 0 0 212px; color: #646970; font-size: 12px; }
+
+/* Grille disponibilité */
+.cfat-availability-grid { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cfat-availability-grid th { background: #f6f7f7; padding: 6px 10px; border: 1px solid #e0e0e0; text-align: left; font-weight: 600; }
+.cfat-availability-grid td { padding: 6px 10px; border: 1px solid #e0e0e0; vertical-align: middle; }
+.cfat-day-toggle { cursor: pointer; user-select: none; }
+.cfat-day-toggle input[type="checkbox"] { margin-right: 6px; }
+.cfat-slots-list { list-style: none; margin: 0; padding: 0; }
+.cfat-slots-list li { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.cfat-slots-list .cfat-remove-slot { color: #b32d2e; cursor: pointer; font-size: 16px; line-height: 1; background: none; border: none; padding: 0; }
+.cfat-add-slot { font-size: 12px; margin-top: 6px; cursor: pointer; }
+
+/* ══════════════════════════════════════════════════════════════
+   PLANNING — CRÉNEAUX & FERMETURES
+══════════════════════════════════════════════════════════════ */
+.cfeb-planning-section {
+  background: #fff;
+  border: 1px solid var(--cfeb-border);
+  border-radius: var(--cfeb-radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--cfeb-shadow);
+}
+.cfeb-planning-section h2 { margin: 0 0 14px; font-size: 15px; color: var(--cfeb-blue); }
+.cfeb-closures-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cfeb-closures-table th,
+.cfeb-closures-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; }
+.cfeb-closures-table th { background: #f6f7f7; font-weight: 600; }
+.cfeb-closures-table tr:last-child td { border-bottom: none; }
+.cfeb-template-card { border: 1px solid var(--cfeb-border); border-radius: var(--cfeb-radius); padding: 14px 16px; margin-bottom: 12px; background: #fafafa; }
+.cfeb-template-card h3 { margin: 0 0 10px; font-size: 13px; color: #1d2327; }
+.cfeb-template-card .cfeb-template-meta { font-size: 12px; color: var(--cfeb-gray); margin-bottom: 8px; }
+
+/* ══════════════════════════════════════════════════════════════
+   CALENDRIER ADMIN
+══════════════════════════════════════════════════════════════ */
+.cfeb-admin-cal { border: 1px solid var(--cfeb-border); border-radius: var(--cfeb-radius); overflow: hidden; box-shadow: var(--cfeb-shadow); }
+.cfeb-admin-cal-nav { display: flex; align-items: center; justify-content: space-between; background: var(--cfeb-blue); color: #fff; padding: 12px 16px; }
+.cfeb-admin-cal-nav a { color: #fff; text-decoration: none; font-size: 16px; }
+.cfeb-admin-cal-nav h2 { margin: 0; font-size: 16px; text-transform: capitalize; }
+.cfeb-admin-cal-grid { display: grid; grid-template-columns: repeat(7,1fr); border-bottom: 1px solid var(--cfeb-border); }
+.cfeb-admin-cal-dow { padding: 8px; text-align: center; font-size: 11px; font-weight: 700; color: var(--cfeb-gray); background: #f6f7f7; border-right: 1px solid var(--cfeb-border); text-transform: uppercase; letter-spacing: .04em; }
+.cfeb-admin-cal-dow:last-child { border-right: none; }
+.cfeb-admin-cal-days { display: grid; grid-template-columns: repeat(7,1fr); }
+.cfeb-admin-cal-cell { min-height: 80px; padding: 6px; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; font-size: 12px; background: #fff; vertical-align: top; }
+.cfeb-admin-cal-cell.empty { background: #f9fafb; }
+.cfeb-admin-cal-cell.today { background: var(--cfeb-blue-light); }
+.cfeb-admin-cal-day-num { font-size: 11px; font-weight: 700; color: var(--cfeb-gray); margin-bottom: 4px; }
+.cfeb-admin-cal-event { display: block; background: var(--cfeb-blue); color: #fff; border-radius: 4px; padding: 2px 5px; margin-bottom: 2px; text-decoration: none; font-size: 11px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cfeb-admin-cal-event:hover { background: #2d5986; color: #fff; }
+.cfeb-admin-cal-badge { font-size: 10px; background: #22c55e; color: #fff; border-radius: 10px; padding: 0 4px; margin-left: 2px; }
+
+/* ══════════════════════════════════════════════════════════════
+   WIDGET TABLEAU DE BORD
+══════════════════════════════════════════════════════════════ */
+.cfeb-widget-stats { display: flex; gap: 10px; margin: 0 0 10px; }
+.cfeb-widget-stat  { flex: 1; text-align: center; background: var(--cfeb-gray-bg); border-radius: var(--cfeb-radius); padding: 10px 6px; }
+.cfeb-widget-num   { display: block; font-size: 22px; font-weight: 700; color: var(--cfeb-blue); line-height: 1.1; }
+.cfeb-widget-label { display: block; font-size: 10px; color: var(--cfeb-gray); margin-top: 2px; line-height: 1.3; }
+
+/* ══════════════════════════════════════════════════════════════
+   ADMIN MOBILE (≤ 782px) — toutes les pages du plugin
+══════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 782px) {
+
+	/* ── Réservations & Séquences : tableaux en cartes ────────── */
+	.cfeb-table { border: none !important; box-shadow: none; overflow: visible; }
+	.cfeb-table thead { display: none; }
+	.cfeb-table, .cfeb-table tbody { display: block; width: 100%; }
+
+	.cfeb-table tr.cfeb-booking-row {
+		display: block;
+		background: #fff;
+		border: 1px solid var(--cfeb-border);
+		border-radius: var(--cfeb-radius);
+		box-shadow: var(--cfeb-shadow);
+		margin: 0 0 12px;
+		padding: 10px 14px;
+	}
+	.cfeb-table tr.cfeb-booking-row td {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		width: auto !important;
+		max-width: none !important;
+		border: none !important;
+		padding: 5px 0 !important;
+		font-size: 13px;
+		white-space: normal !important;
+	}
+	.cfeb-table td[data-label]::before {
+		content: attr(data-label);
+		flex: 0 0 90px;
+		font-weight: 600;
+		font-size: 11px;
+		text-transform: uppercase;
+		letter-spacing: .03em;
+		color: var(--cfeb-gray);
+	}
+	.cfeb-table tr.cfeb-booking-row td.cfeb-cb-cell { float: right; padding: 0 !important; }
+	.cfeb-table .cfeb-row-name { font-size: 15px; }
+	.cfeb-table tr.cfeb-detail-row,
+	.cfeb-table tr.cfeb-detail-row td { display: block; width: auto !important; }
+	.cfeb-table tr.cfeb-detail-row td { padding: 0 !important; }
+	.cfeb-table .cfeb-statut-select { min-height: 36px; flex: 1; }
+	.cfeb-table .cfeb-paye-toggle { min-height: 36px; }
+
+	/* ── Autres tableaux (stats, historique client…) : défilement ── */
+	.wrap .wp-list-table.widefat:not(.cfeb-table) {
+		display: block;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		table-layout: auto;
+	}
+
+	/* ── Barre d'actions groupées & filtres ───────────────────── */
+	.cfeb-bulk-bar .bulkactions { display: flex; gap: 6px; width: 100%; }
+	.cfeb-bulk-bar select { flex: 1; }
+	.cfeb-filters { padding: 12px; }
+	.cfeb-filters input[type="search"],
+	.cfeb-filters input[type="date"],
+	.cfeb-filters select {
+		width: 100% !important;
+		max-width: none !important;
+		margin: 0 0 8px !important;
+		min-height: 38px;
+	}
+	.cfeb-filters .button { width: 100%; text-align: center; margin: 0 0 6px !important; }
+
+	/* ── Onglets : grille 2 par ligne (plus de coupure à droite) ── */
+	.cfeb-tab-nav {
+		flex-wrap: wrap;
+		overflow: visible;
+		clear: both;
+		margin-top: 46px; /* sous le panneau « Options de l'écran » */
+	}
+	.cfeb-tab {
+		flex: 1 1 calc(50% - 2px);
+		justify-content: center;
+		padding: 10px 8px;
+		min-height: 40px;
+	}
+
+	/* ── Calendrier admin : cellules compactes ────────────────── */
+	.cfeb-admin-cal-cell { min-height: 52px; padding: 3px; font-size: 10px; }
+	.cfeb-admin-cal-day-num { font-size: 10px; margin-bottom: 2px; }
+	.cfeb-admin-cal-event { font-size: 9px; padding: 1px 3px; }
+	.cfeb-admin-cal-dow { padding: 5px 2px; font-size: 9px; }
+	.cfeb-admin-cal-nav h2 { font-size: 14px; }
+
+	/* ── Statistiques ──────────────────────────────────────────── */
+	.cfeb-stat-card { min-width: calc(50% - 8px) !important; padding: 12px 10px !important; }
+	.cfeb-stats-section { padding: 14px 16px !important; }
+	.cfeb-bar-chart { gap: 6px !important; }
+	.cfeb-bar-label { white-space: normal !important; font-size: 9px !important; }
+
+	/* ── Planning / modèles de créneaux ───────────────────────── */
+	.cfeb-planning-columns { display: block !important; }
+	.cfeb-planning-columns > * { width: auto !important; min-width: 0 !important; margin-bottom: 16px; }
+	.cfeb-jours-row label { display: inline-flex; align-items: center; gap: 4px; margin: 0 10px 8px 0; min-height: 32px; }
+	.cfeb-slot-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+	.cfeb-slot-row input[type="time"] { min-height: 38px; }
+
+	/* ── Grille de détail réservation ─────────────────────────── */
+	.cfeb-detail-grid { grid-template-columns: 1fr !important; }
+
+	/* ── Boutons confortables partout ─────────────────────────── */
+	.wrap .button { min-height: 36px; }
+}

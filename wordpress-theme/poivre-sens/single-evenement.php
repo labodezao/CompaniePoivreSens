@@ -5,26 +5,27 @@
 get_header(); ?>
 
 <?php while (have_posts()): the_post();
-    $date        = get_post_meta(get_the_ID(), '_evt_date',        true);
-    $heure       = get_post_meta(get_the_ID(), '_evt_heure',       true);
-    $heure_fin   = get_post_meta(get_the_ID(), '_evt_heure_fin',   true);
-    $lieu        = get_post_meta(get_the_ID(), '_evt_lieu',        true);
-    $adresse     = get_post_meta(get_the_ID(), '_evt_adresse',     true);
-    $ville       = get_post_meta(get_the_ID(), '_evt_ville',       true);
-    $type        = get_post_meta(get_the_ID(), '_evt_type',        true);
-    $prix        = get_post_meta(get_the_ID(), '_evt_prix',        true);
-    $billetterie = get_post_meta(get_the_ID(), '_evt_billetterie', true);
-    $complet     = get_post_meta(get_the_ID(), '_evt_complet',     true);
+    $id          = get_the_ID();
+    $date        = ps_evt_champ($id, 'date');
+    $heure       = ps_evt_champ($id, 'heure');
+    $heure_fin   = ps_evt_champ($id, 'heure_fin');
+    $lieu        = ps_evt_champ($id, 'lieu');
+    $adresse     = ps_evt_champ($id, 'adresse');
+    $ville       = ps_evt_champ($id, 'ville');
+    $type        = ps_evt_champ($id, 'type_label');
+    $prix        = ps_evt_champ($id, 'prix');
+    $billetterie = ps_evt_champ($id, 'billetterie');
+    $complet     = ps_evt_champ($id, 'complet');
 ?>
 <article class="single-evt">
 
-    <a href="<?= esc_url(get_post_type_archive_link('evenement')) ?>" class="single-evt__back">
+    <a href="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>" class="single-evt__back">
         <?php _e('Tous les événements', 'poivre-sens'); ?>
     </a>
 
     <div class="single-evt__meta">
         <?php if ($type): ?>
-        <span class="single-evt__type"><?= esc_html(ps_evt_type_label($type)) ?></span>
+        <span class="single-evt__type"><?= esc_html($type) ?></span>
         <?php endif; ?>
         <?php if ($complet): ?>
         <span class="single-evt__type" style="background:rgba(158,55,16,.15);color:var(--rouge);border-color:rgba(158,55,16,.3);margin-left:8px">

@@ -7,6 +7,8 @@
  *   ps_cal_year  : int (défaut : année courante)
  *   ps_cal_month : int (défaut : mois courant)
  *   ps_cal_all   : bool (true = tous, false = à partir d'aujourd'hui)
+ *   ps_cal_type  : string (identifiant de type, vide = tous)
+ *   ps_cal_ville : string (nom de ville, vide = toutes)
  */
 defined('ABSPATH') || exit;
 
@@ -18,27 +20,39 @@ $all     = (bool)get_query_var('ps_cal_all');
 $today    = date('Y-m-d');
 $end_date = date('Y-m-d', strtotime('+6 months'));
 
+$cle = ps_evt_cle_date();
+
 $args = [
-    'post_type'      => 'evenement',
+    'post_type'      => ps_evt_cpt(),
     'post_status'    => 'publish',
     'posts_per_page' => -1,
-    'meta_key'       => '_evt_date',
+    'meta_key'       => $cle,
     'orderby'        => 'meta_value',
     'order'          => 'ASC',
+    // Comparaison de chaînes : « 2026-09-12 » comme
+    // « 2026-09-12T20:30 » se trient et se bornent correctement.
     'meta_query'     => [[
-        'key'     => '_evt_date',
-        'value'   => $all ? '1970-01-01' : $today,
+        'key'     => $cle,
+        'value'   => ps_evt_borne_debut($all ? '1970-01-01' : $today),
         'compare' => '>=',
-        'type'    => 'DATE',
+        'type'    => 'CHAR',
     ]],
 ];
 if (!$all) {
     $args['meta_query'][] = [
-        'key'     => '_evt_date',
-        'value'   => $end_date,
+        'key'     => $cle,
+        'value'   => ps_evt_borne_fin($end_date),
         'compare' => '<=',
-        'type'    => 'DATE',
+        'type'    => 'CHAR',
     ];
+}
+
+// Filtres de l'agenda (transmis par archive-evenement.php)
+$args = ps_evt_filtrer_type($args, (string) get_query_var('ps_cal_type'));
+
+$filtre_ville = (string) get_query_var('ps_cal_ville');
+if ($filtre_ville !== '') {
+    $args['meta_query'][] = ['key' => ps_evt_cle_ville(), 'value' => $filtre_ville, 'compare' => '='];
 }
 
 $query = new WP_Query($args);
@@ -48,23 +62,24 @@ $grouped = [];
 if ($query->have_posts()) {
     while ($query->have_posts()) {
         $query->the_post();
-        $evt_date = get_post_meta(get_the_ID(), '_evt_date', true);
+        $id       = get_the_ID();
+        $evt_date = ps_evt_champ($id, 'date');
         if (!$evt_date) continue;
         $key = date('Y-m', strtotime($evt_date)); // ex: "2026-04"
         $grouped[$key][] = [
-            'id'          => get_the_ID(),
+            'id'          => $id,
             'title'       => get_the_title(),
             'permalink'   => get_permalink(),
             'date'        => $evt_date,
-            'heure'       => get_post_meta(get_the_ID(), '_evt_heure',      true),
-            'heure_fin'   => get_post_meta(get_the_ID(), '_evt_heure_fin',  true),
-            'lieu'        => get_post_meta(get_the_ID(), '_evt_lieu',       true),
-            'ville'       => get_post_meta(get_the_ID(), '_evt_ville',      true),
-            'type'        => get_post_meta(get_the_ID(), '_evt_type',       true),
-            'prix'        => get_post_meta(get_the_ID(), '_evt_prix',       true),
-            'billetterie' => get_post_meta(get_the_ID(), '_evt_billetterie',true),
-            'complet'     => get_post_meta(get_the_ID(), '_evt_complet',    true),
-            'thumb'       => get_the_post_thumbnail_url(get_the_ID(), 'evt-card'),
+            'heure'       => ps_evt_champ($id, 'heure'),
+            'heure_fin'   => ps_evt_champ($id, 'heure_fin'),
+            'lieu'        => ps_evt_champ($id, 'lieu'),
+            'ville'       => ps_evt_champ($id, 'ville'),
+            'type'        => ps_evt_champ($id, 'type_label'),
+            'prix'        => ps_evt_champ($id, 'prix'),
+            'billetterie' => ps_evt_champ($id, 'billetterie'),
+            'complet'     => ps_evt_champ($id, 'complet'),
+            'thumb'       => get_the_post_thumbnail_url($id, 'evt-card'),
         ];
     }
     wp_reset_postdata();
@@ -128,7 +143,7 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
             <div class="cal-list__body">
 
                 <?php if ($e['type']): ?>
-                <span class="cal-list__type"><?= esc_html(ps_evt_type_label($e['type'])) ?></span>
+                <span class="cal-list__type"><?= esc_html($e['type']) ?></span>
                 <?php endif; ?>
 
                 <?php if ($e['complet']): ?>
