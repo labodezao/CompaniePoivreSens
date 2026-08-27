@@ -12,11 +12,11 @@ $show_past    = isset($_GET['passes']);
 
 // Liste des villes disponibles (pour le filtre)
 global $wpdb;
-$villes = $wpdb->get_col("
+$villes = $wpdb->get_col($wpdb->prepare("
     SELECT DISTINCT meta_value FROM {$wpdb->postmeta}
-    WHERE meta_key='_evt_ville' AND meta_value != ''
+    WHERE meta_key = %s AND meta_value != ''
     ORDER BY meta_value
-");
+", ps_evt_cle_ville()));
 ?>
 
 <main class="arch-evts">
@@ -32,12 +32,12 @@ $villes = $wpdb->get_col("
     </div>
 
     <!-- Filtres -->
-    <form class="cal-list__filters" method="get" action="<?= esc_url(get_post_type_archive_link('evenement')) ?>">
+    <form class="cal-list__filters" method="get" action="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>">
         <div class="cal-list__filter-row">
 
             <select name="type" onchange="this.form.submit()">
                 <option value=""><?php _e('Tous les types', 'poivre-sens'); ?></option>
-                <?php foreach (['spectacle'=>'Spectacle vivant','jam'=>'Jam contact','atelier'=>'Atelier / Stage','residence'=>'Résidence','concert'=>'Concert','autre'=>'Autre'] as $k=>$v): ?>
+                <?php foreach (ps_evt_liste_types() as $k => $v): ?>
                 <option value="<?= esc_attr($k) ?>" <?= selected($filtre_type, $k, false) ?>><?= esc_html($v) ?></option>
                 <?php endforeach; ?>
             </select>
@@ -57,7 +57,7 @@ $villes = $wpdb->get_col("
             </label>
 
             <?php if ($filtre_type || $filtre_ville || $show_past): ?>
-            <a href="<?= esc_url(get_post_type_archive_link('evenement')) ?>" class="cal-list__filter-reset">
+            <a href="<?= esc_url(get_post_type_archive_link(ps_evt_cpt())) ?>" class="cal-list__filter-reset">
                 ✕ <?php _e('Réinitialiser', 'poivre-sens'); ?>
             </a>
             <?php endif; ?>
@@ -66,23 +66,15 @@ $villes = $wpdb->get_col("
 
     <!-- Calendrier liste -->
     <?php
-    set_query_var('ps_cal_all', $show_past);
-    // Passer les filtres supplémentaires via hook
-    add_filter('ps_cal_list_meta_query', function ($mq) use ($filtre_type, $filtre_ville) {
-        if ($filtre_type) {
-            $mq[] = ['key' => '_evt_type', 'value' => $filtre_type, 'compare' => '='];
-        }
-        if ($filtre_ville) {
-            $mq[] = ['key' => '_evt_ville', 'value' => $filtre_ville, 'compare' => '='];
-        }
-        return $mq;
-    });
+    set_query_var('ps_cal_all',   $show_past);
+    set_query_var('ps_cal_type',  $filtre_type);
+    set_query_var('ps_cal_ville', $filtre_ville);
     get_template_part('template-parts/calendar-list');
     ?>
 
     <?php if (current_user_can('publish_posts')): ?>
     <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--bord);text-align:center">
-        <a href="<?= esc_url(admin_url('post-new.php?post_type=evenement')) ?>" class="evts__lien">
+        <a href="<?= esc_url(admin_url('post-new.php?post_type=' . ps_evt_cpt())) ?>" class="evts__lien">
             + <?php _e('Ajouter un événement', 'poivre-sens'); ?>
         </a>
     </div>

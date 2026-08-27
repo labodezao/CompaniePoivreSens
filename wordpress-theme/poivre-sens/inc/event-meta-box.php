@@ -22,6 +22,10 @@ function ps_evt_types() {
 }
 
 add_action('add_meta_boxes', function () {
+    // Quand le plugin CF est aux commandes, c'est lui qui fournit
+    // l'écran d'édition : inutile d'en afficher un second.
+    if (ps_evt_plugin_actif()) return;
+
     add_meta_box(
         'ps_evt_details',
         __('Détails de l\'événement', 'poivre-sens'),

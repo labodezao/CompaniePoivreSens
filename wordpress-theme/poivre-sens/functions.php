@@ -18,6 +18,9 @@ require_once get_template_directory() . '/inc/construction-popup.php';
 // Balises description / Open Graph / données structurées
 require_once get_template_directory() . '/inc/seo.php';
 
+// Où lire les événements : module du thème ou plugin CF
+require_once get_template_directory() . '/inc/event-data.php';
+
 // Interface d'édition d'un événement (champs + aperçu en direct)
 require_once get_template_directory() . '/inc/event-meta-box.php';
 
@@ -198,6 +201,12 @@ add_action('wp_enqueue_scripts', function () {
    3. CUSTOM POST TYPE — ÉVÉNEMENT
    ═══════════════════════════════════════════════════════════ */
 add_action('init', function () {
+    // Quand le plugin CF prend la main, l'ancien module s'efface :
+    // il n'apparaît plus dans l'administration et rend l'adresse
+    // /evenements/ au plugin. Les contenus d'origine restent en
+    // base — l'outil « Outils › Migration événements » les recopie.
+    $remplace = ps_evt_plugin_actif();
+
     register_post_type('evenement', [
         'labels' => [
             'name'               => __('Événements',          'poivre-sens'),
@@ -212,19 +221,24 @@ add_action('init', function () {
             'not_found_in_trash' => __('Aucun événement dans la corbeille.', 'poivre-sens'),
             'menu_name'          => __('Événements',          'poivre-sens'),
         ],
-        'public'            => true,
-        'has_archive'       => true,
-        'rewrite'           => ['slug' => 'evenements'],
+        'public'            => !$remplace,
+        'publicly_queryable'=> !$remplace,
+        'show_ui'           => !$remplace,
+        'show_in_menu'      => !$remplace,
+        'has_archive'       => !$remplace,
+        'rewrite'           => $remplace ? false : ['slug' => 'evenements'],
         'menu_icon'         => 'dashicons-calendar-alt',
         'menu_position'     => 5,
         'supports'          => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
-        'show_in_rest'      => true,   // Gutenberg
+        'show_in_rest'      => !$remplace,   // Gutenberg
         'taxonomies'        => ['evt_type'],
     ]);
 });
 
 /* ── Taxonomie type d'événement ──────────────────────────── */
 add_action('init', function () {
+    $remplace = ps_evt_plugin_actif();
+
     register_taxonomy('evt_type', 'evenement', [
         'labels' => [
             'name'          => __('Types',              'poivre-sens'),
@@ -233,9 +247,10 @@ add_action('init', function () {
             'edit_item'     => __('Modifier le type',   'poivre-sens'),
         ],
         'hierarchical'  => true,
-        'public'        => true,
-        'show_in_rest'  => true,
-        'rewrite'       => ['slug' => 'type-evenement'],
+        'public'        => !$remplace,
+        'show_ui'       => !$remplace,
+        'show_in_rest'  => !$remplace,
+        'rewrite'       => $remplace ? false : ['slug' => 'type-evenement'],
     ]);
 });
 
@@ -524,12 +539,18 @@ function ps_format_date($date_str, $format = 'j F Y') {
 /** Retourne les 3 prochains événements */
 function ps_get_upcoming_events($limit = 3) {
     return new WP_Query([
-        'post_type'      => 'evenement',
+        'post_type'      => ps_evt_cpt(),
         'post_status'    => 'publish',
         'posts_per_page' => $limit,
-        'meta_key'       => '_evt_date',
-        'meta_value'     => date('Y-m-d'),
-        'meta_compare'   => '>=',
+        'meta_key'       => ps_evt_cle_date(),
+        'meta_query'     => [[
+            'key'     => ps_evt_cle_date(),
+            'value'   => ps_evt_borne_debut(date('Y-m-d')),
+            'compare' => '>=',
+            // Comparaison de chaînes : les deux formats de stockage
+            // (2026-09-12 et 2026-09-12T20:30) se trient correctement.
+            'type'    => 'CHAR',
+        ]],
         'orderby'        => 'meta_value',
         'order'          => 'ASC',
     ]);
@@ -540,15 +561,15 @@ function ps_get_events_for_month($year, $month) {
     $start = sprintf('%04d-%02d-01', $year, $month);
     $end   = date('Y-m-t', strtotime($start));
     return new WP_Query([
-        'post_type'      => 'evenement',
+        'post_type'      => ps_evt_cpt(),
         'post_status'    => 'publish',
         'posts_per_page' => -1,
-        'meta_key'       => '_evt_date',
+        'meta_key'       => ps_evt_cle_date(),
         'meta_query'     => [[
-            'key'     => '_evt_date',
-            'value'   => [$start, $end],
+            'key'     => ps_evt_cle_date(),
+            'value'   => [ps_evt_borne_debut($start), ps_evt_borne_fin($end)],
             'compare' => 'BETWEEN',
-            'type'    => 'DATE',
+            'type'    => 'CHAR',
         ]],
         'orderby'        => 'meta_value',
         'order'          => 'ASC',
@@ -572,9 +593,9 @@ add_filter('manage_evenement_posts_columns', function ($cols) {
 });
 
 add_action('manage_evenement_posts_custom_column', function ($col, $post_id) {
-    if ($col === 'evt_date') echo esc_html(ps_format_date(get_post_meta($post_id, '_evt_date', true)));
-    if ($col === 'evt_lieu') echo esc_html(get_post_meta($post_id, '_evt_lieu', true) . ' ' . get_post_meta($post_id, '_evt_ville', true));
-    if ($col === 'evt_type') echo esc_html(ps_evt_type_label(get_post_meta($post_id, '_evt_type', true)));
+    if ($col === 'evt_date') echo esc_html(ps_format_date(ps_evt_champ($post_id, 'date')));
+    if ($col === 'evt_lieu') echo esc_html(trim(ps_evt_champ($post_id, 'lieu') . ' ' . ps_evt_champ($post_id, 'ville')));
+    if ($col === 'evt_type') echo esc_html(ps_evt_champ($post_id, 'type_label'));
 }, 10, 2);
 
 add_filter('manage_edit-evenement_sortable_columns', function ($cols) {

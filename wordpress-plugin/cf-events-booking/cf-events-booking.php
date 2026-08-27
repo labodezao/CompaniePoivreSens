@@ -87,17 +87,27 @@ foreach ( [
 	require_once CFEB_DIR . 'includes/' . $f . '.php';
 }
 
-/* ── Module Post-Séance (séquence de 4 emails après séance) ─────── */
-require_once CFEB_DIR . 'modules/post-seance/cf-post-seance.php';
+/* ── Modules optionnels ─────────────────────────────────────────
+ * Tous chargés par défaut. Un site qui n'a besoin que des
+ * événements et des réservations — ou qui gère déjà sa newsletter
+ * ailleurs — peut en désactiver par l'option « cfeb_modules_off »,
+ * un tableau d'identifiants pris parmi ceux ci-dessous.
+ * ─────────────────────────────────────────────────────────────── */
+$cfeb_modules = [
+	// identifiant   => fichier
+	'post-seance'    => 'modules/post-seance/cf-post-seance.php',    // séquence de 4 emails après séance
+	'newsletter'     => 'modules/newsletter/cf-newsletter.php',      // emailing maison, listes, envoi par lots
+	'pleine-vie'     => 'modules/pleine-vie/cf-pleine-vie.php',      // inscriptions + emails de suivi
+	'fiche-intake'   => 'modules/fiche-intake/cf-fiche-intake.php',  // formulaire en ligne, ex-PDF
+];
+$cfeb_off = (array) get_option( 'cfeb_modules_off', [] );
 
-/* ── Module Newsletter (emailing maison, listes, envoi par lots) ── */
-require_once CFEB_DIR . 'modules/newsletter/cf-newsletter.php';
-
-/* ── Module Programme Pleine Vie (inscriptions + emails de suivi) ── */
-require_once CFEB_DIR . 'modules/pleine-vie/cf-pleine-vie.php';
-
-/* ── Module Fiche thèmes constellations (formulaire en ligne, ex-PDF) ── */
-require_once CFEB_DIR . 'modules/fiche-intake/cf-fiche-intake.php';
+foreach ( $cfeb_modules as $cfeb_id => $cfeb_fichier ) {
+	if ( ! in_array( $cfeb_id, $cfeb_off, true ) ) {
+		require_once CFEB_DIR . $cfeb_fichier;
+	}
+}
+unset( $cfeb_modules, $cfeb_off, $cfeb_id, $cfeb_fichier );
 
 /* ── Activation : création de la table bookings ─────────────────── */
 register_activation_hook( __FILE__, 'cfeb_activate' );

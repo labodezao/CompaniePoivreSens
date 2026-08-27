@@ -130,19 +130,19 @@ function ps_seo_event_price($texte) {
 
 /** Construit le schéma Event d'un événement, ou null si inexploitable. */
 function ps_seo_event_schema($post_id) {
-    $date = get_post_meta($post_id, '_evt_date', true);
+    $date = ps_evt_champ($post_id, 'date');
     if (!$date) return null; // sans date, pas d'événement valide pour Google
 
-    $debut = ps_seo_event_datetime($date, get_post_meta($post_id, '_evt_heure', true));
+    $debut = ps_seo_event_datetime($date, ps_evt_champ($post_id, 'heure'));
     if (!$debut) return null;
 
-    $lieu    = get_post_meta($post_id, '_evt_lieu', true);
-    $adresse = get_post_meta($post_id, '_evt_adresse', true);
-    $ville   = get_post_meta($post_id, '_evt_ville', true);
-    $prix    = get_post_meta($post_id, '_evt_prix', true);
-    $billet  = get_post_meta($post_id, '_evt_billetterie', true);
-    $complet = get_post_meta($post_id, '_evt_complet', true) === '1';
-    $fin     = get_post_meta($post_id, '_evt_heure_fin', true);
+    $lieu    = ps_evt_champ($post_id, 'lieu');
+    $adresse = ps_evt_champ($post_id, 'adresse');
+    $ville   = ps_evt_champ($post_id, 'ville');
+    $prix    = ps_evt_champ($post_id, 'prix');
+    $billet  = ps_evt_champ($post_id, 'billetterie');
+    $complet = ps_evt_champ($post_id, 'complet');
+    $fin     = ps_evt_champ($post_id, 'heure_fin');
 
     $compagnie = [
         '@type' => 'PerformingGroup',
@@ -213,7 +213,7 @@ function ps_seo_event_schema($post_id) {
 }
 
 add_action('wp_head', function () {
-    if (!is_singular('evenement')) return;
+    if (!is_singular(ps_evt_cpt())) return;
     $schema = ps_seo_event_schema(get_the_ID());
     if (!$schema) return;
 
@@ -231,7 +231,7 @@ function ps_seo_description() {
     } elseif (is_singular()) {
         $post = get_queried_object();
         $desc = has_excerpt($post) ? get_the_excerpt($post) : wp_strip_all_tags($post->post_content ?? '');
-    } elseif (is_post_type_archive('evenement')) {
+    } elseif (is_post_type_archive(ps_evt_cpt())) {
         $desc = __('Prochaines dates de la Compagnie Poivre & Sens : spectacles, jams de contact-improvisation, ateliers et résidences.', 'poivre-sens');
     }
     $desc = trim(preg_replace('/\s+/', ' ', (string) $desc));

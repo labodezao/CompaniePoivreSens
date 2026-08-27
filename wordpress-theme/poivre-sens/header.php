@@ -43,7 +43,7 @@ if ( $ps_scheme && $ps_scheme !== 'auto' ) {
   <?php else: ?>
   <ul class="nav__list" id="nav-list" role="list">
     <li><a href="<?php echo esc_url(home_url('/')); ?>">Accueil</a></li>
-    <li><a href="<?php echo esc_url(home_url('/evenements/')); ?>" <?php if (is_post_type_archive('evenement') || is_singular('evenement')) echo 'class="current-menu-item"'; ?>>Événements</a></li>
+    <li><a href="<?php echo esc_url(home_url('/evenements/')); ?>" <?php if (is_post_type_archive(ps_evt_cpt()) || is_singular(ps_evt_cpt())) echo 'class="current-menu-item"'; ?>>Événements</a></li>
     <li><a href="<?php echo esc_url(home_url('/#contact')); ?>">Contact</a></li>
   </ul>
   <?php endif; ?>
