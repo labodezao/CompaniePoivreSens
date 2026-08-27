@@ -578,8 +578,11 @@ function ps_get_events_for_month($year, $month) {
 
 /* ═══════════════════════════════════════════════════════════
    10. COLONNES ADMIN ÉVÉNEMENTS
+   ───────────────────────────────────────────────────────────
+   Sur la liste du module en service, quel qu'il soit : le
+   plugin n'affiche par défaut que le titre.
    ═══════════════════════════════════════════════════════════ */
-add_filter('manage_evenement_posts_columns', function ($cols) {
+add_filter('manage_' . ps_evt_cpt() . '_posts_columns', function ($cols) {
     $new = [];
     foreach ($cols as $k => $v) {
         $new[$k] = $v;
@@ -592,13 +595,13 @@ add_filter('manage_evenement_posts_columns', function ($cols) {
     return $new;
 });
 
-add_action('manage_evenement_posts_custom_column', function ($col, $post_id) {
+add_action('manage_' . ps_evt_cpt() . '_posts_custom_column', function ($col, $post_id) {
     if ($col === 'evt_date') echo esc_html(ps_format_date(ps_evt_champ($post_id, 'date')));
     if ($col === 'evt_lieu') echo esc_html(trim(ps_evt_champ($post_id, 'lieu') . ' ' . ps_evt_champ($post_id, 'ville')));
     if ($col === 'evt_type') echo esc_html(ps_evt_champ($post_id, 'type_label'));
 }, 10, 2);
 
-add_filter('manage_edit-evenement_sortable_columns', function ($cols) {
+add_filter('manage_edit-' . ps_evt_cpt() . '_sortable_columns', function ($cols) {
     $cols['evt_date'] = 'evt_date';
     return $cols;
 });

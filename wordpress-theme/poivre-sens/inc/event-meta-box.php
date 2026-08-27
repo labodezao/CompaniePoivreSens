@@ -21,16 +21,18 @@ function ps_evt_types() {
     ];
 }
 
+/*
+ * Cet écran sert quelle que soit la source des événements. Le plugin
+ * CF, lui, ne sait créer des événements qu'en série depuis ses
+ * modèles de créneaux : sans cette métaboîte, on ne pourrait plus
+ * saisir à la main la date, le lieu ou le tarif d'un spectacle.
+ */
 add_action('add_meta_boxes', function () {
-    // Quand le plugin CF est aux commandes, c'est lui qui fournit
-    // l'écran d'édition : inutile d'en afficher un second.
-    if (ps_evt_plugin_actif()) return;
-
     add_meta_box(
         'ps_evt_details',
         __('Détails de l\'événement', 'poivre-sens'),
         'ps_evt_meta_box_html',
-        'evenement',
+        ps_evt_cpt(),
         'normal',
         'high'
     );
@@ -39,18 +41,20 @@ add_action('add_meta_boxes', function () {
 function ps_evt_meta_box_html($post) {
     wp_nonce_field('ps_evt_save', 'ps_evt_nonce');
 
-    $date        = get_post_meta($post->ID, '_evt_date',        true);
-    $heure       = get_post_meta($post->ID, '_evt_heure',       true);
-    $heure_fin   = get_post_meta($post->ID, '_evt_heure_fin',   true);
-    $lieu        = get_post_meta($post->ID, '_evt_lieu',        true);
-    $adresse     = get_post_meta($post->ID, '_evt_adresse',     true);
-    $ville       = get_post_meta($post->ID, '_evt_ville',       true);
-    $type        = get_post_meta($post->ID, '_evt_type',        true);
-    $prix        = get_post_meta($post->ID, '_evt_prix',        true);
-    $billetterie = get_post_meta($post->ID, '_evt_billetterie', true);
-    $complet     = get_post_meta($post->ID, '_evt_complet',     true);
+    $date        = ps_evt_champ($post->ID, 'date');
+    $heure       = ps_evt_champ($post->ID, 'heure');
+    $heure_fin   = ps_evt_champ($post->ID, 'heure_fin');
+    $lieu        = ps_evt_champ($post->ID, 'lieu');
+    $adresse     = ps_evt_champ($post->ID, 'adresse');
+    $ville       = ps_evt_champ($post->ID, 'ville');
+    $type        = ps_evt_champ($post->ID, 'type');
+    $prix        = ps_evt_champ($post->ID, 'prix');
+    $billetterie = ps_evt_champ($post->ID, 'billetterie');
+    $complet     = ps_evt_champ($post->ID, 'complet');
 
-    $types  = ps_evt_types();
+    // Aux types du thème s'ajoutent les catégories déjà créées côté
+    // plugin, pour ne pas perdre celles nées de la migration.
+    $types  = ps_evt_types() + ps_evt_liste_types();
     $vignette = has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID, 'evt-card') : '';
     ?>
     <style>
@@ -318,11 +322,9 @@ function ps_evt_meta_box_html($post) {
 }
 
 /* ── Enregistrement ───────────────────────────────────────── */
-add_action('save_post_evenement', function ($post_id) {
-    if (!isset($_POST['ps_evt_nonce']) || !wp_verify_nonce($_POST['ps_evt_nonce'], 'ps_evt_save')) return;
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!current_user_can('edit_post', $post_id)) return;
 
+/** Relit le formulaire sous la forme des champs du thème. */
+function ps_evt_lire_formulaire(array $post) {
     $champs = [
         '_evt_date'        => ['evt_date',        'sanitize_text_field'],
         '_evt_heure'       => ['evt_heure',       'sanitize_text_field'],
@@ -334,10 +336,51 @@ add_action('save_post_evenement', function ($post_id) {
         '_evt_prix'        => ['evt_prix',        'sanitize_text_field'],
         '_evt_billetterie' => ['evt_billetterie', 'esc_url_raw'],
     ];
+
+    $valeurs = [];
     foreach ($champs as $meta_key => [$champ, $nettoyage]) {
-        if (isset($_POST[$champ])) {
-            update_post_meta($post_id, $meta_key, $nettoyage(wp_unslash($_POST[$champ])));
+        if (isset($post[$champ])) {
+            $valeurs[$meta_key] = $nettoyage(wp_unslash($post[$champ]));
         }
     }
-    update_post_meta($post_id, '_evt_complet', isset($_POST['evt_complet']) ? '1' : '');
+    $valeurs['_evt_complet'] = isset($post['evt_complet']) ? '1' : '';
+
+    return $valeurs;
+}
+
+add_action('save_post', function ($post_id) {
+    if (get_post_type($post_id) !== ps_evt_cpt()) return;
+    if (!isset($_POST['ps_evt_nonce']) || !wp_verify_nonce($_POST['ps_evt_nonce'], 'ps_evt_save')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $valeurs = ps_evt_lire_formulaire($_POST);
+
+    // Ancien module : les champs du formulaire sont déjà les bons.
+    if (!ps_evt_plugin_actif()) {
+        foreach ($valeurs as $cle => $valeur) {
+            update_post_meta($post_id, $cle, $valeur);
+        }
+        return;
+    }
+
+    // Plugin : même traduction que celle de l'outil de migration.
+    foreach (ps_evt_map_to_cfeb($valeurs) as $cle => $valeur) {
+        update_post_meta($post_id, $cle, $valeur);
+    }
+
+    // Le type devient une catégorie du plugin.
+    $type = (string) ($valeurs['_evt_type'] ?? '');
+    if (defined('CFEB_TAX') && taxonomy_exists(CFEB_TAX)) {
+        if ($type === '') {
+            wp_set_object_terms($post_id, [], CFEB_TAX);
+        } else {
+            $libelles = ps_evt_types();
+            $existant = term_exists($type, CFEB_TAX);
+            $terme    = $existant ?: wp_insert_term($libelles[$type] ?? ucfirst($type), CFEB_TAX, ['slug' => $type]);
+            if (!is_wp_error($terme)) {
+                wp_set_object_terms($post_id, [(int) $terme['term_id']], CFEB_TAX);
+            }
+        }
+    }
 });
