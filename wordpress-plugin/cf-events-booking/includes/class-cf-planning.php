@@ -166,6 +166,84 @@ class CF_Planning {
 		return get_option( 'cfeb_slot_templates', [] );
 	}
 
+	/**
+	 * Traduit un type de rendez-vous en modèle de créneaux, pour ne pas
+	 * ressaisir des horaires déjà décrits une fois.
+	 *
+	 * Les deux structures ne disent pas tout à fait la même chose : un type
+	 * de RDV porte des horaires propres à chaque jour, un modèle applique
+	 * les mêmes horaires à tous les jours cochés. On part donc du premier
+	 * jour disponible et on ne coche que les jours ayant exactement les
+	 * mêmes horaires ; les autres sont signalés à l'utilisateur plutôt que
+	 * fondus dans une union qui inventerait des séances inexistantes.
+	 *
+	 * @return array{tpl: array|null, ecartes: int[]}
+	 */
+	public static function template_from_appt_type( $type_id ) {
+		$vide = [ 'tpl' => null, 'ecartes' => [] ];
+		$type = get_post( $type_id );
+
+		if ( ! $type || ! defined( 'CFEB_APPT_SLUG' ) || CFEB_APPT_SLUG !== $type->post_type
+			|| ! class_exists( 'CF_ApptType' ) ) {
+			return $vide;
+		}
+
+		$m     = CF_ApptType::get_meta( $type_id );
+		$avail = is_array( $m['availability'] ?? null ) ? $m['availability'] : [];
+
+		// Horaires de chaque jour actif, réduits à début/fin.
+		$par_jour = [];
+		for ( $j = 1; $j <= 7; $j++ ) {
+			$jour = $avail[ $j ] ?? null;
+			if ( empty( $jour['enabled'] ) || empty( $jour['slots'] ) ) {
+				continue;
+			}
+			$creneaux = [];
+			foreach ( (array) $jour['slots'] as $slot ) {
+				$debut = $slot['debut'] ?? '';
+				$fin   = $slot['fin']   ?? '';
+				if ( $debut && $fin && $fin > $debut ) {
+					$creneaux[] = [ 'debut' => $debut, 'fin' => $fin ];
+				}
+			}
+			if ( $creneaux ) {
+				$par_jour[ $j ] = $creneaux;
+			}
+		}
+
+		if ( ! $par_jour ) {
+			return $vide;
+		}
+
+		$reference = reset( $par_jour );
+		$jours     = [];
+		$ecartes   = [];
+		foreach ( $par_jour as $j => $creneaux ) {
+			if ( $creneaux === $reference ) {
+				$jours[] = $j;
+			} else {
+				$ecartes[] = $j;
+			}
+		}
+
+		return [
+			'tpl' => [
+				'id'           => '',
+				'nom'          => $type->post_title,
+				'titre_event'  => $type->post_title,
+				'animateur'    => $m['animateur'] ?? '',
+				'categorie'    => $m['categorie'] ?? '',
+				'lieu'         => $m['lieu'] ?? '',
+				'prix'         => (float) ( $m['prix'] ?? 0 ),
+				'max_places'   => (int) ( $m['max_places'] ?? 0 ),
+				'jours'        => $jours,
+				'creneaux'     => $reference,
+				'appt_type_id' => (int) $type_id,
+			],
+			'ecartes' => $ecartes,
+		];
+	}
+
 	/** Sauvegarde (création ou modification) d'un modèle. */
 	public static function handle_save_template() {
 		if ( ! isset( $_POST['cfeb_save_template'] ) ) {
@@ -187,6 +265,8 @@ class CF_Planning {
 		$lieu        = sanitize_text_field( wp_unslash( $_POST['cfeb_tpl_lieu']        ?? '' ) );
 		$prix        = (float) ( $_POST['cfeb_tpl_prix']       ?? 0 );
 		$max_places  = absint( $_POST['cfeb_tpl_max_places']   ?? 0 );
+		// Type de rendez-vous d'origine, quand le modèle en est issu.
+		$appt_type_id = absint( $_POST['cfeb_tpl_appt_type_id'] ?? 0 );
 
 		$jours_raw = isset( $_POST['cfeb_tpl_jours'] ) ? (array) $_POST['cfeb_tpl_jours'] : [];
 		$jours     = array_values( array_filter( array_map( static function ( $j ) {
@@ -226,6 +306,7 @@ class CF_Planning {
 			'max_places'  => $max_places,
 			'jours'       => $jours,
 			'creneaux'    => $creneaux,
+			'appt_type_id'=> $appt_type_id,
 		];
 
 		$templates = self::get_templates();
@@ -398,6 +479,13 @@ class CF_Planning {
 							update_post_meta( $post_id, '_cfeb_max_places',   (int)   ( $tpl['max_places'] ?? 0 ) );
 							update_post_meta( $post_id, '_cfeb_statut',       'ouvert' );
 							update_post_meta( $post_id, '_cfeb_statut_event', 'publie' );
+							// Rattachement au type de rendez-vous d'origine. Ce champ
+							// était lu ailleurs (compteur d'événements liés, synchro
+							// Google Agenda par type) mais n'était jamais écrit : le
+							// compteur affichait donc toujours 0.
+							if ( ! empty( $tpl['appt_type_id'] ) ) {
+								update_post_meta( $post_id, '_cfeb_appt_type_id', (int) $tpl['appt_type_id'] );
+							}
 							if ( $cat_term_id ) {
 								wp_set_object_terms( $post_id, [ $cat_term_id ], defined( 'CFEB_TAX' ) ? CFEB_TAX : 'cf_event_cat' );
 							}
@@ -443,6 +531,24 @@ class CF_Planning {
 			}
 		}
 
+		// Pré-remplissage depuis un type de rendez-vous : le bouton
+		// « 🚀 Générer des créneaux » de sa fiche transmettait déjà ce
+		// paramètre, mais personne ne le lisait — il menait à un formulaire
+		// vierge, obligeant à ressaisir des horaires déjà décrits.
+		$from_type = isset( $_GET['cfeb_from_type'] ) ? absint( $_GET['cfeb_from_type'] ) : 0;
+		$prefill   = null;
+		$ecartes   = [];
+		if ( ! $edit_tpl && $from_type ) {
+			$depuis  = self::template_from_appt_type( $from_type );
+			$prefill = $depuis['tpl'];
+			$ecartes = $depuis['ecartes'];
+		}
+
+		// Valeurs affichées dans le formulaire : le modèle en cours d'édition,
+		// sinon le pré-remplissage, sinon rien. $edit_tpl continue seul à
+		// distinguer « modifier » de « créer ».
+		$form = $edit_tpl ?: $prefill;
+
 		$categories   = get_terms( [
 			'taxonomy'   => defined( 'CFEB_TAX' ) ? CFEB_TAX : 'cf_event_cat',
 			'hide_empty' => false,
@@ -475,28 +581,47 @@ class CF_Planning {
 				<!-- ══ Formulaire modèle ══════════════════════════ -->
 				<div class="cfeb-planning-form">
 					<h2><?php echo $edit_tpl ? '✏️ Modifier le modèle' : '➕ Nouveau modèle de créneaux'; ?></h2>
+					<?php if ( $prefill ) : ?>
+						<?php $jours_noms = [ 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 7 => 'dimanche' ]; ?>
+						<div class="notice notice-info inline" style="margin:0 0 14px;">
+							<p>Pré-rempli depuis le type de rendez-vous
+							<strong><?php echo esc_html( get_the_title( $from_type ) ); ?></strong>.
+							Vérifiez, puis enregistrez pour créer le modèle.</p>
+						</div>
+						<?php if ( $ecartes ) : ?>
+						<div class="notice notice-warning inline" style="margin:0 0 14px;">
+							<p>Horaires différents des autres jours pour
+							<strong><?php echo esc_html( implode( ', ', array_map( static function ( $j ) use ( $jours_noms ) {
+								return $jours_noms[ $j ] ?? $j;
+							}, $ecartes ) ) ); ?></strong> :
+							ces jours n'ont pas été cochés, pour ne pas leur appliquer des horaires qui ne sont pas les leurs.
+							Créez-leur un second modèle.</p>
+						</div>
+						<?php endif; ?>
+					<?php endif; ?>
 					<form method="post" id="cfeb-tpl-form">
 						<?php wp_nonce_field( 'cfeb_save_template', 'cfeb_template_nonce' ); ?>
 						<input type="hidden" name="cfeb_save_template" value="1" />
 						<input type="hidden" name="cfeb_tpl_edit_id" value="<?php echo esc_attr( $edit_tpl['id'] ?? '' ); ?>" />
+						<input type="hidden" name="cfeb_tpl_appt_type_id" value="<?php echo esc_attr( $form['appt_type_id'] ?? '' ); ?>" />
 						<table class="form-table">
 							<tr>
 								<th><label>Nom du modèle <span class="cfeb-req">*</span></label></th>
-								<td><input type="text" name="cfeb_tpl_nom" value="<?php echo esc_attr( $edit_tpl['nom'] ?? '' ); ?>" class="regular-text" required /></td>
+								<td><input type="text" name="cfeb_tpl_nom" value="<?php echo esc_attr( $form['nom'] ?? '' ); ?>" class="regular-text" required /></td>
 							</tr>
 							<tr>
 								<th><label>Titre des événements générés</label></th>
 								<td>
-									<input type="text" name="cfeb_tpl_titre" value="<?php echo esc_attr( $edit_tpl['titre_event'] ?? '' ); ?>" class="regular-text" placeholder="Laissez vide = nom du modèle" />
+									<input type="text" name="cfeb_tpl_titre" value="<?php echo esc_attr( $form['titre_event'] ?? '' ); ?>" class="regular-text" placeholder="Laissez vide = nom du modèle" />
 								</td>
 							</tr>
 							<tr>
 								<th><label>Animateur</label></th>
-								<td><input type="text" name="cfeb_tpl_animateur" value="<?php echo esc_attr( $edit_tpl['animateur'] ?? '' ); ?>" class="regular-text" /></td>
+								<td><input type="text" name="cfeb_tpl_animateur" value="<?php echo esc_attr( $form['animateur'] ?? '' ); ?>" class="regular-text" /></td>
 							</tr>
 							<tr>
 								<th><label>Lieu</label></th>
-								<td><input type="text" name="cfeb_tpl_lieu" value="<?php echo esc_attr( $edit_tpl['lieu'] ?? '' ); ?>" class="regular-text" placeholder="Adresse ou salle" /></td>
+								<td><input type="text" name="cfeb_tpl_lieu" value="<?php echo esc_attr( $form['lieu'] ?? '' ); ?>" class="regular-text" placeholder="Adresse ou salle" /></td>
 							</tr>
 							<tr>
 								<th><label>Catégorie</label></th>
@@ -505,7 +630,7 @@ class CF_Planning {
 										<option value="">— Aucune —</option>
 										<?php if ( ! is_wp_error( $categories ) ) : ?>
 										<?php foreach ( $categories as $cat ) : ?>
-											<option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( ( $edit_tpl['categorie'] ?? '' ), $cat->slug ); ?>><?php echo esc_html( $cat->name ); ?></option>
+											<option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( ( $form['categorie'] ?? '' ), $cat->slug ); ?>><?php echo esc_html( $cat->name ); ?></option>
 										<?php endforeach; ?>
 										<?php endif; ?>
 									</select>
@@ -513,11 +638,11 @@ class CF_Planning {
 							</tr>
 							<tr>
 								<th><label>Prix (€)</label></th>
-								<td><input type="number" name="cfeb_tpl_prix" value="<?php echo esc_attr( $edit_tpl['prix'] ?? 0 ); ?>" min="0" step="0.01" class="small-text" /> <span class="description">0 = gratuit</span></td>
+								<td><input type="number" name="cfeb_tpl_prix" value="<?php echo esc_attr( $form['prix'] ?? 0 ); ?>" min="0" step="0.01" class="small-text" /> <span class="description">0 = gratuit</span></td>
 							</tr>
 							<tr>
 								<th><label>Places max</label></th>
-								<td><input type="number" name="cfeb_tpl_max_places" value="<?php echo esc_attr( $edit_tpl['max_places'] ?? 0 ); ?>" min="0" class="small-text" /> <span class="description">0 = illimité</span></td>
+								<td><input type="number" name="cfeb_tpl_max_places" value="<?php echo esc_attr( $form['max_places'] ?? 0 ); ?>" min="0" class="small-text" /> <span class="description">0 = illimité</span></td>
 							</tr>
 							<tr>
 								<th><label>Jours <span class="cfeb-req">*</span></label></th>
@@ -525,7 +650,7 @@ class CF_Planning {
 									<?php foreach ( $jours_labels as $num => $nom ) : ?>
 										<label class="cfeb-jour-label">
 											<input type="checkbox" name="cfeb_tpl_jours[]" value="<?php echo (int) $num; ?>"
-												<?php checked( in_array( $num, (array) ( $edit_tpl['jours'] ?? [] ), true ) ); ?> />
+												<?php checked( in_array( $num, (array) ( $form['jours'] ?? [] ), true ) ); ?> />
 											<?php echo esc_html( $nom ); ?>
 										</label>
 									<?php endforeach; ?>
@@ -535,7 +660,7 @@ class CF_Planning {
 								<th><label>Créneaux horaires <span class="cfeb-req">*</span></label></th>
 								<td>
 									<div id="cfeb-slots-list">
-										<?php $init_creneaux = $edit_tpl['creneaux'] ?? [ [ 'debut' => '09:00', 'fin' => '10:00' ] ]; ?>
+										<?php $init_creneaux = $form['creneaux'] ?? [ [ 'debut' => '09:00', 'fin' => '10:00' ] ]; ?>
 										<?php foreach ( $init_creneaux as $cr ) : ?>
 										<div class="cfeb-slot-row">
 											<input type="time" name="cfeb_tpl_slot_debut[]" value="<?php echo esc_attr( $cr['debut'] ); ?>" required />
@@ -602,6 +727,9 @@ class CF_Planning {
 								<?php endif; ?>
 								<?php if ( $tpl['lieu'] ) : ?>
 									<span>📍 <?php echo esc_html( $tpl['lieu'] ); ?></span>
+								<?php endif; ?>
+								<?php if ( ! empty( $tpl['appt_type_id'] ) && get_post( $tpl['appt_type_id'] ) ) : ?>
+									<span>🔗 <?php echo esc_html( get_the_title( $tpl['appt_type_id'] ) ); ?></span>
 								<?php endif; ?>
 							</div>
 						</div>
