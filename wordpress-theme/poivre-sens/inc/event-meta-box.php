@@ -148,7 +148,7 @@ function ps_evt_meta_box_html($post) {
           <div class="ps-evt-grid ps-evt-grid--3">
             <div>
               <label class="ps-evt-lab" for="evt_date"><?= esc_html__('Date *', 'poivre-sens') ?></label>
-              <input type="date" id="evt_date" name="evt_date" value="<?= esc_attr($date) ?>" required>
+              <input type="date" id="evt_date" name="evt_date" value="<?= esc_attr($date) ?>">
               <p class="ps-evt-hint"><?= esc_html__('Sans date, l\'événement n\'apparaît ni dans l\'agenda ni sur Google.', 'poivre-sens') ?></p>
             </div>
             <div>
