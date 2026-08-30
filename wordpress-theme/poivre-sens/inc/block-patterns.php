@@ -302,18 +302,18 @@ add_shortcode('ps_projet', function (): string {
       <div class="axes">
         <div class="axe">
           <p class="axe__n">01</p>
-          <h3 class="axe__t">Création chorégraphique &amp; musicale</h3>
-          <p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
+          <h3 class="axe__t">Créer des performances</h3>
+          <p class="axe__tx">La compagnie a pour but la création de performances artistiques : des pièces en duo ou avec des artistes invités, où la frontière entre la partition musicale et la partition corporelle s'efface. Les premières sont en chantier.</p>
         </div>
         <div class="axe">
           <p class="axe__n">02</p>
           <h3 class="axe__t">L'improvisation comme forme</h3>
-          <p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
+          <p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. L'inattendu et l'impromptu ne sont pas des accidents que l'on rattrape : ce sont nos matériaux de départ.</p>
         </div>
         <div class="axe">
           <p class="axe__n">03</p>
-          <h3 class="axe__t">La pédagogie du sensible</h3>
-          <p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
+          <h3 class="axe__t">Partir de ce que le corps sait</h3>
+          <p class="axe__tx">Nous ne partons pas d'un vocabulaire à apprendre, mais de mouvements que vous portez déjà — marcher, s'appuyer, se tourner. Ils sont là, à l'état de graine ; notre travail est de les faire germer, sans rien couper de votre histoire.</p>
         </div>
       </div>
     </section>
@@ -326,15 +326,15 @@ add_shortcode('ps_influences', function (): string {
     ob_start();
     ?>
     <div>
-      <p class="lbl" style="margin-top:0">Références &amp; influences</p>
+      <p class="lbl" style="margin-top:0">Ce qui nous traverse</p>
       <div class="regle" style="margin-bottom:28px"></div>
       <div class="influences">
-        <div class="inf"><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><p class="inf__d">Fondateurs du contact-improvisation</p></div>
-        <div class="inf"><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><p class="inf__d">Éducation somatique et danse thérapie</p></div>
-        <div class="inf"><p class="inf__n">John Cage &amp; Derek Bailey</p><p class="inf__d">Improvisation musicale et indétermination</p></div>
-        <div class="inf"><p class="inf__n">Huangdi Neijing</p><p class="inf__d">Classique de médecine interne — méridiens</p></div>
-        <div class="inf"><p class="inf__n">Ueshiba Morihei</p><p class="inf__d">Fondateur de l'aïkido</p></div>
-        <div class="inf"><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><p class="inf__d">Pensée du corps sonore</p></div>
+        <div class="inf"><p class="inf__n">Les pratiques somatiques</p><p class="inf__d">Écouter le corps avant de lui demander</p></div>
+        <div class="inf"><p class="inf__n">Le mouvement inné</p><p class="inf__d">Ce que le corps sait depuis l'enfance</p></div>
+        <div class="inf"><p class="inf__n">Le Tao</p><p class="inf__d">Fluidité, transformation, non-résistance</p></div>
+        <div class="inf"><p class="inf__n">La kinésiologie</p><p class="inf__d">Le corps comme source d'information</p></div>
+        <div class="inf"><p class="inf__n">Le contact-improvisation</p><p class="inf__d">Le poids, l'appui, l'écoute à deux</p></div>
+        <div class="inf"><p class="inf__n">La musique improvisée</p><p class="inf__d">Le son comme matière vivante</p></div>
       </div>
     </div>
     <?php
@@ -352,15 +352,14 @@ add_shortcode('ps_activites', function (): string {
         <div class="regle"></div>
       </div>
       <ul role="list">
-        <li class="act"><span class="act__n" aria-hidden="true">01</span><div><h3 class="act__t">Spectacles vivants</h3><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p></div><span class="act__b">Scène</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">02</span><div><h3 class="act__t">Jams contact-improvisation</h3><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p></div><span class="act__b">Jam</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">03</span><div><h3 class="act__t">Stages &amp; ateliers</h3><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p></div><span class="act__b">Pédagogie</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">04</span><div><h3 class="act__t">Résidences de recherche</h3><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p></div><span class="act__b">Résidence</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">05</span><div><h3 class="act__t">Résidences pédagogiques</h3><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics.</p></div><span class="act__b">Médiation</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">06</span><div><h3 class="act__t">Lutherie &amp; fabrication</h3><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p></div><span class="act__b">Artisanat</span></li>
+        <li class="act"><span class="act__n" aria-hidden="true">01</span><div><h3 class="act__t">Les dimanches</h3><p class="act__tx">Des rendez-vous réguliers de 2 h 30, ouverts à tous. Un temps pour explorer le mouvement à deux voix, sans prérequis ni niveau demandé.</p></div><span class="act__b">Régulier</span></li>
+        <li class="act"><span class="act__n" aria-hidden="true">02</span><div><h3 class="act__t">Stages</h3><p class="act__tx">Sur une journée ou un week-end, autour d'une thématique. Deux intervenants, une trentaine de personnes au maximum — pour garder la qualité de présence que nous voulons offrir.</p></div><span class="act__b">Stage</span></li>
+        <li class="act"><span class="act__n" aria-hidden="true">03</span><div><h3 class="act__t">Jams contact-improvisation</h3><p class="act__tx">Sessions d'improvisation ouvertes, en contact-improvisation et musique improvisée.</p></div><span class="act__b">Jam</span></li>
+        <li class="act"><span class="act__n" aria-hidden="true">04</span><div><h3 class="act__t">Créations &amp; performances</h3><p class="act__tx">Pièces en duo ou avec des artistes invités. La compagnie débute : les premières créations sont en cours d'élaboration.</p></div><span class="act__b">Scène</span></li>
+        <li class="act"><span class="act__n" aria-hidden="true">05</span><div><h3 class="act__t">Interventions &amp; ateliers</h3><p class="act__tx">Sur demande, pour des groupes constitués, des structures ou des événements. Nous adaptons le format et la thématique.</p></div><span class="act__b">Sur mesure</span></li>
       </ul>
       <div>
-        <p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+        <p class="lbl" style="margin-top:64px">Où nous aimerions jouer</p>
         <div class="regle" style="margin-bottom:28px"></div>
         <div class="diff">
           <div class="diff-i">Festivals de danse contemporaine, contact-improvisation et musique improvisée — France &amp; Europe</div>
@@ -379,11 +378,11 @@ add_shortcode('ps_valeurs', function (): string {
     ob_start();
     ?>
     <div class="esthet__vals">
-      <div class="val"><p class="val__l">Scénographie</p><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p></div>
-      <div class="val"><p class="val__l">Musique</p><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p></div>
-      <div class="val"><p class="val__l">Mouvement</p><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p></div>
-      <div class="val"><p class="val__l">Artisanat</p><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p></div>
-      <div class="val"><p class="val__l">Philosophie</p><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p></div>
+      <div class="val"><p class="val__l">Sensation</p><p class="val__t">Avant la forme, la sensation. C'est elle qui guide le mouvement, et c'est elle que nous cherchons à affiner — cette finesse d'écoute que l'on développe en allant contacter une part de soi.</p></div>
+      <div class="val"><p class="val__l">Mouvement inné</p><p class="val__t">Nous partons de ce que le corps a développé depuis l'enfance — marcher, s'appuyer, se tourner — plutôt que d'un vocabulaire venu d'ailleurs. Rien n'est coupé de votre histoire.</p></div>
+      <div class="val"><p class="val__l">Deux voix</p><p class="val__t">Nous enseignons à deux, depuis deux pratiques distinctes : le somatique et la danse, le geste et le son. C'est le croisement qui fait la richesse.</p></div>
+      <div class="val"><p class="val__l">Limites</p><p class="val__t">Savoir où l'on est, ce qui est juste pour soi. On n'est pas toujours disponible pour être à deux — c'est une information, pas un échec.</p></div>
+      <div class="val"><p class="val__l">Joie</p><p class="val__t">C'est le mot qui revient le plus souvent chez ceux qui repartent. La joie du relationnel, du jeu, de l'échange avec une autre personne.</p></div>
     </div>
     <?php
     return ob_get_clean();
@@ -487,7 +486,7 @@ function _ps_pat_hero(): string {
 <div class="wp-block-group hero__g">
 
 <!-- wp:paragraph {"className":"hero__sup"} -->
-<p class="hero__sup">Compagnie artistique · Association loi 1901</p>
+<p class="hero__sup">Jeune compagnie · Association loi 1901</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":1,"className":"hero__nom"} -->
@@ -509,11 +508,11 @@ function _ps_pat_hero(): string {
 <div class="wp-block-group hero__d">
 
 <!-- wp:paragraph {"className":"hero__q"} -->
-<p class="hero__q">Le corps sait ce que l'esprit cherche encore.</p>
+<p class="hero__q">Le corps sait ce que l'esprit ne sait pas.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"className":"hero__intro"} -->
-<p class="hero__intro">Née de la rencontre d'un corps et d'un son, d'une main qui écoute et d'une oreille qui se déplace, la compagnie explore les espaces de porosité entre le mouvement et la musique.</p>
+<p class="hero__intro">À peine formée, la compagnie fait ses premiers pas. Elle est née de la rencontre de deux personnes, de deux corps aux histoires différentes — et d'un même goût pour l'inattendu, l'impromptu et la créativité partagée.</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -540,22 +539,30 @@ function _ps_pat_manifeste(): string {
 <div class="wp-block-group mf-corps">
 
 <!-- wp:heading {"level":2,"className":"mf-t"} -->
-<h2 class="wp-block-heading mf-t">Une rencontre entre <em>le corps</em> et <em>le son</em></h2>
+<h2 class="wp-block-heading mf-t">Deux histoires, <em>une même curiosité</em></h2>
 <!-- /wp:heading -->
 
 <!-- wp:group {"className":"mf-tx","layout":{"type":"default"}} -->
 <div class="wp-block-group mf-tx">
 
 <!-- wp:paragraph -->
-<p>La compagnie explore les espaces de porosité entre le mouvement et le son, entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu. Ses créations ne cherchent pas à illustrer ni à démontrer, mais à <em>habiter</em>.</p>
+<p>La compagnie est née de la rencontre de deux personnes venues au mouvement par des chemins différents : l'une par la danse contemporaine, l'autre par la lutherie et plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Ce qui unit leurs univers, c'est la qualité de présence : être là, pleinement, dans l'instant d'une rencontre — entre deux corps, entre un corps et un instrument, entre une sensation et une image, entre ce qui est attendu et ce qui surgit.</p>
+<p>Ce qui nous met en joie, c'est la créativité — collective, partagée. L'inattendu, l'impromptu, le rapport à l'improvisation. Enseigner, transmettre, jouer avec les autres, et <em>rendre la danse accessible</em>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Inspirée du Tao, des méridiens, de l'aïkido et de la lutherie, la compagnie croit en l'<em>artisanat du spectacle</em> : chaque geste compte, chaque son est matière, chaque silence est espace.</p>
+<p>Chercher, encore et toujours : comment habiter davantage son corps, comment être dans une présence de plus en plus juste, de plus en plus fine. Nous nous appuyons pour cela sur la kinésiologie, le Tao et les pratiques somatiques.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Il y a aussi, dans ce travail, une recherche sur l'intimité : être plus proche de soi, au contact des autres. Grandir, et faire grandir ceux qui regardent. Avec toujours le même rapport au corps — le respect de ses limites, et l'accueil de ces limites telles qu'elles sont, dans le présent.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Vous n'avez pas besoin de savoir danser. Beaucoup arrivent en disant « je n'ose pas devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol ». C'est précisément de là que l'on part, avec de la bienveillance et la liberté de poser ce qui est juste pour vous.</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -618,13 +625,13 @@ function _ps_pat_artistes(): string {
 </div>
 <!-- /wp:group -->
 <!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.</p>
+<p class="bio__tx">Venue de la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens : philosophie taoïste, méridiens, kinésiologie. Elle explore les correspondances entre les éléments, la circulation de l'énergie et les qualités de mouvement.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.</p>
+<p class="bio__tx">S'il ne lui fallait transmettre qu'une chose, ce serait la sensation — cette finesse d'écoute que l'on développe en allant contacter une part de soi. L'improvisation est pour elle un espace de création vivante, et une affaire de poésie.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"className":"bio__tgs"} -->
-<p class="bio__tgs"><span class="bio__tg">Danse contemporaine</span><span class="bio__tg">Improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Tao</span><span class="bio__tg">Méridiens</span><span class="bio__tg">Massage</span><span class="bio__tg">Pédagogie</span></p>
+<p class="bio__tgs"><span class="bio__tg">Danse contemporaine</span><span class="bio__tg">Improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Tao</span><span class="bio__tg">Méridiens</span><span class="bio__tg">Kinésiologie</span><span class="bio__tg">Pédagogie</span></p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -653,13 +660,13 @@ function _ps_pat_artistes(): string {
 </div>
 <!-- /wp:group -->
 <!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
+<p class="bio__tx">Luthier, Ewen d'Aviau est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.</p>
+<p class="bio__tx">S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"className":"bio__tgs"} -->
-<p class="bio__tgs"><span class="bio__tg">Lutherie</span><span class="bio__tg">Musique improvisée</span><span class="bio__tg">Contact-improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Aïkido</span><span class="bio__tg">Enseignement</span></p>
+<p class="bio__tgs"><span class="bio__tg">Lutherie</span><span class="bio__tg">Musique improvisée</span><span class="bio__tg">Contact-improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Enseignement</span></p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -707,7 +714,7 @@ BLOCK;
 <!-- wp:group {"className":"esthet__cite","layout":{"type":"default"}} -->
 <div class="wp-block-group esthet__cite">
 <!-- wp:quote {"className":"gcite"} -->
-<blockquote class="wp-block-quote gcite"><p>Habiter un espace de jeu partagé —<br>entre deux corps,<br><em>un corps et un instrument</em>.</p><cite>Poivre &amp; Sens · Note d'intention</cite></blockquote>
+<blockquote class="wp-block-quote gcite"><p>Partir de ce que le corps sait déjà —<br>et le faire <em>germer</em>.</p><cite>Poivre &amp; Sens · Note d'intention</cite></blockquote>
 <!-- /wp:quote -->
 </div>
 <!-- /wp:group -->
@@ -811,7 +818,7 @@ function _ps_pat_contact(): string {
 <h4 class="co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"co-note"} -->
-<p class="co-note">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.</p>
+<p class="co-note">La compagnie débute. Pour être prévenu des premières dates — dimanches, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -837,7 +844,7 @@ function _ps_pat_influences(): string {
 <div class="wp-block-group">
 
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:0">Références &amp; influences</p>
+<p class="lbl" style="margin-top:0">Ce qui nous traverse</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"regle"} -->
@@ -849,43 +856,43 @@ function _ps_pat_influences(): string {
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateurs du contact-improvisation</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Les pratiques somatiques</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Écouter le corps avant de lui demander</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Éducation somatique et danse thérapie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Le mouvement inné</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Ce que le corps sait depuis l'enfance</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">John Cage &amp; Derek Bailey</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Improvisation musicale et indétermination</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Le Tao</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fluidité, transformation, non-résistance</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Huangdi Neijing</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Classique de médecine interne — méridiens</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">La kinésiologie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Le corps comme source d'information</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Ueshiba Morihei</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateur de l'aïkido</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Le contact-improvisation</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Le poids, l'appui, l'écoute à deux</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
 <div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Pensée du corps sonore</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">La musique improvisée</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Le son comme matière vivante</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -907,36 +914,36 @@ function _ps_pat_valeurs(): string {
 
 <!-- wp:group {"className":"val","layout":{"type":"default"}} -->
 <div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Scénographie</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Sensation</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Avant la forme, la sensation. C'est elle qui guide le mouvement, et c'est elle que nous cherchons à affiner — cette finesse d'écoute que l'on développe en allant contacter une part de soi.</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"val","layout":{"type":"default"}} -->
 <div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Musique</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Mouvement inné</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Nous partons de ce que le corps a développé depuis l'enfance — marcher, s'appuyer, se tourner — plutôt que d'un vocabulaire venu d'ailleurs. Rien n'est coupé de votre histoire.</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"val","layout":{"type":"default"}} -->
 <div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Mouvement</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Deux voix</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Nous enseignons à deux, depuis deux pratiques distinctes : le somatique et la danse, le geste et le son. C'est le croisement qui fait la richesse.</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"val","layout":{"type":"default"}} -->
 <div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Artisanat</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Limites</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Savoir où l'on est, ce qui est juste pour soi. On n'est pas toujours disponible pour être à deux — c'est une information, pas un échec.</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"className":"val","layout":{"type":"default"}} -->
 <div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Philosophie</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Joie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">C'est le mot qui revient le plus souvent chez ceux qui repartent. La joie du relationnel, du jeu, de l'échange avec une autre personne.</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -974,10 +981,10 @@ function _ps_pat_projet(): string {
 <div class="wp-block-group axe">
 <!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">01</p><!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">Création chorégraphique &amp; musicale</h3>
+<h3 class="wp-block-heading axe__t">Créer des performances</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
+<p class="axe__tx">La compagnie a pour but la création de performances artistiques : des pièces en duo ou avec des artistes invités, où la frontière entre la partition musicale et la partition corporelle s'efface. Les premières sont en chantier.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -989,7 +996,7 @@ function _ps_pat_projet(): string {
 <h3 class="wp-block-heading axe__t">L'improvisation comme forme</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
+<p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. L'inattendu et l'impromptu ne sont pas des accidents que l'on rattrape : ce sont nos matériaux de départ.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -998,10 +1005,10 @@ function _ps_pat_projet(): string {
 <div class="wp-block-group axe">
 <!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">03</p><!-- /wp:paragraph -->
 <!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">La pédagogie du sensible</h3>
+<h3 class="wp-block-heading axe__t">Partir de ce que le corps sait</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
+<p class="axe__tx">Nous ne partons pas d'un vocabulaire à apprendre, mais de mouvements que vous portez déjà — marcher, s'appuyer, se tourner. Ils sont là, à l'état de graine ; notre travail est de les faire germer, sans rien couper de votre histoire.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -1043,10 +1050,10 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group act">
 <!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">01</p><!-- /wp:paragraph -->
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Spectacles vivants</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Les dimanches</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Des rendez-vous réguliers de 2 h 30, ouverts à tous. Un temps pour explorer le mouvement à deux voix, sans prérequis ni niveau demandé.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Scène</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Régulier</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -1054,10 +1061,10 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group act">
 <!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">02</p><!-- /wp:paragraph -->
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Jams contact-improvisation</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Stages</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sur une journée ou un week-end, autour d'une thématique. Deux intervenants, une trentaine de personnes au maximum — pour garder la qualité de présence que nous voulons offrir.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Jam</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Stage</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -1065,10 +1072,10 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group act">
 <!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">03</p><!-- /wp:paragraph -->
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Stages &amp; ateliers</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Jams contact-improvisation</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sessions d'improvisation ouvertes, en contact-improvisation et musique improvisée.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Pédagogie</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Jam</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -1076,10 +1083,10 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group act">
 <!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">04</p><!-- /wp:paragraph -->
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences de recherche</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Créations &amp; performances</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Pièces en duo ou avec des artistes invités. La compagnie débute : les premières créations sont en cours d'élaboration.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Résidence</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Scène</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -1087,21 +1094,10 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group act">
 <!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">05</p><!-- /wp:paragraph -->
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences pédagogiques</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics.</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Interventions &amp; ateliers</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sur demande, pour des groupes constitués, des structures ou des événements. Nous adaptons le format et la thématique.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Médiation</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">06</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Lutherie &amp; fabrication</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Artisanat</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Sur mesure</p><!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
@@ -1112,7 +1108,7 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group">
 
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+<p class="lbl" style="margin-top:64px">Où nous aimerions jouer</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"regle"} -->

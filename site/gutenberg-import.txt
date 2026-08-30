@@ -350,7 +350,7 @@ body.page .nm-header {
 <div class="wp-block-column ps-hero-g">
 
 <!-- wp:paragraph {"className":"ps-lbl","style":{"spacing":{"margin":{"bottom":"32px"}}}} -->
-<p class="ps-lbl" style="margin-bottom:32px">Compagnie artistique · Association loi 1901</p>
+<p class="ps-lbl" style="margin-bottom:32px">Jeune compagnie · Association loi 1901</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -382,12 +382,12 @@ body.page .nm-header {
 <!-- wp:html -->
 <blockquote style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:300;line-height:1.42;color:#ece3cb;margin:0 0 32px">
   <span style="display:block;font-size:3.8rem;line-height:1;color:#c28b36;font-style:normal;margin-bottom:6px">&ldquo;</span>
-  Le corps sait ce que l'esprit cherche encore.
+  Le corps sait ce que l'esprit ne sait pas.
 </blockquote>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"typography":{"fontSize":"0.92rem","lineHeight":"1.85"},"color":{"text":"rgba(236,227,203,0.6)"},"spacing":{"margin":{"top":"0"}}}} -->
-<p style="color:rgba(236,227,203,0.6);font-size:.92rem;line-height:1.85;font-family:Inter,system-ui,sans-serif;margin-top:0">Née de la rencontre d'un corps et d'un son, d'une main qui écoute et d'une oreille qui se déplace, la compagnie explore les espaces de porosité entre le mouvement et la musique, entre la structure et le lâcher-prise.</p>
+<p style="color:rgba(236,227,203,0.6);font-size:.92rem;line-height:1.85;font-family:Inter,system-ui,sans-serif;margin-top:0">À peine formée, la compagnie fait ses premiers pas. Elle est née de la rencontre de deux personnes, de deux corps aux histoires différentes — et d'un même goût pour l'inattendu, l'impromptu et la créativité partagée.</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -525,9 +525,9 @@ body.page .nm-header {
   <div>
     <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,3.8vw,3.2rem);font-weight:300;line-height:1.22;color:#ece3cb;margin:0 0 28px">Une rencontre entre <em style="color:#c28b36">le corps</em> et <em style="color:#c28b36">le son</em></h2>
     <div style="columns:2;column-gap:52px;font-size:.96rem;line-height:1.88;color:rgba(236,227,203,.65);font-family:Inter,system-ui,sans-serif">
-      <p style="margin:0 0 1.2em">La compagnie explore les espaces de porosité entre le mouvement et le son, entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu. Ses créations ne cherchent pas à illustrer ni à démontrer, mais à <em style="font-style:italic;color:#ece3cb">habiter</em>.</p>
-      <p style="margin:0 0 1.2em">Ce qui unit leurs univers, c'est la qualité de présence : être là, pleinement, dans l'instant d'une rencontre — entre deux corps, entre un corps et un instrument, entre ce qui est attendu et ce qui surgit.</p>
-      <p style="margin:0">Inspirée du Tao, des méridiens, de l'aïkido et de la lutherie, la compagnie croit en l'<em style="font-style:italic;color:#ece3cb">artisanat du spectacle</em> : chaque geste compte, chaque son est matière, chaque silence est espace.</p>
+      <p style="margin:0 0 1.2em">La compagnie est née de la rencontre de deux personnes venues au mouvement par des chemins différents : l'une par la danse contemporaine, l'autre par la lutherie et plusieurs arts et techniques de danse, en y cherchant chaque fois un <em style="font-style:italic;color:#ece3cb">habiter</em>.</p>
+      <p style="margin:0 0 1.2em">Ce qui nous met en joie, c'est la créativité — collective, partagée. L'inattendu, l'impromptu, le rapport à l'improvisation. Enseigner, transmettre, jouer avec les autres, et rendre la danse accessible.</p>
+      <p style="margin:0">Chercher, encore et toujours : comment habiter davantage son corps, comment être dans une présence de plus en plus juste, de plus en plus fine. Nous nous appuyons pour cela sur la kinésiologie, le Tao et les pratiques somatiques.</p>
     </div>
   </div>
 </div>
@@ -560,7 +560,7 @@ body.page .nm-header {
 <div class="wp-block-column ps-axe" style="background-color:#080705;padding:40px 32px;border-top:2px solid #9e3710">
 <!-- wp:html --><p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:4rem;font-weight:300;line-height:1;color:rgba(194,139,54,.18);margin:0 0 12px">01</p><!-- /wp:html -->
 <!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"'Cormorant Garamond', Georgia, serif","fontSize":"1.35rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<h3 class="wp-block-heading" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">Création chorégraphique &amp; musicale</h3>
+<h3 class="wp-block-heading" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">Créer des performances</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.78"}}} -->
 <p style="color:rgba(127,116,99,1);font-size:.87rem;line-height:1.78;font-family:Inter,system-ui,sans-serif">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre composition musicale et partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
@@ -584,7 +584,7 @@ body.page .nm-header {
 <div class="wp-block-column ps-axe" style="background-color:#080705;padding:40px 32px;border-top:2px solid #9e3710">
 <!-- wp:html --><p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:4rem;font-weight:300;line-height:1;color:rgba(194,139,54,.18);margin:0 0 12px">03</p><!-- /wp:html -->
 <!-- wp:heading {"level":3,"style":{"typography":{"fontFamily":"'Cormorant Garamond', Georgia, serif","fontSize":"1.35rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<h3 class="wp-block-heading" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">La pédagogie du sensible</h3>
+<h3 class="wp-block-heading" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;color:#ece3cb">Partir de ce que le corps sait</h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.87rem","lineHeight":"1.78"}}} -->
 <p style="color:rgba(127,116,99,1);font-size:.87rem;line-height:1.78;font-family:Inter,system-ui,sans-serif">Stages, ateliers de mouvement somatique et de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
@@ -629,11 +629,11 @@ body.page .nm-header {
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Venue de la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens : philosophie taoïste, méridiens, kinésiologie. Elle explore les correspondances entre les éléments, la circulation de l'énergie et les qualités de mouvement.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">S'il ne lui fallait transmettre qu'une chose, ce serait la sensation — cette finesse d'écoute que l'on développe en allant contacter une part de soi. L'improvisation est pour elle un espace de création vivante, et une affaire de poésie.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -665,11 +665,11 @@ body.page .nm-header {
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Luthier, Ewen d'Aviau est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation, des pratiques somatiques et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -692,7 +692,7 @@ body.page .nm-header {
 <!-- wp:spacer {"height":"52px"} --><div style="height:52px" aria-hidden="true" class="wp-block-spacer"></div><!-- /wp:spacer -->
 
 <!-- wp:paragraph {"className":"ps-lbl"} -->
-<p class="ps-lbl">Références &amp; influences</p>
+<p class="ps-lbl">Ce qui nous traverse</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html --><div class="ps-sep"></div><!-- /wp:html -->
@@ -703,10 +703,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Steve Paxton &amp; Lisa Nelson</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Les pratiques somatiques</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Fondateurs du contact-improvisation</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Écouter le corps avant de lui demander</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -714,10 +714,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Anna Halprin &amp; Thomas Hanna</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Le mouvement inné</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Éducation somatique et danse thérapie</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Ce que le corps sait depuis l'enfance</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -725,10 +725,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">John Cage &amp; Derek Bailey</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Le Tao</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Improvisation musicale et indétermination</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Fluidité, transformation, non-résistance</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -736,10 +736,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Huangdi Neijing</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">La kinésiologie</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Classique de médecine interne — méridiens</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Le corps comme source d'information</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -747,10 +747,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Ueshiba Morihei</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Le contact-improvisation</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Fondateur de l'aïkido</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Le poids, l'appui, l'écoute à deux</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -758,10 +758,10 @@ body.page .nm-header {
 <!-- wp:column {"style":{"color":{"background":"#100e0b"},"spacing":{"padding":{"top":"20px","right":"24px","bottom":"20px","left":"24px"}},"border":{"color":"rgba(194,139,54,0.18)","width":"1px"}}} -->
 <div class="wp-block-column" style="background-color:#100e0b;padding:20px 24px;border:1px solid rgba(194,139,54,.18)">
 <!-- wp:paragraph {"style":{"typography":{"fontFamily":"'Cormorant Garamond',Georgia,serif","fontSize":"1.05rem","fontWeight":"400"},"color":{"text":"#ece3cb"}}} -->
-<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">Peter Szendy &amp; Jean-Luc Nancy</p>
+<p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05rem;font-weight:400;color:#ece3cb;margin:0 0 4px">La musique improvisée</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.78rem"}}} -->
-<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Pensée du corps sonore</p>
+<p style="color:rgba(127,116,99,1);font-size:.78rem;margin:0;font-family:Inter,system-ui,sans-serif">Le son comme matière vivante</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
@@ -789,67 +789,17 @@ body.page .nm-header {
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
   <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">01</span>
   <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Spectacles vivants</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p>
+    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les dimanches</h3>
+    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Des rendez-vous réguliers de 2 h 30, ouverts à tous. Un temps pour explorer le mouvement à deux voix, sans prérequis ni niveau demandé.</p>
   </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Scène</span>
-</div>
-<!-- /wp:html -->
-<!-- wp:html -->
-<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">02</span>
-  <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Jams contact-improvisation</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Sessions ouvertes au public en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p>
-  </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Jam</span>
-</div>
-<!-- /wp:html -->
-<!-- wp:html -->
-<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">03</span>
-  <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Stages &amp; ateliers</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p>
-  </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Pédagogie</span>
-</div>
-<!-- /wp:html -->
-<!-- wp:html -->
-<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">04</span>
-  <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Résidences de recherche</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création.</p>
-  </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Résidence</span>
-</div>
-<!-- /wp:html -->
-<!-- wp:html -->
-<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">05</span>
-  <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Résidences pédagogiques</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Interventions en milieu scolaire, médico-social ou en entreprise. Pédagogie du sensible adaptée à tous les publics.</p>
-  </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Médiation</span>
-</div>
-<!-- /wp:html -->
-<!-- wp:html -->
-<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">06</span>
-  <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Lutherie &amp; fabrication</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p>
-  </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Artisanat</span>
+  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Régulier</span>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:spacer {"height":"52px"} --><div style="height:52px" aria-hidden="true" class="wp-block-spacer"></div><!-- /wp:spacer -->
 
 <!-- wp:paragraph {"className":"ps-lbl"} -->
-<p class="ps-lbl">Axes de diffusion</p>
+<p class="ps-lbl">Où nous aimerions jouer</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html --><div class="ps-sep"></div><!-- /wp:html -->
@@ -920,28 +870,28 @@ body.page .nm-header {
 <div style="display:flex;flex-direction:column;gap:28px">
 
   <div class="ps-valeur" style="padding-left:24px;border-left:2px solid rgba(194,139,54,.2)">
-    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Scénographie</p>
-    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p>
+    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Sensation</p>
+    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Avant la forme, la sensation. C'est elle qui guide le mouvement, et c'est elle que nous cherchons à affiner — cette finesse d'écoute que l'on développe en allant contacter une part de soi.</p>
   </div>
 
   <div class="ps-valeur" style="padding-left:24px;border-left:2px solid rgba(194,139,54,.2)">
-    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Musique</p>
-    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p>
+    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Mouvement inné</p>
+    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Nous partons de ce que le corps a développé depuis l'enfance — marcher, s'appuyer, se tourner — plutôt que d'un vocabulaire venu d'ailleurs. Rien n'est coupé de votre histoire.</p>
   </div>
 
   <div class="ps-valeur" style="padding-left:24px;border-left:2px solid rgba(194,139,54,.2)">
-    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Mouvement</p>
-    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p>
+    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Deux voix</p>
+    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Nous enseignons à deux, depuis deux pratiques distinctes : le somatique et la danse, le geste et le son. C'est le croisement qui fait la richesse.</p>
   </div>
 
   <div class="ps-valeur" style="padding-left:24px;border-left:2px solid rgba(194,139,54,.2)">
-    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Artisanat</p>
-    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle. Le faire comme geste artistique.</p>
+    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Limites</p>
+    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Savoir où l'on est, ce qui est juste pour soi. On n'est pas toujours disponible pour être à deux — c'est une information, pas un échec. Le faire comme geste artistique.</p>
   </div>
 
   <div class="ps-valeur" style="padding-left:24px;border-left:2px solid rgba(194,139,54,.2)">
-    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Philosophie</p>
-    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p>
+    <p style="font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:#c28b36;margin:0 0 6px;font-family:Inter,sans-serif">Joie</p>
+    <p style="font-size:.9rem;line-height:1.72;color:rgba(236,227,203,.62);margin:0;font-family:Inter,sans-serif">C'est le mot qui revient le plus souvent chez ceux qui repartent. La joie du relationnel, du jeu, de l'échange avec une autre personne.</p>
   </div>
 
 </div>
