@@ -270,6 +270,7 @@ body.nav-open { overflow:hidden; }
 }
 .single-evt__back::before { content:'←'; }
 .single-evt__back:hover { color:var(--or); }
+.single-evt__billetterie{border:none;cursor:pointer;font-family:var(--fb)}
 .single-evt__banniere{font-size:.78rem;letter-spacing:.04em;padding:12px 18px;border-radius:2px;margin-bottom:32px}
 .single-evt__banniere--annule{color:#eb8e6f;background:rgba(158,55,16,.12);border:1px solid rgba(158,55,16,.3)}
 .single-evt__banniere--reporte{color:var(--orlt);background:rgba(194,139,54,.1);border:1px solid rgba(194,139,54,.28)}
@@ -887,3 +888,45 @@ h4.co-h {
 [data-theme="lumiere"] .evt-card:hover .evt-card__img { filter: brightness(1) saturate(1); }
 [data-theme="lumiere"] .cal-list__thumb img { filter: brightness(.95) saturate(.95); }
 [data-theme="lumiere"] .cal-list__event:hover .cal-list__thumb img { filter: brightness(1) saturate(1); }
+
+/* ══════════════════════════════════════════════════════════════
+   RÉSERVATION EN LIGNE — habillage de la modale du plugin CF
+   ──────────────────────────────────────────────────────────────
+   Le plugin fournit le formulaire, l'AJAX et les emails ; ces
+   règles ne font que le vêtir aux couleurs du site (dark, or,
+   serif) au lieu du bleu/blanc par défaut, valable dans les 4
+   chartes graphiques puisqu'elles s'appuient sur les variables
+   déjà redéfinies par thème.
+   ══════════════════════════════════════════════════════════════ */
+html:root {
+  --cfeb-primary:    var(--creme);
+  --cfeb-primary-h:  var(--orlt);
+  --cfeb-accent:     var(--or);
+  --cfeb-success:    #6fcf97;
+  --cfeb-warning:    var(--orlt);
+  --cfeb-danger:     var(--rouge);
+  --cfeb-muted:      var(--gris);
+  --cfeb-bg:         var(--noir2);
+  --cfeb-border:     var(--bord);
+  --cfeb-radius:     2px;
+  --cfeb-shadow:     0 20px 60px rgba(0,0,0,.45);
+  --cfeb-font:       var(--fb);
+}
+.cfeb-modal-inner{background:var(--noir2);border:1px solid var(--bord)}
+.cfeb-modal-event-titre{font-family:var(--fh);font-weight:300;color:var(--creme)}
+.cfeb-modal-close{color:var(--gris)}
+.cfeb-modal-close:hover{background:rgba(194,139,54,.1)}
+.cfeb-field label{color:var(--creme);font-size:.72rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase}
+.cfeb-field input,.cfeb-field textarea,.cfeb-field select{
+  background:rgba(255,255,255,.05);color:var(--creme);border-color:var(--bord);
+}
+.cfeb-field input:focus,.cfeb-field textarea:focus,.cfeb-field select:focus{
+  border-color:var(--or);box-shadow:0 0 0 2px rgba(194,139,54,.18);
+}
+.cfeb-btn-primary{background:var(--or);color:var(--noir) !important;border-radius:2px}
+.cfeb-btn-primary:hover{background:var(--orlt)}
+.cfeb-btn-secondary{background:transparent;color:var(--gris) !important;border-color:var(--bord)}
+.cfeb-form-alert.cfeb-alert-error{background:rgba(158,55,16,.12);color:#eb8e6f;border-left-color:var(--rouge)}
+.cfeb-form-alert.cfeb-alert-warning{background:rgba(194,139,54,.1);color:var(--orlt);border-left-color:var(--or)}
+#cfeb-modal-success h3{font-family:var(--fh);font-weight:300;color:var(--creme)}
+#cfeb-modal-success p{color:var(--gris)}

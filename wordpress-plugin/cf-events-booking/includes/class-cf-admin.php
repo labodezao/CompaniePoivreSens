@@ -52,11 +52,16 @@ class CF_Admin {
 		}
 	}
 
-	/* ── Masquer les sous-menus WordPress auto-générés pour cf_event ── */
-	public static function hide_cpt_menus() {
-		remove_submenu_page( 'edit.php?post_type=' . CFEB_SLUG, 'edit.php?post_type=' . CFEB_SLUG );
-		remove_submenu_page( 'edit.php?post_type=' . CFEB_SLUG, 'post-new.php?post_type=' . CFEB_SLUG );
-	}
+	/* ── Sous-menus natifs de cf_event ───────────────────────────────
+	   Ils étaient retirés ici : dans la conception d'origine, un
+	   « événement » n'était qu'un créneau de réservation, engendré
+	   uniquement par le générateur de planning et administré depuis les
+	   écrans du plugin.
+
+	   Sur ce site, un événement est une vraie page publiée (spectacle,
+	   jam, atelier) : on doit pouvoir en créer un à la date voulue et
+	   rouvrir n'importe lequel pour en corriger la date ou le lieu.
+	   « Tous les événements » et « Ajouter » restent donc en place. */
 
 	/* ══════════════════════════════════════════════════════════════
 	   ENREGISTREMENT AJAX DÉTAIL RÉSERVATION
@@ -220,8 +225,6 @@ class CF_Admin {
 		add_action( 'wp_ajax_cfeb_payment_update',   [ __CLASS__, 'ajax_payment_update' ] );
 		// AJAX détail réservation
 		add_action( 'wp_ajax_cfeb_booking_detail',   [ __CLASS__, 'ajax_booking_detail' ] );
-		// Masquer les sous-menus WordPress natifs générés automatiquement pour ce CPT
-		add_action( 'admin_menu', [ __CLASS__, 'hide_cpt_menus' ], 99 );
 	}
 
 	/* ══════════════════════════════════════════════════════════════

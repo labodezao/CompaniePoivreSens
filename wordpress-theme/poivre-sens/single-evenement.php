@@ -22,6 +22,33 @@ get_header(); ?>
     $lien_visio     = ps_evt_champ($id, 'lien_visio');
     $statut_event   = ps_evt_champ($id, 'statut_event') ?: 'publie';
     $places_restantes = ps_evt_places_restantes($id);
+
+    // Réservation en ligne : seulement quand le plugin pilote l'événement
+    // ET qu'aucune billetterie externe n'a été renseignée — ce champ garde
+    // la priorité, un événement peut très bien être vendu ailleurs.
+    $plugin_actif = ps_evt_plugin_actif();
+    $reservation_en_ligne = $plugin_actif && !$billetterie
+        && $statut_event !== 'annule' && $statut_event !== 'reporte';
+    $statut_resa    = $reservation_en_ligne ? ps_evt_statut_resa($id) : '';
+    $liste_attente  = class_exists('CF_Admin') && !empty(CF_Admin::get_options()['liste_attente']);
+    $affiche_bouton_resa = $reservation_en_ligne
+        && ($statut_resa === 'ouvert' || ($statut_resa === 'complet' && $liste_attente));
+    $donnees_resa   = '';
+    if ($affiche_bouton_resa) {
+        $date_longue = $date ? ps_format_date($date, 'l j F Y') . ($heure ? ' à ' . str_replace(':', 'h', $heure) : '') : '';
+        $donnees_resa = wp_json_encode([
+            'id'        => $id,
+            'titre'     => get_the_title(),
+            'date'      => $date_longue,
+            'lieu'      => $lieu,
+            'prix'      => $prix,
+            'prix_brut' => ps_evt_champ($id, 'prix_brut'),
+            'dispo'     => $places_restantes ?? -1,
+            'max'       => ps_evt_champ($id, 'max_places'),
+            'statut'    => $statut_resa,
+            'visio'     => (bool) $lien_visio,
+        ]);
+    }
 ?>
 <article class="single-evt">
 
@@ -124,6 +151,22 @@ get_header(); ?>
 
     <?php if ($statut_event === 'annule' || $statut_event === 'reporte'): ?>
     <?php // Bandeau déjà affiché en tête de page : pas de bouton de réservation. ?>
+
+    <?php elseif ($affiche_bouton_resa): ?>
+    <button type="button" class="single-evt__billetterie cfeb-open-modal" data-event='<?= esc_attr($donnees_resa) ?>'>
+        <?= $statut_resa === 'complet' ? esc_html__('Rejoindre la liste d\'attente', 'poivre-sens') : esc_html__('Réserver ma place', 'poivre-sens') ?> →
+    </button>
+
+    <?php elseif ($reservation_en_ligne && $statut_resa === 'ferme'): ?>
+    <p style="margin-top:48px;font-size:.82rem;color:var(--gris);letter-spacing:.1em;text-transform:uppercase">
+        <?php _e('Réservations fermées.', 'poivre-sens'); ?>
+    </p>
+
+    <?php elseif ($reservation_en_ligne): ?>
+    <p style="margin-top:48px;font-size:.82rem;color:var(--rouge);letter-spacing:.1em;text-transform:uppercase">
+        <?php _e('Cet événement est complet.', 'poivre-sens'); ?>
+    </p>
+
     <?php elseif ($billetterie && !$complet): ?>
     <a href="<?= esc_url($billetterie) ?>" class="single-evt__billetterie" target="_blank" rel="noopener">
         <?php _e('Réserver ma place', 'poivre-sens'); ?> →
@@ -135,6 +178,10 @@ get_header(); ?>
     <?php endif; ?>
 
 </article>
+
+<?php if ($affiche_bouton_resa && class_exists('CF_Frontend')): ?>
+<?php echo CF_Frontend::modal_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php endif; ?>
 
 <?php endwhile; ?>
 <?php get_footer();

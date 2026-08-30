@@ -57,6 +57,8 @@ function ps_evt_champ($post_id, $champ) {
         if ($champ === 'type_label') {
             return ps_evt_type_label((string) get_post_meta($post_id, '_evt_type', true));
         }
+        // Réservation en ligne : notion propre au plugin, sans équivalent ici.
+        if ($champ === 'prix_brut') return 0.0;
         return isset($legacy[$champ]) ? get_post_meta($post_id, $legacy[$champ], true) : '';
     }
 
@@ -100,6 +102,10 @@ function ps_evt_champ($post_id, $champ) {
 
         case 'billetterie':
             return (string) get_post_meta($post_id, '_cfeb_event_url', true);
+
+        case 'prix_brut':
+            $montant = get_post_meta($post_id, '_cfeb_prix', true);
+            return ($montant === '' || $montant === null) ? 0.0 : (float) $montant;
 
         case 'complet':
             // Une capacité chiffrée rend ce statut automatique : dès que les
@@ -150,6 +156,22 @@ function ps_evt_places_restantes($post_id) {
 
     $reservees = class_exists('CF_Booking') ? (int) CF_Booking::count_for_event($post_id, 'confirme') : 0;
     return max(0, $max - $reservees);
+}
+
+/**
+ * Statut de réservation détaillé : 'ouvert', 'complet' ou 'ferme'.
+ * Sert à choisir entre bouton de réservation, liste d'attente et message
+ * de fermeture — ps_evt_champ('complet') ne renvoie qu'un booléen, trop
+ * pauvre pour ce choix à trois branches.
+ */
+function ps_evt_statut_resa($post_id) {
+    if (!ps_evt_est_plugin($post_id)) {
+        return get_post_meta($post_id, '_evt_complet', true) === '1' ? 'complet' : 'ouvert';
+    }
+    if (class_exists('CF_CPT')) {
+        return CF_CPT::compute_statut($post_id);
+    }
+    return get_post_meta($post_id, '_cfeb_statut', true) ?: 'ouvert';
 }
 
 /** Clé méta de la ville, pour les filtres de l'agenda. */

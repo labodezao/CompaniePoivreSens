@@ -148,7 +148,7 @@ function ps_evt_meta_box_html($post) {
           <div class="ps-evt-grid ps-evt-grid--3">
             <div>
               <label class="ps-evt-lab" for="evt_date"><?= esc_html__('Date *', 'poivre-sens') ?></label>
-              <input type="date" id="evt_date" name="evt_date" value="<?= esc_attr($date) ?>" required>
+              <input type="date" id="evt_date" name="evt_date" value="<?= esc_attr($date) ?>">
               <p class="ps-evt-hint"><?= esc_html__('Sans date, l\'événement n\'apparaît ni dans l\'agenda ni sur Google.', 'poivre-sens') ?></p>
             </div>
             <div>
@@ -217,7 +217,7 @@ function ps_evt_meta_box_html($post) {
             <div>
               <label class="ps-evt-lab" for="evt_billetterie"><?= esc_html__('Lien billetterie', 'poivre-sens') ?></label>
               <input type="url" id="evt_billetterie" name="evt_billetterie" value="<?= esc_attr($billetterie) ?>" placeholder="https://">
-              <p class="ps-evt-hint"><?= esc_html__('Billetweb, HelloAsso… Affiche un bouton « Réserver ».', 'poivre-sens') ?></p>
+              <p class="ps-evt-hint"><?= esc_html__('Billetweb, HelloAsso… Laissez vide pour utiliser la réservation en ligne du site (jauge, email de confirmation) plutôt qu\'un lien externe.', 'poivre-sens') ?></p>
             </div>
             <?php if (!$plugin_actif): ?>
             <div class="ps-evt-full">
