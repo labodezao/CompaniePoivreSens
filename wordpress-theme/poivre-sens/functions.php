@@ -6,6 +6,9 @@
 
 defined('ABSPATH') || exit;
 
+// Textes éditoriaux de la page d'accueil (source unique)
+require_once get_template_directory() . '/inc/textes.php';
+
 // Interface newsletter
 require_once get_template_directory() . '/inc/newsletter-admin.php';
 

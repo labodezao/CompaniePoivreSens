@@ -34,7 +34,7 @@ function ps_construction_defaults() {
         'ps_cp_eyebrow'  => __('Cie Poivre & Sens', 'poivre-sens'),
         'ps_cp_title'    => __('Notre site fait', 'poivre-sens'),
         'ps_cp_title_em' => __('peau neuve', 'poivre-sens'),
-        'ps_cp_lede'     => __('Le nouveau site arrive bientôt. En attendant, laissez-nous votre e-mail pour rester en lien : dates de stages, spectacles et nouvelles rares.', 'poivre-sens'),
+        'ps_cp_lede'     => __('Le nouveau site arrive bientôt. En attendant, laissez-nous votre e-mail pour rester en lien : dimanches, stages et nouvelles rares.', 'poivre-sens'),
         'ps_cp_button'   => __('Rester en lien', 'poivre-sens'),
         'ps_cp_note'     => __('Un e-mail rare, jamais de spam. Désinscription en un clic.', 'poivre-sens'),
         'ps_cp_thanks'   => __('Merci ! À très bientôt.', 'poivre-sens'),

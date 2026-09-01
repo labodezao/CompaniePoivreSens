@@ -291,30 +291,23 @@ add_shortcode('ps_newsletter_liste', function ($atts): string {
 
 /** [ps_projet] — Section projet artistique (axes créatifs) */
 add_shortcode('ps_projet', function (): string {
+    $t = ps_textes()['projet'];
     ob_start();
     ?>
     <section class="sec" id="projet" aria-labelledby="titre-projet">
       <div style="margin-bottom:56px">
-        <p class="lbl">Note d'intention</p>
-        <h2 class="sh" id="titre-projet">Le projet artistique</h2>
+        <p class="lbl"><?= $t['label'] ?></p>
+        <h2 class="sh" id="titre-projet"><?= $t['titre'] ?></h2>
         <div class="regle"></div>
       </div>
       <div class="axes">
+        <?php foreach ($t['axes'] as $axe) : ?>
         <div class="axe">
-          <p class="axe__n">01</p>
-          <h3 class="axe__t">Création chorégraphique &amp; musicale</h3>
-          <p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
+          <p class="axe__n"><?= $axe['num'] ?></p>
+          <h3 class="axe__t"><?= $axe['titre'] ?></h3>
+          <p class="axe__tx"><?= $axe['texte'] ?></p>
         </div>
-        <div class="axe">
-          <p class="axe__n">02</p>
-          <h3 class="axe__t">L'improvisation comme forme</h3>
-          <p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
-        </div>
-        <div class="axe">
-          <p class="axe__n">03</p>
-          <h3 class="axe__t">La pédagogie du sensible</h3>
-          <p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
-        </div>
+        <?php endforeach; ?>
       </div>
     </section>
     <?php
@@ -323,18 +316,16 @@ add_shortcode('ps_projet', function (): string {
 
 /** [ps_influences] — Références & influences (dans la section artistes) */
 add_shortcode('ps_influences', function (): string {
+    $t = ps_textes()['influences'];
     ob_start();
     ?>
     <div>
-      <p class="lbl" style="margin-top:0">Références &amp; influences</p>
+      <p class="lbl" style="margin-top:0"><?= $t['label'] ?></p>
       <div class="regle" style="margin-bottom:28px"></div>
       <div class="influences">
-        <div class="inf"><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><p class="inf__d">Fondateurs du contact-improvisation</p></div>
-        <div class="inf"><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><p class="inf__d">Éducation somatique et danse thérapie</p></div>
-        <div class="inf"><p class="inf__n">John Cage &amp; Derek Bailey</p><p class="inf__d">Improvisation musicale et indétermination</p></div>
-        <div class="inf"><p class="inf__n">Huangdi Neijing</p><p class="inf__d">Classique de médecine interne — méridiens</p></div>
-        <div class="inf"><p class="inf__n">Ueshiba Morihei</p><p class="inf__d">Fondateur de l'aïkido</p></div>
-        <div class="inf"><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><p class="inf__d">Pensée du corps sonore</p></div>
+        <?php foreach ($t['items'] as $inf) : ?>
+        <div class="inf"><p class="inf__n"><?= $inf[0] ?></p><p class="inf__d"><?= $inf[1] ?></p></div>
+        <?php endforeach; ?>
       </div>
     </div>
     <?php
@@ -343,30 +334,28 @@ add_shortcode('ps_influences', function (): string {
 
 /** [ps_activites] — Section nos activités + axes de diffusion */
 add_shortcode('ps_activites', function (): string {
+    $t = ps_textes()['activites'];
     ob_start();
     ?>
     <section class="sec" id="activites" aria-labelledby="titre-activites">
       <div style="margin-bottom:56px">
-        <p class="lbl">Ce que nous proposons</p>
-        <h2 class="sh" id="titre-activites">Nos activités</h2>
+        <p class="lbl"><?= $t['label'] ?></p>
+        <h2 class="sh" id="titre-activites"><?= $t['titre'] ?></h2>
         <div class="regle"></div>
+        <p class="act-chapeau"><?= $t['chapeau'] ?></p>
       </div>
       <ul role="list">
-        <li class="act"><span class="act__n" aria-hidden="true">01</span><div><h3 class="act__t">Spectacles vivants</h3><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p></div><span class="act__b">Scène</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">02</span><div><h3 class="act__t">Jams contact-improvisation</h3><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p></div><span class="act__b">Jam</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">03</span><div><h3 class="act__t">Stages &amp; ateliers</h3><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p></div><span class="act__b">Pédagogie</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">04</span><div><h3 class="act__t">Résidences de recherche</h3><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p></div><span class="act__b">Résidence</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">05</span><div><h3 class="act__t">Résidences pédagogiques</h3><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics.</p></div><span class="act__b">Médiation</span></li>
-        <li class="act"><span class="act__n" aria-hidden="true">06</span><div><h3 class="act__t">Lutherie &amp; fabrication</h3><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p></div><span class="act__b">Artisanat</span></li>
+        <?php foreach ($t['items'] as $a) : ?>
+        <li class="act"><span class="act__n" aria-hidden="true"><?= $a['num'] ?></span><div><h3 class="act__t"><?= $a['titre'] ?></h3><p class="act__tx"><?= $a['texte'] ?></p></div><span class="act__b"><?= $a['badge'] ?></span></li>
+        <?php endforeach; ?>
       </ul>
       <div>
-        <p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+        <p class="lbl" style="margin-top:64px"><?= $t['diffusion_label'] ?></p>
         <div class="regle" style="margin-bottom:28px"></div>
         <div class="diff">
-          <div class="diff-i">Festivals de danse contemporaine, contact-improvisation et musique improvisée — France &amp; Europe</div>
-          <div class="diff-i">Théâtres et scènes labellisées accueillant les écritures chorégraphiques émergentes</div>
-          <div class="diff-i">Lieux non conventionnels : musées, bibliothèques, espaces naturels, ateliers d'artistes</div>
-          <div class="diff-i">Établissements scolaires et structures socioculturelles pour les ateliers pédagogiques</div>
+          <?php foreach ($t['diffusion'] as $d) : ?>
+          <div class="diff-i"><?= $d ?></div>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
@@ -376,14 +365,13 @@ add_shortcode('ps_activites', function (): string {
 
 /** [ps_valeurs] — Valeurs esthétiques (colonne gauche de la section esthétique) */
 add_shortcode('ps_valeurs', function (): string {
+    $valeurs = ps_textes()['esthetique']['valeurs'];
     ob_start();
     ?>
     <div class="esthet__vals">
-      <div class="val"><p class="val__l">Scénographie</p><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p></div>
-      <div class="val"><p class="val__l">Musique</p><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p></div>
-      <div class="val"><p class="val__l">Mouvement</p><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p></div>
-      <div class="val"><p class="val__l">Artisanat</p><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p></div>
-      <div class="val"><p class="val__l">Philosophie</p><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p></div>
+      <?php foreach ($valeurs as $v) : ?>
+      <div class="val"><p class="val__l"><?= $v[0] ?></p><p class="val__t"><?= $v[1] ?></p></div>
+      <?php endforeach; ?>
     </div>
     <?php
     return ob_get_clean();
@@ -478,7 +466,13 @@ function _ps_pat_newsletter_sc(): string { return _ps_sc('ps_newsletter'); }
 
 /* ── ① Hero ────────────────────────────────────────────────── */
 function _ps_pat_hero(): string {
-    return <<<'BLOCK'
+    $t     = ps_textes()['hero'];
+    $disc  = implode('<br>', $t['disciplines']);
+    $sup   = $t['surtitre'];
+    $cita  = $t['citation'];
+    $intro = $t['intro'];
+    $cta   = $t['cta'];
+    return <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"hero","anchor":"accueil","layout":{"type":"default"}} -->
 <section class="wp-block-group hero" id="accueil">
@@ -487,7 +481,7 @@ function _ps_pat_hero(): string {
 <div class="wp-block-group hero__g">
 
 <!-- wp:paragraph {"className":"hero__sup"} -->
-<p class="hero__sup">Compagnie artistique · Association loi 1901</p>
+<p class="hero__sup">{$sup}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":1,"className":"hero__nom"} -->
@@ -495,11 +489,11 @@ function _ps_pat_hero(): string {
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"className":"hero__disc"} -->
-<p class="hero__disc"><strong>Ambre Lavignac &amp; Ewen d'Aviau</strong><br>Danse contemporaine<br>Contact-improvisation<br>Musique improvisée<br>Pratiques somatiques</p>
+<p class="hero__disc"><strong>Ambre Lavignac &amp; Ewen d'Aviau</strong><br>{$disc}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p><a href="#projet" class="hero__cta">Découvrir la compagnie</a></p>
+<p><a href="#projet" class="hero__cta">{$cta}</a></p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -509,11 +503,11 @@ function _ps_pat_hero(): string {
 <div class="wp-block-group hero__d">
 
 <!-- wp:paragraph {"className":"hero__q"} -->
-<p class="hero__q">Le corps sait ce que l'esprit cherche encore.</p>
+<p class="hero__q">{$cita}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"className":"hero__intro"} -->
-<p class="hero__intro">Née de la rencontre d'un corps et d'un son, d'une main qui écoute et d'une oreille qui se déplace, la compagnie explore les espaces de porosité entre le mouvement et la musique.</p>
+<p class="hero__intro">{$intro}</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -527,37 +521,32 @@ BLOCK;
 
 /* ── ② Manifeste ───────────────────────────────────────────── */
 function _ps_pat_manifeste(): string {
-    return <<<'BLOCK'
+    $t     = ps_textes()['manifeste'];
+    $label = $t['label'];
+    $titre = $t['titre_html'];
+    $paras = '';
+    foreach ($t['paragraphes'] as $para) {
+        $paras .= "\n<!-- wp:paragraph -->\n<p>{$para}</p>\n<!-- /wp:paragraph -->\n";
+    }
+    return <<<BLOCK
 
 <!-- wp:group {"tagName":"div","className":"manifeste sec3","layout":{"type":"default"}} -->
 <div class="wp-block-group manifeste sec3">
 
 <!-- wp:paragraph {"className":"mf-ax"} -->
-<p class="mf-ax">Manifeste</p>
+<p class="mf-ax">{$label}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:group {"className":"mf-corps","layout":{"type":"default"}} -->
 <div class="wp-block-group mf-corps">
 
 <!-- wp:heading {"level":2,"className":"mf-t"} -->
-<h2 class="wp-block-heading mf-t">Une rencontre entre <em>le corps</em> et <em>le son</em></h2>
+<h2 class="wp-block-heading mf-t">{$titre}</h2>
 <!-- /wp:heading -->
 
 <!-- wp:group {"className":"mf-tx","layout":{"type":"default"}} -->
 <div class="wp-block-group mf-tx">
-
-<!-- wp:paragraph -->
-<p>La compagnie explore les espaces de porosité entre le mouvement et le son, entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu. Ses créations ne cherchent pas à illustrer ni à démontrer, mais à <em>habiter</em>.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Ce qui unit leurs univers, c'est la qualité de présence : être là, pleinement, dans l'instant d'une rencontre — entre deux corps, entre un corps et un instrument, entre une sensation et une image, entre ce qui est attendu et ce qui surgit.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>Inspirée du Tao, des méridiens, de l'aïkido et de la lutherie, la compagnie croit en l'<em>artisanat du spectacle</em> : chaque geste compte, chaque son est matière, chaque silence est espace.</p>
-<!-- /wp:paragraph -->
-
+{$paras}
 </div>
 <!-- /wp:group -->
 
@@ -572,7 +561,59 @@ BLOCK;
 
 /* ── ③ Artistes ────────────────────────────────────────────── */
 function _ps_pat_artistes(): string {
-    $opening = <<<'BLOCK'
+    $t     = ps_textes()['artistes'];
+    $label = $t['label'];
+    $titre = $t['titre'];
+
+    $bios = '';
+    foreach ($t['bios'] as $b) {
+        $ini  = $b['initiale'];
+        $nom  = $b['nom'];
+        $role = $b['role'];
+        $txts = '';
+        foreach ($b['textes'] as $tx) {
+            $txts .= "\n<!-- wp:paragraph {\"className\":\"bio__tx\"} -->\n<p class=\"bio__tx\">{$tx}</p>\n<!-- /wp:paragraph -->\n";
+        }
+        $tags = '';
+        foreach ($b['tags'] as $tag) {
+            $tags .= '<span class="bio__tg">' . $tag . '</span>';
+        }
+        $bios .= <<<BIO
+
+<!-- wp:group {"className":"bio","layout":{"type":"default"}} -->
+<div class="wp-block-group bio">
+<!-- wp:group {"className":"bio__hd","layout":{"type":"default"}} -->
+<div class="wp-block-group bio__hd">
+<!-- wp:group {"className":"bio__mn","layout":{"type":"default"}} -->
+<div class="wp-block-group bio__mn">
+<!-- wp:paragraph -->
+<p>{$ini}</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+<!-- wp:group {"layout":{"type":"default"}} -->
+<div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"bio__nom"} -->
+<h3 class="wp-block-heading bio__nom">{$nom}</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"className":"bio__rol"} -->
+<p class="bio__rol">{$role}</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+{$txts}
+<!-- wp:paragraph {"className":"bio__tgs"} -->
+<p class="bio__tgs">{$tags}</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+BIO;
+    }
+
+    $opening = <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"sec sec2","anchor":"artistes","layout":{"type":"default"}} -->
 <section class="wp-block-group sec sec2" id="artistes">
@@ -580,10 +621,10 @@ function _ps_pat_artistes(): string {
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group" style="margin-bottom:56px">
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">Les fondateurs</p>
+<p class="lbl">{$label}</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">Artistes &amp; pédagogues</h2>
+<h2 class="wp-block-heading sh">{$titre}</h2>
 <!-- /wp:heading -->
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
@@ -593,77 +634,7 @@ function _ps_pat_artistes(): string {
 
 <!-- wp:group {"className":"bios","layout":{"type":"default"}} -->
 <div class="wp-block-group bios">
-
-<!-- wp:group {"className":"bio","layout":{"type":"default"}} -->
-<div class="wp-block-group bio">
-<!-- wp:group {"className":"bio__hd","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__hd">
-<!-- wp:group {"className":"bio__mn","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__mn">
-<!-- wp:paragraph -->
-<p>A</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"bio__nom"} -->
-<h3 class="wp-block-heading bio__nom">Ambre Lavignac</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"bio__rol"} -->
-<p class="bio__rol">Danseuse · Pédagogue · Praticienne du mouvement</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:group -->
-<!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Formée à la danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens. Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les méridiens énergétiques et les qualités de mouvement.</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Praticienne du massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante.</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"bio__tgs"} -->
-<p class="bio__tgs"><span class="bio__tg">Danse contemporaine</span><span class="bio__tg">Improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Tao</span><span class="bio__tg">Méridiens</span><span class="bio__tg">Massage</span><span class="bio__tg">Pédagogie</span></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"bio","layout":{"type":"default"}} -->
-<div class="wp-block-group bio">
-<!-- wp:group {"className":"bio__hd","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__hd">
-<!-- wp:group {"className":"bio__mn","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__mn">
-<!-- wp:paragraph -->
-<p>E</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"bio__nom"} -->
-<h3 class="wp-block-heading bio__nom">Ewen d'Aviau</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"bio__rol"} -->
-<p class="bio__rol">Luthier-ingénieur · Musicien · Danseur</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:group -->
-<!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"bio__tx"} -->
-<p class="bio__tx">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.</p>
-<!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"bio__tgs"} -->
-<p class="bio__tgs"><span class="bio__tg">Lutherie</span><span class="bio__tg">Musique improvisée</span><span class="bio__tg">Contact-improvisation</span><span class="bio__tg">Somatique</span><span class="bio__tg">Aïkido</span><span class="bio__tg">Enseignement</span></p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
+{$bios}
 </div>
 <!-- /wp:group -->
 
@@ -679,7 +650,13 @@ BLOCK;
 
 /* ── ⑦ Esthétique ──────────────────────────────────────────── */
 function _ps_pat_esthetique(): string {
-    $before = <<<'BLOCK'
+    $t      = ps_textes()['esthetique'];
+    $label  = $t['label'];
+    $titre  = $t['titre'];
+    $cite   = $t['citation_html'];
+    $source = $t['citation_source'];
+
+    $before = <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"sec","anchor":"esthetique","layout":{"type":"default"}} -->
 <section class="wp-block-group sec" id="esthetique">
@@ -687,10 +664,10 @@ function _ps_pat_esthetique(): string {
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group" style="margin-bottom:56px">
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">Identité &amp; valeurs</p>
+<p class="lbl">{$label}</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">Esthétique de la compagnie</h2>
+<h2 class="wp-block-heading sh">{$titre}</h2>
 <!-- /wp:heading -->
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
@@ -702,12 +679,12 @@ function _ps_pat_esthetique(): string {
 <div class="wp-block-group esthet">
 
 BLOCK;
-    $after = <<<'BLOCK'
+    $after = <<<BLOCK
 
 <!-- wp:group {"className":"esthet__cite","layout":{"type":"default"}} -->
 <div class="wp-block-group esthet__cite">
 <!-- wp:quote {"className":"gcite"} -->
-<blockquote class="wp-block-quote gcite"><p>Habiter un espace de jeu partagé —<br>entre deux corps,<br><em>un corps et un instrument</em>.</p><cite>Poivre &amp; Sens · Note d'intention</cite></blockquote>
+<blockquote class="wp-block-quote gcite"><p>{$cite}</p><cite>{$source}</cite></blockquote>
 <!-- /wp:quote -->
 </div>
 <!-- /wp:group -->
@@ -724,7 +701,11 @@ BLOCK;
 
 /* ── ⑤ Contact ─────────────────────────────────────────────── */
 function _ps_pat_contact(): string {
-    return <<<'BLOCK'
+    $t     = ps_textes()['contact'];
+    $label = $t['label'];
+    $titre = $t['titre'];
+    $note  = $t['note'];
+    return <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"sec","anchor":"contact","layout":{"type":"default"}} -->
 <section class="wp-block-group sec" id="contact">
@@ -732,10 +713,10 @@ function _ps_pat_contact(): string {
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group" style="margin-bottom:56px">
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">Nous rejoindre</p>
+<p class="lbl">{$label}</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">Contact</h2>
+<h2 class="wp-block-heading sh">{$titre}</h2>
 <!-- /wp:heading -->
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
@@ -811,7 +792,7 @@ function _ps_pat_contact(): string {
 <h4 class="co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"co-note"} -->
-<p class="co-note">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.</p>
+<p class="co-note">{$note}</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -831,13 +812,30 @@ BLOCK;
 
 /* ── Références & influences ───────────────────────────────── */
 function _ps_pat_influences(): string {
-    return <<<'BLOCK'
+    $t     = ps_textes()['influences'];
+    $label = $t['label'];
+    $items = '';
+    foreach ($t['items'] as $inf) {
+        $nom  = $inf[0];
+        $desc = $inf[1];
+        $items .= <<<INF
+
+<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
+<div class="wp-block-group inf">
+<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">{$nom}</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">{$desc}</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+INF;
+    }
+    return <<<BLOCK
 
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group">
 
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:0">Références &amp; influences</p>
+<p class="lbl" style="margin-top:0">{$label}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"regle"} -->
@@ -846,49 +844,7 @@ function _ps_pat_influences(): string {
 
 <!-- wp:group {"className":"influences","layout":{"type":"default"}} -->
 <div class="wp-block-group influences">
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Steve Paxton &amp; Lisa Nelson</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateurs du contact-improvisation</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Anna Halprin &amp; Thomas Hanna</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Éducation somatique et danse thérapie</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">John Cage &amp; Derek Bailey</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Improvisation musicale et indétermination</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Huangdi Neijing</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Classique de médecine interne — méridiens</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Ueshiba Morihei</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Fondateur de l'aïkido</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">Peter Szendy &amp; Jean-Luc Nancy</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">Pensée du corps sonore</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
+{$items}
 </div>
 <!-- /wp:group -->
 
@@ -900,46 +856,26 @@ BLOCK;
 
 /* ── Valeurs esthétiques ───────────────────────────────────── */
 function _ps_pat_valeurs(): string {
-    return <<<'BLOCK'
+    $items = '';
+    foreach (ps_textes()['esthetique']['valeurs'] as $v) {
+        $label = $v[0];
+        $texte = $v[1];
+        $items .= <<<VAL
+
+<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
+<div class="wp-block-group val">
+<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">{$label}</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">{$texte}</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+VAL;
+    }
+    return <<<BLOCK
 
 <!-- wp:group {"className":"esthet__vals","layout":{"type":"default"}} -->
 <div class="wp-block-group esthet__vals">
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Scénographie</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Sobriété des accessoires. Lumière travaillée — diffuse, rasante, traversante. Sons produits en direct. La présence des artistes au premier plan.</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Musique</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments acoustiques, voix, objets, cordes préparées. Improvisation libre et composition en temps réel. Le silence comme espace habité.</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Mouvement</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Qualité de présence, écoute du poids, circulation de l'énergie. Ancré dans les pratiques somatiques — Body-Mind Centering, Feldenkrais, méridiens.</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Artisanat</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Instruments fabriqués ou modifiés par Ewen d'Aviau. Costumes et accessoires pensés en rapport avec la matière corporelle.</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">Philosophie</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">Inspiré du Tao, des méridiens, de l'aïkido — fluidité, transformation, redirection, vacuité. Non-résistance, accord avec la force de l'autre.</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
+{$items}
 </div>
 <!-- /wp:group -->
 
@@ -948,7 +884,31 @@ BLOCK;
 
 /* ── ④ Projet artistique ───────────────────────────────────── */
 function _ps_pat_projet(): string {
-    return <<<'BLOCK'
+    $t     = ps_textes()['projet'];
+    $label = $t['label'];
+    $titre = $t['titre'];
+    $axes  = '';
+    foreach ($t['axes'] as $a) {
+        $num   = $a['num'];
+        $at    = $a['titre'];
+        $atx   = $a['texte'];
+        $axes .= <<<AXE
+
+<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
+<div class="wp-block-group axe">
+<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">{$num}</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3,"className":"axe__t"} -->
+<h3 class="wp-block-heading axe__t">{$at}</h3>
+<!-- /wp:heading -->
+<!-- wp:paragraph {"className":"axe__tx"} -->
+<p class="axe__tx">{$atx}</p>
+<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+AXE;
+    }
+    return <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"sec","anchor":"projet","layout":{"type":"default"}} -->
 <section class="wp-block-group sec" id="projet">
@@ -956,10 +916,10 @@ function _ps_pat_projet(): string {
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group" style="margin-bottom:56px">
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">Note d'intention</p>
+<p class="lbl">{$label}</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">Le projet artistique</h2>
+<h2 class="wp-block-heading sh">{$titre}</h2>
 <!-- /wp:heading -->
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
@@ -969,43 +929,7 @@ function _ps_pat_projet(): string {
 
 <!-- wp:group {"className":"axes","layout":{"type":"default"}} -->
 <div class="wp-block-group axes">
-
-<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
-<div class="wp-block-group axe">
-<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">01</p><!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">Création chorégraphique &amp; musicale</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Des pièces scéniques en duo ou avec artistes invités, où la frontière entre la composition musicale et la partition corporelle s'efface. Le musicien se déplace, la danseuse émet, le son se fait matière, le corps se fait résonance.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
-<div class="wp-block-group axe">
-<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">02</p><!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">L'improvisation comme forme</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Non pas une absence de forme, mais une forme en devenir. Jams ouvertes, laboratoires de recherche, performances situées dans des espaces non conventionnels : parcs, friches industrielles, espaces naturels.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
-<div class="wp-block-group axe">
-<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">03</p><!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">La pédagogie du sensible</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">Stages, ateliers de mouvement somatique, ateliers de musique, résidences pédagogiques en milieu scolaire, médico-social ou en entreprise. La transmission est au cœur du projet.</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
+{$axes}
 </div>
 <!-- /wp:group -->
 
@@ -1017,7 +941,40 @@ BLOCK;
 
 /* ── ⑤ Nos activités ───────────────────────────────────────── */
 function _ps_pat_activites(): string {
-    return <<<'BLOCK'
+    $t       = ps_textes()['activites'];
+    $label   = $t['label'];
+    $titre   = $t['titre'];
+    $chapeau = $t['chapeau'];
+
+    $items = '';
+    foreach ($t['items'] as $a) {
+        $num   = $a['num'];
+        $at    = $a['titre'];
+        $atx   = $a['texte'];
+        $badge = $a['badge'];
+        $items .= <<<ACT
+
+<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
+<div class="wp-block-group act">
+<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">{$num}</p><!-- /wp:paragraph -->
+<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
+<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">{$at}</h3><!-- /wp:heading -->
+<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">{$atx}</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">{$badge}</p><!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
+
+ACT;
+    }
+
+    $diff_label = $t['diffusion_label'];
+    $diffs = '';
+    foreach ($t['diffusion'] as $d) {
+        $diffs .= '<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">' . $d . '</p><!-- /wp:paragraph -->' . "\n";
+    }
+
+    return <<<BLOCK
 
 <!-- wp:group {"tagName":"section","className":"sec","anchor":"activites","layout":{"type":"default"}} -->
 <section class="wp-block-group sec" id="activites">
@@ -1025,86 +982,23 @@ function _ps_pat_activites(): string {
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group" style="margin-bottom:56px">
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">Ce que nous proposons</p>
+<p class="lbl">{$label}</p>
 <!-- /wp:paragraph -->
 <!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">Nos activités</h2>
+<h2 class="wp-block-heading sh">{$titre}</h2>
 <!-- /wp:heading -->
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
 <!-- /wp:separator -->
+<!-- wp:paragraph {"className":"act-chapeau"} -->
+<p class="act-chapeau">{$chapeau}</p>
+<!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 
 <!-- wp:group {"layout":{"type":"default"}} -->
 <div class="wp-block-group">
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">01</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Spectacles vivants</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Créations scéniques en duo ou en collaboration avec artistes invités, mêlant danse, improvisation et musique live. En festivals, théâtres et lieux non conventionnels.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Scène</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">02</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Jams contact-improvisation</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Sessions d'improvisation ouvertes au public, en contact-improvisation et musique improvisée, dans des espaces variés et inattendus.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Jam</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">03</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Stages &amp; ateliers</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Stages de contact-improvisation, ateliers de mouvement somatique, ateliers de musique improvisée. Tous niveaux, du débutant à l'artiste confirmé.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Pédagogie</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">04</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences de recherche</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Espaces d'exploration artistique pour chercheurs du mouvement, musiciens et artistes pluridisciplinaires. Laboratoires de création et d'expérimentation.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Résidence</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">05</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Résidences pédagogiques</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Interventions en milieu scolaire, médico-social ou en entreprise. Une pédagogie du sensible adaptée à tous les publics.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Médiation</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">06</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">Lutherie &amp; fabrication</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">Conception et modification d'instruments comme geste artistique. Ateliers de sensibilisation à la fabrication sonore.</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">Artisanat</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
+{$items}
 </div>
 <!-- /wp:group -->
 
@@ -1112,7 +1006,7 @@ function _ps_pat_activites(): string {
 <div class="wp-block-group">
 
 <!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:64px">Axes de diffusion</p>
+<p class="lbl" style="margin-top:64px">{$diff_label}</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"regle"} -->
@@ -1121,10 +1015,7 @@ function _ps_pat_activites(): string {
 
 <!-- wp:group {"className":"diff","layout":{"type":"default"}} -->
 <div class="wp-block-group diff">
-<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Festivals de danse contemporaine, contact-improvisation et musique improvisée — France &amp; Europe</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Théâtres et scènes labellisées accueillant les écritures chorégraphiques émergentes</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Lieux non conventionnels : musées, bibliothèques, espaces naturels, ateliers d'artistes</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">Établissements scolaires et structures socioculturelles pour les ateliers pédagogiques</p><!-- /wp:paragraph -->
+{$diffs}
 </div>
 <!-- /wp:group -->
 

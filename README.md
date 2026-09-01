@@ -13,6 +13,12 @@ Ce dépôt contient l'ensemble des documents nécessaires à la création et au 
 |---|---|
 | [`site/index.html`](site/index.html) | Site web complet — une page, HTML + CSS + JS intégrés, responsive, prêt à l'emploi |
 | [`site/gutenberg-import.txt`](site/gutenberg-import.txt) | Import natif WordPress Gutenberg — coller dans l'éditeur de code pour obtenir la page complète éditable visuellement |
+| `site/source.txt` | Capture de ce que le site en production renvoie. Témoin, pas source : ne pas y écrire de textes. |
+
+> **Les textes ne s'écrivent qu'à un seul endroit :** `wordpress-theme/poivre-sens/inc/textes.php`.
+> Le thème (shortcodes et patterns Gutenberg) les lit directement ; les deux fichiers de `site/`
+> ci-dessus sont régénérés par `php tools/sync-textes-statiques.php`. Modifier une copie à la main,
+> c'est la faire diverger sans que cela se voie.
 
 > **Utiliser le fichier Gutenberg :** dans WordPress, créez une page, ouvrez les trois points (⋮) → *Éditeur de code*, sélectionnez tout, collez le contenu du fichier `.txt`, puis repassez en *Éditeur visuel* pour modifier librement textes, photos et couleurs.
 
