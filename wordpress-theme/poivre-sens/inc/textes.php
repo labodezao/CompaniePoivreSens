@@ -62,7 +62,9 @@ function ps_textes(): array {
 
                 "Nous enseignons à deux, depuis deux pratiques distinctes. C'est ce croisement — le somatique et la danse, le geste et le son — qui fait, nous semble-t-il, ce que l'on ne trouve pas ailleurs.",
 
-                "Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part.",
+                "Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part. L'un de nous a bâti toute sa pratique en traversant des troubles dys : on ne vient pas ici <em>malgré</em> ce qui coince, on vient avec.",
+
+                "Il y a aussi une envie plus large : faire connaître ce que la danse fait à qui la pratique. Pas celle qu'on regarde — <em>celle qui change la vie</em>. C'est pourquoi nous assumons deux entrées plutôt qu'une : selon le thème, un rendez-vous sera tourné vers le développement personnel, ou franchement artistique. L'orientation est annoncée pour chaque date, pour que vous sachiez avant de venir dans quel espace vous entrez.",
 
                 "Nous espérons rencontrer des gens émerveillables, curieux d'aller chercher et d'expérimenter. Nous ne saurions pas quoi faire, en revanche, de quelqu'un qui viendrait chercher un chemin tout tracé, ou quelqu'un à admirer. Ici, l'engagement que vous mettez pour vous-même compte davantage que ce que nous pourrions vous apporter.",
             ],
@@ -88,8 +90,8 @@ function ps_textes(): array {
                     'nom'      => "Ewen d'Aviau",
                     'role'     => 'Luthier-ingénieur · Musicien · Danseur',
                     'textes'   => [
-                        "Luthier, Ewen est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Il conçoit le son comme une matière vivante, façonnable, imprévue.",
-                        "S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.",
+                        "Luthier, Ewen porte des troubles dys — il l'écrit lui-même : « Dys sur Dys ». Il est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Traverser une différence oblige à inventer ses propres chemins : c'est vrai de sa pratique comme de sa pédagogie.",
+                        "Il conçoit le son comme une matière vivante, façonnable, imprévue. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.",
                     ],
                     'tags' => ['Lutherie', 'Musique improvisée', 'Contact-improvisation', 'Somatique', 'Aïkido', 'Enseignement'],
                 ],
@@ -134,8 +136,9 @@ function ps_textes(): array {
 
         /* ── ⑤ Nos activités ────────────────────────────────────── */
         'activites' => [
-            'label' => 'Ce que nous proposons',
-            'titre' => 'Nos activités',
+            'label'   => 'Ce que nous proposons',
+            'titre'   => 'Nos activités',
+            'chapeau' => "Chaque rendez-vous est annoncé avec son orientation : certains sont tournés vers le développement personnel, d'autres sont franchement artistiques. Cela dépend du thème, et jamais du niveau de qui vient.",
             'items' => [
                 [
                     'num'    => '01',

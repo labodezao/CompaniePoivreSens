@@ -132,6 +132,8 @@ foreach ($T['influences']['items'] as $i2) {
 }
 $d = inner($d, '<div class="influences">', 'div', $inf . "\n    ", 'index/influences');
 
+$d = inner($d, '<p class="act-chapeau">', 'p', $T['activites']['chapeau'], 'index/chapeau activités');
+
 $act = '';
 foreach ($T['activites']['items'] as $a) {
     $act .= "\n    <li class=\"act\"><span class=\"act__n\" aria-hidden=\"true\">{$a['num']}</span>"
@@ -288,8 +290,12 @@ foreach ($T['activites']['items'] as $a) {
         . "</div>\n<!-- /wp:html -->\n\n";
 }
 $g = region($g, '<p class="ps-lbl">Ce que nous proposons</p>',
-    "<!-- wp:html -->\n<div class=\"ps-act\"", '<!-- wp:spacer {"height":"52px"} -->',
-    $acts . '<!-- wp:spacer {"height":"52px"} -->',
+    '<!-- wp:html --><div class="ps-sep"></div><!-- /wp:html -->', '<!-- wp:spacer {"height":"52px"} -->',
+    '<!-- wp:html --><div class="ps-sep"></div><!-- /wp:html -->' . "\n\n"
+    . '<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.78"}}} -->' . "\n"
+    . '<p style="color:rgba(127,116,99,1);font-size:.9rem;line-height:1.78;max-width:640px;font-family:' . $SANS . '">'
+    . $T['activites']['chapeau'] . "</p>\n<!-- /wp:paragraph -->\n\n"
+    . $acts . '<!-- wp:spacer {"height":"52px"} -->',
     'gut/activités');
 
 /* Diffusion */

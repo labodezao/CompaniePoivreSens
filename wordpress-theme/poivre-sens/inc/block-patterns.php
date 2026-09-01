@@ -342,6 +342,7 @@ add_shortcode('ps_activites', function (): string {
         <p class="lbl"><?= $t['label'] ?></p>
         <h2 class="sh" id="titre-activites"><?= $t['titre'] ?></h2>
         <div class="regle"></div>
+        <p class="act-chapeau"><?= $t['chapeau'] ?></p>
       </div>
       <ul role="list">
         <?php foreach ($t['items'] as $a) : ?>
@@ -940,9 +941,10 @@ BLOCK;
 
 /* ── ⑤ Nos activités ───────────────────────────────────────── */
 function _ps_pat_activites(): string {
-    $t     = ps_textes()['activites'];
-    $label = $t['label'];
-    $titre = $t['titre'];
+    $t       = ps_textes()['activites'];
+    $label   = $t['label'];
+    $titre   = $t['titre'];
+    $chapeau = $t['chapeau'];
 
     $items = '';
     foreach ($t['items'] as $a) {
@@ -988,6 +990,9 @@ ACT;
 <!-- wp:separator {"className":"regle"} -->
 <hr class="wp-block-separator regle"/>
 <!-- /wp:separator -->
+<!-- wp:paragraph {"className":"act-chapeau"} -->
+<p class="act-chapeau">{$chapeau}</p>
+<!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
 

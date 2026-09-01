@@ -182,6 +182,9 @@ body.nav-open { overflow:hidden; }
 .act:hover { padding-left:10px; }
 .act__n { font-family:var(--fh); font-size:2.2rem; font-weight:300; color:rgba(194,139,54,.22); line-height:1; }
 .act__t { font-family:var(--fh); font-size:1.4rem; font-weight:400; color:var(--creme); margin-bottom:8px; }
+/* Chapeau des activités : dit l'orientation (développement personnel ou
+   artistique) avant que le visiteur ne choisisse une date. */
+.act-chapeau { margin-top:24px; max-width:640px; font-size:.9rem; line-height:1.78; color:var(--gris); }
 .act__tx { font-size:.87rem; line-height:1.72; color:var(--gris); }
 .act__b { font-size:.65rem; font-weight:400; letter-spacing:.14em; text-transform:uppercase; color:var(--or); padding:5px 12px; border:1px solid var(--bord); align-self:center; white-space:nowrap; }
 

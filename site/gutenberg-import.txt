@@ -531,7 +531,8 @@ body.page .nm-header {
       <p style="margin:0 0 1.2em">Il y a dans ce travail une recherche d'intimité, et ce n'est pas un repli — c'est l'inverse. <em style="font-style:italic;color:#ece3cb">Être plus proche de soi, précisément au contact des autres.</em> Rester relié à soi pendant qu'on est en relation : c'est là, pour nous, que tout se joue.</p>
       <p style="margin:0 0 1.2em">Cela demande de savoir où l'on en est. « Je suis où, là ? » Il y a des jours où l'on n'est pas disponible pour être à deux, faute d'en avoir les ressources ce jour-là. Ce n'est pas un échec, c'est une information. Nous accueillons les limites telles qu'elles sont, dans le présent.</p>
       <p style="margin:0 0 1.2em">Nous enseignons à deux, depuis deux pratiques distinctes. C'est ce croisement — le somatique et la danse, le geste et le son — qui fait, nous semble-t-il, ce que l'on ne trouve pas ailleurs.</p>
-      <p style="margin:0 0 1.2em">Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part.</p>
+      <p style="margin:0 0 1.2em">Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part. L'un de nous a bâti toute sa pratique en traversant des troubles dys : on ne vient pas ici <em style="font-style:italic;color:#ece3cb">malgré</em> ce qui coince, on vient avec.</p>
+      <p style="margin:0 0 1.2em">Il y a aussi une envie plus large : faire connaître ce que la danse fait à qui la pratique. Pas celle qu'on regarde — <em style="font-style:italic;color:#ece3cb">celle qui change la vie</em>. C'est pourquoi nous assumons deux entrées plutôt qu'une : selon le thème, un rendez-vous sera tourné vers le développement personnel, ou franchement artistique. L'orientation est annoncée pour chaque date, pour que vous sachiez avant de venir dans quel espace vous entrez.</p>
       <p style="margin:0">Nous espérons rencontrer des gens émerveillables, curieux d'aller chercher et d'expérimenter. Nous ne saurions pas quoi faire, en revanche, de quelqu'un qui viendrait chercher un chemin tout tracé, ou quelqu'un à admirer. Ici, l'engagement que vous mettez pour vous-même compte davantage que ce que nous pourrions vous apporter.</p>
     </div>
   </div>
@@ -671,11 +672,11 @@ body.page .nm-header {
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Luthier, Ewen est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Il conçoit le son comme une matière vivante, façonnable, imprévue.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Luthier, Ewen porte des troubles dys — il l'écrit lui-même : « Dys sur Dys ». Il est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Traverser une différence oblige à inventer ses propres chemins : c'est vrai de sa pratique comme de sa pédagogie.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Il conçoit le son comme une matière vivante, façonnable, imprévue. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -791,7 +792,9 @@ body.page .nm-header {
 
 <!-- wp:html --><div class="ps-sep"></div><!-- /wp:html -->
 
-
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,1)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.78"}}} -->
+<p style="color:rgba(127,116,99,1);font-size:.9rem;line-height:1.78;max-width:640px;font-family:Inter,system-ui,sans-serif">Chaque rendez-vous est annoncé avec son orientation : certains sont tournés vers le développement personnel, d'autres sont franchement artistiques. Cela dépend du thème, et jamais du niveau de qui vient.</p>
+<!-- /wp:paragraph -->
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
