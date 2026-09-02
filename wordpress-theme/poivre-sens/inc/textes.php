@@ -142,30 +142,36 @@ function ps_textes(): array {
             'items' => [
                 [
                     'num'    => '01',
-                    'titre'  => 'Les dimanches',
-                    'texte'  => "Un rendez-vous de 2 h 30, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.",
-                    'badge'  => 'Régulier',
+                    'titre'  => 'Les ateliers de danse — deux fois par mois',
+                    'texte'  => "Notre rendez-vous le plus régulier : 2 h 30, deux fois par mois, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.",
+                    'badge'  => 'Bimensuel',
                 ],
                 [
                     'num'    => '02',
+                    'titre'  => 'Les ateliers de danse — une fois par mois',
+                    'texte'  => "Le même esprit, sur un rythme mensuel, pour celles et ceux qui ne peuvent pas venir deux fois. Chaque séance se suffit à elle-même : on peut arriver en cours d'année.",
+                    'badge'  => 'Mensuel',
+                ],
+                [
+                    'num'    => '03',
                     'titre'  => 'Stages',
                     'texte'  => "Sur une journée ou un week-end, autour d'une thématique. Deux intervenants, une trentaine de personnes au maximum : au-delà, la qualité de présence que nous voulons offrir ne tiendrait plus.",
                     'badge'  => 'Stage',
                 ],
                 [
-                    'num'    => '03',
+                    'num'    => '04',
                     'titre'  => 'Jams contact-improvisation',
                     'texte'  => "Des sessions d'improvisation ouvertes, en contact-improvisation et musique improvisée. On vient danser, jouer, se rencontrer.",
                     'badge'  => 'Jam',
                 ],
                 [
-                    'num'    => '04',
+                    'num'    => '05',
                     'titre'  => 'Créations &amp; performances',
                     'texte'  => "Pièces en duo ou avec des artistes invités. La compagnie débute : les premières créations sont en cours d'élaboration.",
                     'badge'  => 'Scène',
                 ],
                 [
-                    'num'    => '05',
+                    'num'    => '06',
                     'titre'  => 'Interventions &amp; ateliers',
                     'texte'  => "Sur demande, pour des groupes constitués, des structures ou des événements. Nous adaptons le format et la thématique.",
                     'badge'  => 'Sur mesure',
@@ -200,7 +206,7 @@ function ps_textes(): array {
         'contact' => [
             'label' => 'Nous rejoindre',
             'titre' => 'Contact',
-            'note'  => "La compagnie débute. Pour être prévenu des premières dates — dimanches, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.",
+            'note'  => "La compagnie débute. Pour être prévenu des premières dates — ateliers, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.",
         ],
     ];
 

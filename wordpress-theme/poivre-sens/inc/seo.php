@@ -232,7 +232,7 @@ function ps_seo_description() {
         $post = get_queried_object();
         $desc = has_excerpt($post) ? get_the_excerpt($post) : wp_strip_all_tags($post->post_content ?? '');
     } elseif (is_post_type_archive(ps_evt_cpt())) {
-        $desc = __('Prochaines dates de la Compagnie Poivre & Sens : dimanches, stages, jams de contact-improvisation et créations.', 'poivre-sens');
+        $desc = __('Prochaines dates de la Compagnie Poivre & Sens : ateliers de danse, stages, jams de contact-improvisation et créations.', 'poivre-sens');
     }
     $desc = trim(preg_replace('/\s+/', ' ', (string) $desc));
     if ($desc === '') {

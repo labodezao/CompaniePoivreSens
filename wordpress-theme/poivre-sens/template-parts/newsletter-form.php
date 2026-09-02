@@ -11,11 +11,11 @@ defined('ABSPATH') || exit;
             <p class="lbl"><?= __('Newsletter', 'poivre-sens') ?></p>
             <h2 class="nl-form-t"><?= __('Restez dans la danse', 'poivre-sens') ?></h2>
             <p class="nl-form-desc">
-                <?= __('Recevez les prochaines dates — dimanches, stages, jams et créations — directement dans votre boîte mail.', 'poivre-sens') ?>
+                <?= __('Recevez les prochaines dates — ateliers, stages, jams et créations — directement dans votre boîte mail.', 'poivre-sens') ?>
             </p>
             <ul class="nl-form-liste">
                 <li><?= __('Les prochaines dates, en avant-première', 'poivre-sens') ?></li>
-                <li><?= __('Les stages et les rendez-vous du dimanche', 'poivre-sens') ?></li>
+                <li><?= __('Les ateliers de danse et les stages', 'poivre-sens') ?></li>
                 <li><?= __('Les nouvelles de la compagnie', 'poivre-sens') ?></li>
             </ul>
         </div>

@@ -800,16 +800,27 @@ body.page .nm-header {
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
   <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">01</span>
   <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les dimanches</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Un rendez-vous de 2 h 30, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.</p>
+    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les ateliers de danse — deux fois par mois</h3>
+    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Notre rendez-vous le plus régulier : 2 h 30, deux fois par mois, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.</p>
   </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Régulier</span>
+  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Bimensuel</span>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
   <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">02</span>
+  <div>
+    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les ateliers de danse — une fois par mois</h3>
+    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Le même esprit, sur un rythme mensuel, pour celles et ceux qui ne peuvent pas venir deux fois. Chaque séance se suffit à elle-même : on peut arriver en cours d'année.</p>
+  </div>
+  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Mensuel</span>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">03</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Stages</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Sur une journée ou un week-end, autour d'une thématique. Deux intervenants, une trentaine de personnes au maximum : au-delà, la qualité de présence que nous voulons offrir ne tiendrait plus.</p>
@@ -820,7 +831,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">03</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">04</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Jams contact-improvisation</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Des sessions d'improvisation ouvertes, en contact-improvisation et musique improvisée. On vient danser, jouer, se rencontrer.</p>
@@ -831,7 +842,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">04</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">05</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Créations &amp; performances</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Pièces en duo ou avec des artistes invités. La compagnie débute : les premières créations sont en cours d'élaboration.</p>
@@ -842,7 +853,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">05</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">06</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Interventions &amp; ateliers</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Sur demande, pour des groupes constitués, des structures ou des événements. Nous adaptons le format et la thématique.</p>
@@ -1032,7 +1043,7 @@ body.page .nm-header {
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,0.8)"},"typography":{"fontSize":"0.78rem","fontStyle":"italic"}}} -->
-<p style="color:rgba(127,116,99,.8);font-size:.78rem;font-style:italic;margin-top:20px;font-family:Inter,system-ui,sans-serif">La compagnie débute. Pour être prévenu des premières dates — dimanches, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.</p>
+<p style="color:rgba(127,116,99,.8);font-size:.78rem;font-style:italic;margin-top:20px;font-family:Inter,system-ui,sans-serif">La compagnie débute. Pour être prévenu des premières dates — ateliers, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.</p>
 <!-- /wp:paragraph -->
 
 </div>
