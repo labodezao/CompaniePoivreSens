@@ -2,28 +2,42 @@
 /**
  * Poivre & Sens — Textes éditoriaux de la page d'accueil
  *
- * SOURCE UNIQUE. Les mêmes phrases étaient auparavant recopiées dans les
- * shortcodes PHP, dans les patterns Gutenberg et dans les trois fichiers
- * autonomes de `site/`. Quatre copies, donc quatre occasions de diverger —
- * et elles ont divergé trois fois sans que cela se voie à l'œil.
+ * SOURCE UNIQUE DE LA STRUCTURE. Les mêmes phrases étaient auparavant
+ * recopiées dans les shortcodes PHP, dans les patterns Gutenberg et dans
+ * les trois fichiers autonomes de `site/`. Quatre copies, donc quatre
+ * occasions de diverger — et elles ont divergé trois fois sans que cela
+ * se voie à l'œil.
  *
- * Désormais : on écrit ici, et ici seulement.
- *   · les shortcodes et les patterns de `inc/block-patterns.php` lisent
- *     ce tableau ;
- *   · les fichiers de `site/` sont régénérés par
- *     `tools/sync-textes-statiques.php`.
+ * Désormais :
+ *   · ps_textes_defaut() porte les valeurs d'origine (issues des
+ *     entretiens avec Ambre et Ewen — autant que possible leurs mots,
+ *     pas une paraphrase) ; c'est le point de départ d'un site neuf, et
+ *     ce que régénère `tools/sync-textes-statiques.php` pour `site/` ;
+ *   · Réglages › Textes du site permet de les modifier depuis
+ *     l'administration WordPress, sans toucher au code (voir
+ *     inc/textes-admin.php) ; l'édition est enregistrée dans l'option
+ *     `ps_textes_overrides` et prend le pas sur les valeurs d'origine ;
+ *   · ps_textes() est le point d'entrée que lisent shortcodes et
+ *     patterns : il renvoie les valeurs d'origine fusionnées avec ce qui
+ *     a été édité dans l'admin.
  *
- * Ces textes viennent des entretiens avec Ambre et Ewen : autant que
- * possible ce sont leurs mots, pas une paraphrase.
+ * Important : les fichiers `site/index.html` et `site/gutenberg-import.txt`
+ * restent des exports autonomes, sans base de données. Ils reflètent
+ * ps_textes_defaut(), pas les éditions faites depuis l'admin WordPress —
+ * ce sont deux usages différents (site WordPress en ligne / export
+ * indépendant), pas deux copies d'une même vérité à garder synchrones.
  */
 defined('ABSPATH') || exit;
 
 /**
- * Tous les textes de la page d'accueil.
+ * Valeurs d'origine de tous les textes de la page d'accueil.
+ * Ne PAS modifier au fil de l'eau pour un usage courant : c'est le
+ * point de départ, pas le texte en ligne — voir Réglages › Textes du
+ * site dans l'admin WordPress pour l'édition courante.
  *
  * @return array<string,mixed>
  */
-function ps_textes(): array {
+function ps_textes_defaut(): array {
     static $t = null;
     if ($t !== null) {
         return $t;
@@ -211,4 +225,83 @@ function ps_textes(): array {
     ];
 
     return $t;
+}
+
+/**
+ * Textes effectifs : les valeurs d'origine, fusionnées avec ce qui a été
+ * édité depuis Réglages › Textes du site. C'est CETTE fonction que lisent
+ * les shortcodes et les patterns de inc/block-patterns.php.
+ *
+ * Hors WordPress (le script tools/sync-textes-statiques.php, qui tourne
+ * en CLI sans base de données) get_option() n'existe pas : on renvoie
+ * alors simplement les valeurs d'origine, ce qui est le comportement
+ * voulu pour un export autonome.
+ *
+ * @return array<string,mixed>
+ */
+function ps_textes(): array {
+    static $effectif = null;
+    if ($effectif !== null) {
+        return $effectif;
+    }
+
+    $defaut = ps_textes_defaut();
+
+    if (!function_exists('get_option')) {
+        return $effectif = $defaut;
+    }
+
+    $edite = get_option('ps_textes_overrides', []);
+    if (!is_array($edite) || !$edite) {
+        return $effectif = $defaut;
+    }
+
+    return $effectif = ps_textes_fusionner($defaut, $edite);
+}
+
+/**
+ * Un tableau est-il une liste (clés 0, 1, 2… dans l'ordre) plutôt qu'un
+ * tableau associatif ? Compatible PHP 7.4+ (array_is_list() n'existe
+ * qu'à partir de PHP 8.1).
+ */
+function ps_textes_est_liste(array $arr): bool {
+    if ($arr === []) {
+        return true;
+    }
+    return array_keys($arr) === range(0, count($arr) - 1);
+}
+
+/**
+ * Fusionne les valeurs éditées dans l'admin par-dessus les valeurs
+ * d'origine. Une liste (activités, axes, valeurs, influences, diffusion,
+ * paragraphes du manifeste…) est remplacée EN BLOC par la version éditée
+ * quand elle est présente : ajouter ou retirer une ligne dans l'admin
+ * doit se voir, pas se retrouver mélangé avec les lignes d'origine.
+ * Un tableau associatif (hero, manifeste, une bio…) est fusionné champ
+ * par champ, pour que modifier un seul champ n'efface pas les autres.
+ */
+function ps_textes_fusionner(array $defaut, array $edite): array {
+    foreach ($edite as $cle => $valeur) {
+        if (!array_key_exists($cle, $defaut)) {
+            continue; // Clé inconnue (ancienne version de l'admin, bidouille) : ignorée par prudence.
+        }
+        $valeur_defaut = $defaut[$cle];
+
+        if (is_array($valeur) && is_array($valeur_defaut)) {
+            if (ps_textes_est_liste($valeur) || ps_textes_est_liste($valeur_defaut)) {
+                $defaut[$cle] = $valeur;
+            } else {
+                $defaut[$cle] = ps_textes_fusionner($valeur_defaut, $valeur);
+            }
+        } elseif (is_string($valeur)) {
+            if (trim($valeur) !== '') {
+                $defaut[$cle] = $valeur;
+            }
+            // Une chaîne vide dans l'édition ne remplace pas la valeur d'origine :
+            // filet de sécurité contre un champ vidé par erreur.
+        } else {
+            $defaut[$cle] = $valeur;
+        }
+    }
+    return $defaut;
 }

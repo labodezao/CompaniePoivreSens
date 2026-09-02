@@ -9,6 +9,9 @@ defined('ABSPATH') || exit;
 // Textes éditoriaux de la page d'accueil (source unique)
 require_once get_template_directory() . '/inc/textes.php';
 
+// Réglages › Textes du site — éditeur des textes ci-dessus, dans l'admin
+require_once get_template_directory() . '/inc/textes-admin.php';
+
 // Interface newsletter
 require_once get_template_directory() . '/inc/newsletter-admin.php';
 

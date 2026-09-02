@@ -15,10 +15,13 @@ Ce dépôt contient l'ensemble des documents nécessaires à la création et au 
 | [`site/gutenberg-import.txt`](site/gutenberg-import.txt) | Import natif WordPress Gutenberg — coller dans l'éditeur de code pour obtenir la page complète éditable visuellement |
 | `site/source.txt` | Capture de ce que le site en production renvoie. Témoin, pas source : ne pas y écrire de textes. |
 
-> **Les textes ne s'écrivent qu'à un seul endroit :** `wordpress-theme/poivre-sens/inc/textes.php`.
-> Le thème (shortcodes et patterns Gutenberg) les lit directement ; les deux fichiers de `site/`
-> ci-dessus sont régénérés par `php tools/sync-textes-statiques.php`. Modifier une copie à la main,
-> c'est la faire diverger sans que cela se voie.
+> **Éditer les textes de la page d'accueil :** sur le site WordPress en ligne, depuis
+> **Réglages › Textes du site** dans l'admin — titres, activités (on peut en ajouter ou en
+> retirer), valeurs, bios… sans toucher au code. `wordpress-theme/poivre-sens/inc/textes.php`
+> reste la source des valeurs d'origine (et le point de départ d'un nouveau site) ; les deux
+> fichiers de `site/` ci-dessus, qui n'ont pas de base de données, sont régénérés à partir de
+> ces valeurs d'origine par `php tools/sync-textes-statiques.php` — ils ne reflètent donc pas
+> les éditions faites depuis l'admin du site en ligne, et ce n'est pas un défaut à corriger.
 
 > **Utiliser le fichier Gutenberg :** dans WordPress, créez une page, ouvrez les trois points (⋮) → *Éditeur de code*, sélectionnez tout, collez le contenu du fichier `.txt`, puis repassez en *Éditeur visuel* pour modifier librement textes, photos et couleurs.
 
