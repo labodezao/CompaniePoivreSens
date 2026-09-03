@@ -375,6 +375,150 @@ add_shortcode('ps_valeurs', function (): string {
     return ob_get_clean();
 });
 
+/**
+ * [ps_hero] [ps_manifeste] [ps_artistes] [ps_esthetique] [ps_contact]
+ *
+ * Avant ces cinq-là, seules galerie/projet/activités/événements/valeurs/
+ * influences/newsletter étaient des sections « vivantes » (un shortcode,
+ * relu à chaque affichage depuis ps_textes()) — hero, manifeste, les
+ * bios des fondateurs, la citation et la note de contact n'existaient
+ * qu'en blocs Gutenberg figés, insérés une fois puis jamais recalculés.
+ * Éditer ces champs dans Réglages › Textes du site n'avait donc aucun
+ * effet sur eux : deux systèmes qui semblaient n'en faire qu'un.
+ *
+ * Ces cinq shortcodes ferment cet écart : toutes les sections de la
+ * page d'accueil sont désormais lues depuis la même source, sans
+ * exception.
+ */
+add_shortcode('ps_hero', function (): string {
+    $t = ps_textes()['hero'];
+    ob_start();
+    ?>
+    <section class="hero" id="accueil">
+      <div class="hero__g">
+        <p class="hero__sup"><?= $t['surtitre'] ?></p>
+        <h1 class="hero__nom">Poivre<span class="et">&amp;</span>Sens</h1>
+        <p class="hero__disc"><strong>Ambre Lavignac &amp; Ewen d'Aviau</strong><br><?= implode('<br>', $t['disciplines']) ?></p>
+        <p><a href="#projet" class="hero__cta"><?= $t['cta'] ?></a></p>
+      </div>
+      <div class="hero__d">
+        <p class="hero__q"><?= $t['citation'] ?></p>
+        <p class="hero__intro"><?= $t['intro'] ?></p>
+      </div>
+    </section>
+    <?php
+    return ob_get_clean();
+});
+
+add_shortcode('ps_manifeste', function (): string {
+    $t = ps_textes()['manifeste'];
+    ob_start();
+    ?>
+    <div class="manifeste sec3">
+      <p class="mf-ax"><?= $t['label'] ?></p>
+      <div class="mf-corps">
+        <h2 class="mf-t"><?= $t['titre_html'] ?></h2>
+        <div class="mf-tx">
+          <?php foreach ($t['paragraphes'] as $para) : ?>
+          <p><?= $para ?></p>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+    <?php
+    return ob_get_clean();
+});
+
+add_shortcode('ps_artistes', function (): string {
+    $t = ps_textes()['artistes'];
+    ob_start();
+    ?>
+    <section class="sec sec2" id="artistes" aria-labelledby="titre-artistes">
+      <div style="margin-bottom:56px">
+        <p class="lbl"><?= $t['label'] ?></p>
+        <h2 class="sh" id="titre-artistes"><?= $t['titre'] ?></h2>
+        <div class="regle"></div>
+      </div>
+      <div class="bios">
+        <?php foreach ($t['bios'] as $b) : ?>
+        <div class="bio">
+          <div class="bio__hd">
+            <div class="bio__mn" aria-hidden="true"><?= $b['initiale'] ?></div>
+            <div>
+              <h3 class="bio__nom"><?= $b['nom'] ?></h3>
+              <p class="bio__rol"><?= $b['role'] ?></p>
+            </div>
+          </div>
+          <?php foreach ($b['textes'] as $tx) : ?>
+          <p class="bio__tx"><?= $tx ?></p>
+          <?php endforeach; ?>
+          <p class="bio__tgs"><?php foreach ($b['tags'] as $tag) : ?><span class="bio__tg"><?= $tag ?></span><?php endforeach; ?></p>
+        </div>
+        <?php endforeach; ?>
+      </div>
+      <?= do_shortcode('[ps_influences]') ?>
+    </section>
+    <?php
+    return ob_get_clean();
+});
+
+add_shortcode('ps_esthetique', function (): string {
+    $t = ps_textes()['esthetique'];
+    ob_start();
+    ?>
+    <section class="sec" id="esthetique" aria-labelledby="titre-esthetique">
+      <div style="margin-bottom:56px">
+        <p class="lbl"><?= $t['label'] ?></p>
+        <h2 class="sh" id="titre-esthetique"><?= $t['titre'] ?></h2>
+        <div class="regle"></div>
+      </div>
+      <div class="esthet">
+        <?= do_shortcode('[ps_valeurs]') ?>
+        <div class="esthet__cite">
+          <blockquote class="gcite">
+            <?= $t['citation_html'] ?>
+          </blockquote>
+          <p class="gcite__src"><?= $t['citation_source'] ?></p>
+        </div>
+      </div>
+    </section>
+    <?php
+    return ob_get_clean();
+});
+
+add_shortcode('ps_contact', function (): string {
+    $t = ps_textes()['contact'];
+    ob_start();
+    ?>
+    <section class="sec" id="contact" aria-labelledby="titre-contact">
+      <div style="margin-bottom:56px">
+        <p class="lbl"><?= $t['label'] ?></p>
+        <h2 class="sh" id="titre-contact"><?= $t['titre'] ?></h2>
+        <div class="regle"></div>
+      </div>
+      <div class="contact">
+        <div class="co-col">
+          <p class="co-h">La compagnie</p>
+          <div class="co-row"><span class="co-k">Nom</span><span class="co-v">Poivre &amp; Sens</span></div>
+          <div class="co-row"><span class="co-k">Statut</span><span class="co-v">Association loi 1901</span></div>
+          <div class="co-row"><span class="co-k">Direction</span><span class="co-v">Ambre Lavignac &amp; Ewen d'Aviau</span></div>
+          <div class="co-row"><span class="co-k">Disciplines</span><span class="co-v">Danse · Contact-improvisation · Musique · Somatique</span></div>
+          <div class="co-row"><span class="co-k">Courriel</span><span class="co-v"><a href="mailto:contact@cie.poivresens.fr">contact@cie.poivresens.fr</a></span></div>
+          <div class="co-row"><span class="co-k">Site</span><span class="co-v"><a href="https://cie.poivresens.fr">cie.poivresens.fr</a></span></div>
+        </div>
+        <div class="co-col">
+          <p class="co-h">Les fondateurs</p>
+          <div class="co-row"><span class="co-k">Ambre</span><span class="co-v"><a href="mailto:ambre@cie.poivresens.fr">ambre@cie.poivresens.fr</a></span></div>
+          <div class="co-row"><span class="co-k">Ewen</span><span class="co-v"><a href="mailto:ewen@cie.poivresens.fr">ewen@cie.poivresens.fr</a></span></div>
+          <h4 class="co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
+          <p class="co-note"><?= $t['note'] ?></p>
+        </div>
+      </div>
+    </section>
+    <?php
+    return ob_get_clean();
+});
+
 /* ══════════════════════════════════════════════════════════════
    2. CATÉGORIE & PATTERNS GUTENBERG
    ══════════════════════════════════════════════════════════════ */
@@ -464,344 +608,27 @@ function _ps_pat_newsletter_sc(): string { return _ps_sc('ps_newsletter'); }
 
 /* ── ① Hero ────────────────────────────────────────────────── */
 function _ps_pat_hero(): string {
-    $t     = ps_textes()['hero'];
-    $disc  = implode('<br>', $t['disciplines']);
-    $sup   = $t['surtitre'];
-    $cita  = $t['citation'];
-    $intro = $t['intro'];
-    $cta   = $t['cta'];
-    return <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"hero","anchor":"accueil","layout":{"type":"default"}} -->
-<section class="wp-block-group hero" id="accueil">
-
-<!-- wp:group {"className":"hero__g","layout":{"type":"default"}} -->
-<div class="wp-block-group hero__g">
-
-<!-- wp:paragraph {"className":"hero__sup"} -->
-<p class="hero__sup">{$sup}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:heading {"level":1,"className":"hero__nom"} -->
-<h1 class="wp-block-heading hero__nom">Poivre<span class="et">&amp;</span>Sens</h1>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"className":"hero__disc"} -->
-<p class="hero__disc"><strong>Ambre Lavignac &amp; Ewen d'Aviau</strong><br>{$disc}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p><a href="#projet" class="hero__cta">{$cta}</a></p>
-<!-- /wp:paragraph -->
-
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"hero__d","layout":{"type":"default"}} -->
-<div class="wp-block-group hero__d">
-
-<!-- wp:paragraph {"className":"hero__q"} -->
-<p class="hero__q">{$cita}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"className":"hero__intro"} -->
-<p class="hero__intro">{$intro}</p>
-<!-- /wp:paragraph -->
-
-</div>
-<!-- /wp:group -->
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_hero');
 }
 
 /* ── ② Manifeste ───────────────────────────────────────────── */
 function _ps_pat_manifeste(): string {
-    $t     = ps_textes()['manifeste'];
-    $label = $t['label'];
-    $titre = $t['titre_html'];
-    $paras = '';
-    foreach ($t['paragraphes'] as $para) {
-        $paras .= "\n<!-- wp:paragraph -->\n<p>{$para}</p>\n<!-- /wp:paragraph -->\n";
-    }
-    return <<<BLOCK
-
-<!-- wp:group {"tagName":"div","className":"manifeste sec3","layout":{"type":"default"}} -->
-<div class="wp-block-group manifeste sec3">
-
-<!-- wp:paragraph {"className":"mf-ax"} -->
-<p class="mf-ax">{$label}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:group {"className":"mf-corps","layout":{"type":"default"}} -->
-<div class="wp-block-group mf-corps">
-
-<!-- wp:heading {"level":2,"className":"mf-t"} -->
-<h2 class="wp-block-heading mf-t">{$titre}</h2>
-<!-- /wp:heading -->
-
-<!-- wp:group {"className":"mf-tx","layout":{"type":"default"}} -->
-<div class="wp-block-group mf-tx">
-{$paras}
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_manifeste');
 }
 
 /* ── ③ Artistes ────────────────────────────────────────────── */
 function _ps_pat_artistes(): string {
-    $t     = ps_textes()['artistes'];
-    $label = $t['label'];
-    $titre = $t['titre'];
-
-    $bios = '';
-    foreach ($t['bios'] as $b) {
-        $ini  = $b['initiale'];
-        $nom  = $b['nom'];
-        $role = $b['role'];
-        $txts = '';
-        foreach ($b['textes'] as $tx) {
-            $txts .= "\n<!-- wp:paragraph {\"className\":\"bio__tx\"} -->\n<p class=\"bio__tx\">{$tx}</p>\n<!-- /wp:paragraph -->\n";
-        }
-        $tags = '';
-        foreach ($b['tags'] as $tag) {
-            $tags .= '<span class="bio__tg">' . $tag . '</span>';
-        }
-        $bios .= <<<BIO
-
-<!-- wp:group {"className":"bio","layout":{"type":"default"}} -->
-<div class="wp-block-group bio">
-<!-- wp:group {"className":"bio__hd","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__hd">
-<!-- wp:group {"className":"bio__mn","layout":{"type":"default"}} -->
-<div class="wp-block-group bio__mn">
-<!-- wp:paragraph -->
-<p>{$ini}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"bio__nom"} -->
-<h3 class="wp-block-heading bio__nom">{$nom}</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"bio__rol"} -->
-<p class="bio__rol">{$role}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:group -->
-{$txts}
-<!-- wp:paragraph {"className":"bio__tgs"} -->
-<p class="bio__tgs">{$tags}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-BIO;
-    }
-
-    $opening = <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"sec sec2","anchor":"artistes","layout":{"type":"default"}} -->
-<section class="wp-block-group sec sec2" id="artistes">
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="margin-bottom:56px">
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">{$label}</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">{$titre}</h2>
-<!-- /wp:heading -->
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"bios","layout":{"type":"default"}} -->
-<div class="wp-block-group bios">
-{$bios}
-</div>
-<!-- /wp:group -->
-
-BLOCK;
-    $closing = <<<'BLOCK'
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
-    return $opening . _ps_pat_influences() . $closing;
+    return _ps_sc('ps_artistes');
 }
 
 /* ── ⑦ Esthétique ──────────────────────────────────────────── */
 function _ps_pat_esthetique(): string {
-    $t      = ps_textes()['esthetique'];
-    $label  = $t['label'];
-    $titre  = $t['titre'];
-    $cite   = $t['citation_html'];
-    $source = $t['citation_source'];
-
-    $before = <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"sec","anchor":"esthetique","layout":{"type":"default"}} -->
-<section class="wp-block-group sec" id="esthetique">
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="margin-bottom:56px">
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">{$label}</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">{$titre}</h2>
-<!-- /wp:heading -->
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"esthet","layout":{"type":"default"}} -->
-<div class="wp-block-group esthet">
-
-BLOCK;
-    $after = <<<BLOCK
-
-<!-- wp:group {"className":"esthet__cite","layout":{"type":"default"}} -->
-<div class="wp-block-group esthet__cite">
-<!-- wp:quote {"className":"gcite"} -->
-<blockquote class="wp-block-quote gcite"><p>{$cite}</p><cite>{$source}</cite></blockquote>
-<!-- /wp:quote -->
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
-    return $before . _ps_pat_valeurs() . $after;
+    return _ps_sc('ps_esthetique');
 }
 
 /* ── ⑤ Contact ─────────────────────────────────────────────── */
 function _ps_pat_contact(): string {
-    $t     = ps_textes()['contact'];
-    $label = $t['label'];
-    $titre = $t['titre'];
-    $note  = $t['note'];
-    return <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"sec","anchor":"contact","layout":{"type":"default"}} -->
-<section class="wp-block-group sec" id="contact">
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="margin-bottom:56px">
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">{$label}</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">{$titre}</h2>
-<!-- /wp:heading -->
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"contact","layout":{"type":"default"}} -->
-<div class="wp-block-group contact">
-
-<!-- wp:group {"className":"co-col","layout":{"type":"default"}} -->
-<div class="wp-block-group co-col">
-<!-- wp:paragraph {"className":"co-h"} -->
-<p class="co-h">La compagnie</p>
-<!-- /wp:paragraph -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Nom</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v">Poivre &amp; Sens</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Statut</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v">Association loi 1901</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Direction</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v">Ambre Lavignac &amp; Ewen d'Aviau</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Disciplines</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v">Danse · Contact-improvisation · Musique · Somatique</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Courriel</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v"><a href="mailto:contact@cie.poivresens.fr">contact@cie.poivresens.fr</a></p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Site</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v"><a href="https://cie.poivresens.fr">cie.poivresens.fr</a></p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"co-col","layout":{"type":"default"}} -->
-<div class="wp-block-group co-col">
-<!-- wp:paragraph {"className":"co-h"} -->
-<p class="co-h">Les fondateurs</p>
-<!-- /wp:paragraph -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Ambre</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v"><a href="mailto:ambre@cie.poivresens.fr">ambre@cie.poivresens.fr</a></p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:group {"className":"co-row","layout":{"type":"default"}} -->
-<div class="wp-block-group co-row">
-<!-- wp:paragraph {"className":"co-k"} --><p class="co-k">Ewen</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"co-v"} --><p class="co-v"><a href="mailto:ewen@cie.poivresens.fr">ewen@cie.poivresens.fr</a></p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-<!-- wp:heading {"level":4,"className":"co-h","style":{"spacing":{"margin":{"top":"32px","bottom":"28px"}}}} -->
-<h4 class="co-h" style="margin-top:32px;margin-bottom:28px">Suivre la compagnie</h4>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"co-note"} -->
-<p class="co-note">{$note}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_contact');
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -810,218 +637,20 @@ BLOCK;
 
 /* ── Références & influences ───────────────────────────────── */
 function _ps_pat_influences(): string {
-    $t     = ps_textes()['influences'];
-    $label = $t['label'];
-    $items = '';
-    foreach ($t['items'] as $inf) {
-        $nom  = $inf[0];
-        $desc = $inf[1];
-        $items .= <<<INF
-
-<!-- wp:group {"className":"inf","layout":{"type":"default"}} -->
-<div class="wp-block-group inf">
-<!-- wp:paragraph {"className":"inf__n"} --><p class="inf__n">{$nom}</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"inf__d"} --><p class="inf__d">{$desc}</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-INF;
-    }
-    return <<<BLOCK
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:0">{$label}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-
-<!-- wp:group {"className":"influences","layout":{"type":"default"}} -->
-<div class="wp-block-group influences">
-{$items}
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_influences');
 }
 
 /* ── Valeurs esthétiques ───────────────────────────────────── */
 function _ps_pat_valeurs(): string {
-    $items = '';
-    foreach (ps_textes()['esthetique']['valeurs'] as $v) {
-        $label = $v[0];
-        $texte = $v[1];
-        $items .= <<<VAL
-
-<!-- wp:group {"className":"val","layout":{"type":"default"}} -->
-<div class="wp-block-group val">
-<!-- wp:paragraph {"className":"val__l"} --><p class="val__l">{$label}</p><!-- /wp:paragraph -->
-<!-- wp:paragraph {"className":"val__t"} --><p class="val__t">{$texte}</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-VAL;
-    }
-    return <<<BLOCK
-
-<!-- wp:group {"className":"esthet__vals","layout":{"type":"default"}} -->
-<div class="wp-block-group esthet__vals">
-{$items}
-</div>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_valeurs');
 }
 
 /* ── ④ Projet artistique ───────────────────────────────────── */
 function _ps_pat_projet(): string {
-    $t     = ps_textes()['projet'];
-    $label = $t['label'];
-    $titre = $t['titre'];
-    $axes  = '';
-    foreach ($t['axes'] as $a) {
-        $num   = $a['num'];
-        $at    = $a['titre'];
-        $atx   = $a['texte'];
-        $axes .= <<<AXE
-
-<!-- wp:group {"className":"axe","layout":{"type":"default"}} -->
-<div class="wp-block-group axe">
-<!-- wp:paragraph {"className":"axe__n"} --><p class="axe__n">{$num}</p><!-- /wp:paragraph -->
-<!-- wp:heading {"level":3,"className":"axe__t"} -->
-<h3 class="wp-block-heading axe__t">{$at}</h3>
-<!-- /wp:heading -->
-<!-- wp:paragraph {"className":"axe__tx"} -->
-<p class="axe__tx">{$atx}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-AXE;
-    }
-    return <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"sec","anchor":"projet","layout":{"type":"default"}} -->
-<section class="wp-block-group sec" id="projet">
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="margin-bottom:56px">
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">{$label}</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">{$titre}</h2>
-<!-- /wp:heading -->
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"className":"axes","layout":{"type":"default"}} -->
-<div class="wp-block-group axes">
-{$axes}
-</div>
-<!-- /wp:group -->
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_projet');
 }
 
 /* ── ⑤ Nos activités ───────────────────────────────────────── */
 function _ps_pat_activites(): string {
-    $t       = ps_textes()['activites'];
-    $label   = $t['label'];
-    $titre   = $t['titre'];
-    $chapeau = $t['chapeau'];
-
-    $items = '';
-    foreach ($t['items'] as $a) {
-        $num   = $a['num'];
-        $at    = $a['titre'];
-        $atx   = $a['texte'];
-        $badge = $a['badge'];
-        $items .= <<<ACT
-
-<!-- wp:group {"className":"act","layout":{"type":"default"}} -->
-<div class="wp-block-group act">
-<!-- wp:paragraph {"className":"act__n"} --><p class="act__n" aria-hidden="true">{$num}</p><!-- /wp:paragraph -->
-<!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group">
-<!-- wp:heading {"level":3,"className":"act__t"} --><h3 class="wp-block-heading act__t">{$at}</h3><!-- /wp:heading -->
-<!-- wp:paragraph {"className":"act__tx"} --><p class="act__tx">{$atx}</p><!-- /wp:paragraph -->
-</div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"act__b"} --><p class="act__b">{$badge}</p><!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-ACT;
-    }
-
-    $diff_label = $t['diffusion_label'];
-    $diffs = '';
-    foreach ($t['diffusion'] as $d) {
-        $diffs .= '<!-- wp:paragraph {"className":"diff-i"} --><p class="diff-i">' . $d . '</p><!-- /wp:paragraph -->' . "\n";
-    }
-
-    return <<<BLOCK
-
-<!-- wp:group {"tagName":"section","className":"sec","anchor":"activites","layout":{"type":"default"}} -->
-<section class="wp-block-group sec" id="activites">
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group" style="margin-bottom:56px">
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl">{$label}</p>
-<!-- /wp:paragraph -->
-<!-- wp:heading {"level":2,"className":"sh"} -->
-<h2 class="wp-block-heading sh">{$titre}</h2>
-<!-- /wp:heading -->
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-<!-- wp:paragraph {"className":"act-chapeau"} -->
-<p class="act-chapeau">{$chapeau}</p>
-<!-- /wp:paragraph -->
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-{$items}
-</div>
-<!-- /wp:group -->
-
-<!-- wp:group {"layout":{"type":"default"}} -->
-<div class="wp-block-group">
-
-<!-- wp:paragraph {"className":"lbl"} -->
-<p class="lbl" style="margin-top:64px">{$diff_label}</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:separator {"className":"regle"} -->
-<hr class="wp-block-separator regle"/>
-<!-- /wp:separator -->
-
-<!-- wp:group {"className":"diff","layout":{"type":"default"}} -->
-<div class="wp-block-group diff">
-{$diffs}
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</section>
-<!-- /wp:group -->
-
-BLOCK;
+    return _ps_sc('ps_activites');
 }
