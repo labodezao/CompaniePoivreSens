@@ -19,6 +19,12 @@
  *
  * site/source.txt n'est PAS régénéré : c'est une capture de ce que le site
  * en production renvoie réellement, pas une source éditoriale.
+ *
+ * Ce script tourne en CLI, sans WordPress ni base de données : il lit donc
+ * toujours ps_textes_defaut() (les valeurs d'origine), jamais les éditions
+ * faites depuis Réglages › Textes du site dans l'admin WordPress. Les
+ * fichiers de `site/` restent un export autonome — ce n'est pas un défaut
+ * de ce script à corriger, c'est le rôle de ces fichiers.
  */
 
 if (PHP_SAPI !== 'cli') { exit("À lancer en ligne de commande.\n"); }
@@ -27,7 +33,7 @@ define('ABSPATH', __DIR__);
 $racine = dirname(__DIR__);
 require $racine . '/wordpress-theme/poivre-sens/inc/textes.php';
 
-$T       = ps_textes();
+$T       = ps_textes_defaut();
 $erreurs = [];
 
 /* ══════════════════════════════════════════════════════════════

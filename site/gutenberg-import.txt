@@ -382,12 +382,12 @@ body.page .nm-header {
 <!-- wp:html -->
 <blockquote style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:300;line-height:1.42;color:#ece3cb;margin:0 0 32px">
   <span style="display:block;font-size:3.8rem;line-height:1;color:#c28b36;font-style:normal;margin-bottom:6px">&ldquo;</span>
-  Le corps sait ce que l'esprit ne sait pas.
+  Le corps sait ce que l'esprit cherche encore.
 </blockquote>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"typography":{"fontSize":"0.92rem","lineHeight":"1.85"},"color":{"text":"rgba(236,227,203,0.6)"},"spacing":{"margin":{"top":"0"}}}} -->
-<p style="color:rgba(236,227,203,0.6);font-size:.92rem;line-height:1.85;font-family:Inter,system-ui,sans-serif;margin-top:0">À peine formée, la compagnie fait ses premiers pas. Nous sommes deux, venus au mouvement par des chemins qui n'ont rien à voir. Ce qui nous met en joie : créer ensemble, sans savoir d'avance ce qui va arriver.</p>
+<p style="color:rgba(236,227,203,0.6);font-size:.92rem;line-height:1.85;font-family:Inter,system-ui,sans-serif;margin-top:0">Née de la rencontre de deux corps, d'une main qui écoute, d'une oreille qui se déplace et d'une différence qui fait sens, la compagnie explore les relations, le mouvement et la présence.</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -523,17 +523,12 @@ body.page .nm-header {
 <div style="display:flex;gap:64px;align-items:flex-start">
   <p style="font-size:.67rem;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:#c28b36;writing-mode:vertical-rl;transform:rotate(180deg);flex-shrink:0;padding-top:6px;font-family:Inter,system-ui,sans-serif" aria-hidden="true">Manifeste</p>
   <div>
-    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,3.8vw,3.2rem);font-weight:300;line-height:1.22;color:#ece3cb;margin:0 0 28px">Être plus proche de soi, <em style="color:#c28b36">au contact des autres</em></h2>
+    <h2 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(2rem,3.8vw,3.2rem);font-weight:300;line-height:1.22;color:#ece3cb;margin:0 0 28px">Une rencontre entre <em style="color:#c28b36">le corps</em> et <em style="color:#c28b36">l'histoire</em></h2>
     <div style="columns:2;column-gap:52px;font-size:.96rem;line-height:1.88;color:rgba(236,227,203,.65);font-family:Inter,system-ui,sans-serif">
-      <p style="margin:0 0 1.2em">À peine formée, la compagnie fait ses premiers pas. Elle est née de la rencontre de deux corps aux histoires différentes : l'une venue de la danse contemporaine, l'autre de la lutherie, passé par plusieurs arts et techniques de danse en y cherchant chaque fois un dépassement.</p>
-      <p style="margin:0 0 1.2em">Ce qui nous met en joie, c'est la créativité collective et partagée. L'inattendu, l'impromptu, l'improvisation. Ce moment où personne ne sait encore ce qui va se passer, et où l'on y va quand même.</p>
-      <p style="margin:0 0 1.2em">Et puis chercher, encore et toujours : comment habiter davantage son corps, comment être dans une présence de plus en plus juste, de plus en plus fine. Nous nous appuyons pour cela sur les pratiques somatiques, le Tao et la kinésiologie.</p>
-      <p style="margin:0 0 1.2em">Il y a dans ce travail une recherche d'intimité, et ce n'est pas un repli — c'est l'inverse. <em style="font-style:italic;color:#ece3cb">Être plus proche de soi, précisément au contact des autres.</em> Rester relié à soi pendant qu'on est en relation : c'est là, pour nous, que tout se joue.</p>
-      <p style="margin:0 0 1.2em">Cela demande de savoir où l'on en est. « Je suis où, là ? » Il y a des jours où l'on n'est pas disponible pour être à deux, faute d'en avoir les ressources ce jour-là. Ce n'est pas un échec, c'est une information. Nous accueillons les limites telles qu'elles sont, dans le présent.</p>
-      <p style="margin:0 0 1.2em">Nous enseignons à deux, depuis deux pratiques distinctes. C'est ce croisement — le somatique et la danse, le geste et le son — qui fait, nous semble-t-il, ce que l'on ne trouve pas ailleurs.</p>
-      <p style="margin:0 0 1.2em">Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part. L'un de nous a bâti toute sa pratique en traversant des troubles dys : on ne vient pas ici <em style="font-style:italic;color:#ece3cb">malgré</em> ce qui coince, on vient avec.</p>
-      <p style="margin:0 0 1.2em">Il y a aussi une envie plus large : faire connaître ce que la danse fait à qui la pratique. Pas celle qu'on regarde — <em style="font-style:italic;color:#ece3cb">celle qui change la vie</em>. C'est pourquoi nous assumons deux entrées plutôt qu'une : selon le thème, un rendez-vous sera tourné vers le développement personnel, ou franchement artistique. L'orientation est annoncée pour chaque date, pour que vous sachiez avant de venir dans quel espace vous entrez.</p>
-      <p style="margin:0">Nous espérons rencontrer des gens émerveillables, curieux d'aller chercher et d'expérimenter. Nous ne saurions pas quoi faire, en revanche, de quelqu'un qui viendrait chercher un chemin tout tracé, ou quelqu'un à admirer. Ici, l'engagement que vous mettez pour vous-même compte davantage que ce que nous pourrions vous apporter.</p>
+      <p style="margin:0 0 1.2em">Inspirée du Taoïsme, de l'Aïkido, des approches systémiques et des danses traditionnelles du monde, la compagnie croit en <em style="font-style:italic;color:#ece3cb">la richesse</em> <em style="font-style:italic;color:#ece3cb">collective</em> : chaque geste est danse, chaque personne est source, chaque instant est son.</p>
+      <p style="margin:0 0 1.2em">Ce qui unit leurs univers, c'est la qualité de présence et la créativité : être là, pleinement, dans l'instant d'une rencontre — entre deux corps, entre une sensation et une idée, entre une initiative et sa réponse et entre ce qui est attendu et ce qui surgit.</p>
+      <p style="margin:0 0 1.2em">La compagnie explore les relations entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu, entre l'un, l'autre et le Nous.</p>
+      <p style="margin:0">Ces créations cherchent profondément à <em style="font-style:italic;color:#ece3cb">habiter</em>, avec un panel d'épices et beaucoup de <em style="font-style:italic;color:#ece3cb">sens</em>.</p>
     </div>
   </div>
 </div>
@@ -629,17 +624,21 @@ body.page .nm-header {
   <div style="width:52px;height:52px;border-radius:50%;border:1px solid #c28b36;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:300;color:#c28b36;flex-shrink:0" aria-hidden="true">A</div>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6rem;font-weight:400;color:#ece3cb;line-height:1.1;margin:0 0 4px">Ambre Lavignac</h3>
-    <p style="font-size:.68rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:#c28b36;margin:0;font-family:Inter,system-ui,sans-serif">Danseuse · Pédagogue · Praticienne du mouvement</p>
+    <p style="font-size:.68rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:#c28b36;margin:0;font-family:Inter,system-ui,sans-serif">Danseuse · Pédagogue · Praticienne du mouvement · Masseuse</p>
   </div>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Venue de la danse contemporaine, Ambre oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens : philosophie taoïste, méridiens, kinésiologie, massage. Elle explore les correspondances entre les éléments, la circulation de l'énergie et les qualités de mouvement.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Formée à de nombreuses danses dont un D.E en danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et l'expression de la créativité spontanée.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">S'il ne lui fallait transmettre qu'une chose, ce serait la sensation — cette finesse d'écoute que l'on affine peu à peu, en allant contacter une part de soi et en l'écoutant. L'improvisation est pour elle un espace de création vivante, et une affaire de poésie.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les saisons énergétiques et les qualités de mouvement.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Praticienne en massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que pédagogue et chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante, de jeu et de développement de soi. « Nourrir, par la conscience, sa santé et sa présence ; révéler sa danse, son mouvement ; tisser et créer la joie, son lien avec les autres. »</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -666,17 +665,21 @@ body.page .nm-header {
   <div style="width:52px;height:52px;border-radius:50%;border:1px solid #c28b36;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.5rem;font-weight:300;color:#c28b36;flex-shrink:0" aria-hidden="true">E</div>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.6rem;font-weight:400;color:#ece3cb;line-height:1.1;margin:0 0 4px">Ewen d'Aviau</h3>
-    <p style="font-size:.68rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:#c28b36;margin:0;font-family:Inter,system-ui,sans-serif">Luthier-ingénieur · Musicien · Danseur</p>
+    <p style="font-size:.68rem;font-weight:400;letter-spacing:.15em;text-transform:uppercase;color:#c28b36;margin:0;font-family:Inter,system-ui,sans-serif">Dys sur Dys · Luthier · Musicien · Danseur</p>
   </div>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Luthier, Ewen porte des troubles dys — il l'écrit lui-même : « Dys sur Dys ». Il est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Traverser une différence oblige à inventer ses propres chemins : c'est vrai de sa pratique comme de sa pédagogie.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Ewen d'Aviau porte des troubles dys — « Dys sur Dys », comme il l'écrit lui-même sur son propre site. Depuis douze ans, il cherche comment les traverser, et il apprend encore : ce n'est pas dans les livres qu'il a appris les dys, c'est en les vivant, jour après jour.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Il conçoit le son comme une matière vivante, façonnable, imprévue. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Tout son parcours part de là. Il n'est venu ni à la lutherie, ni à la musique, ni à la danse malgré cette différence, mais grâce à elle : traverser une différence oblige à inventer ses propres chemins. Pour lui, cela a pris la forme d'instruments à cordes fabriqués à la main — un geste à la fois artisanal, scientifique et artistique, où le son devient une matière vivante, façonnable, imprévue.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement — une synergie, plutôt qu'une somme de gestes.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
@@ -800,16 +803,27 @@ body.page .nm-header {
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
   <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">01</span>
   <div>
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les dimanches</h3>
-    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Un rendez-vous de 2 h 30, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.</p>
+    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les ateliers de danse — deux fois par mois</h3>
+    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Notre rendez-vous le plus régulier : 2 h 30, deux fois par mois, ouvert à tous, sans prérequis ni niveau demandé. On y explore le mouvement à deux voix, et l'on repart avec quelque chose à pratiquer chez soi.</p>
   </div>
-  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Régulier</span>
+  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Bimensuel</span>
 </div>
 <!-- /wp:html -->
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
   <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">02</span>
+  <div>
+    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Les ateliers de danse — une fois par mois</h3>
+    <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Le même esprit, sur un rythme mensuel, pour celles et ceux qui ne peuvent pas venir deux fois. Chaque séance se suffit à elle-même : on peut arriver en cours d'année.</p>
+  </div>
+  <span style="font-size:.65rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:#c28b36;padding:5px 12px;border:1px solid rgba(194,139,54,.18);align-self:center;white-space:nowrap;font-family:Inter,system-ui,sans-serif">Mensuel</span>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">03</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Stages</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Sur une journée ou un week-end, autour d'une thématique. Deux intervenants, une trentaine de personnes au maximum : au-delà, la qualité de présence que nous voulons offrir ne tiendrait plus.</p>
@@ -820,7 +834,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">03</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">04</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Jams contact-improvisation</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Des sessions d'improvisation ouvertes, en contact-improvisation et musique improvisée. On vient danser, jouer, se rencontrer.</p>
@@ -831,7 +845,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">04</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">05</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Créations &amp; performances</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Pièces en duo ou avec des artistes invités. La compagnie débute : les premières créations sont en cours d'élaboration.</p>
@@ -842,7 +856,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <div class="ps-act" style="display:grid;grid-template-columns:56px 1fr auto;align-items:start;gap:24px;padding:36px 0;border-bottom:1px solid rgba(194,139,54,.18)">
-  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">05</span>
+  <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:300;color:rgba(194,139,54,.22);line-height:1" aria-hidden="true">06</span>
   <div>
     <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#ece3cb;margin:0 0 8px">Interventions &amp; ateliers</h3>
     <p style="font-size:.87rem;line-height:1.72;color:#7f7463;margin:0;font-family:Inter,system-ui,sans-serif">Sur demande, pour des groupes constitués, des structures ou des événements. Nous adaptons le format et la thématique.</p>
@@ -965,7 +979,7 @@ body.page .nm-header {
 
 <!-- wp:html -->
 <blockquote class="ps-gcite">
-  Partir de ce que le corps sait déjà —<br/>et le faire <em>germer</em>.
+  Habiter un espace de jeu partagé —<br/>entre deux corps,<br/><em>un son et un mouvement</em>.
 </blockquote>
 <p class="ps-gcite-src">Poivre &amp; Sens · Note d'intention</p>
 <!-- /wp:html -->
@@ -1032,7 +1046,7 @@ body.page .nm-header {
 <!-- /wp:html -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(127,116,99,0.8)"},"typography":{"fontSize":"0.78rem","fontStyle":"italic"}}} -->
-<p style="color:rgba(127,116,99,.8);font-size:.78rem;font-style:italic;margin-top:20px;font-family:Inter,system-ui,sans-serif">La compagnie débute. Pour être prévenu des premières dates — dimanches, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.</p>
+<p style="color:rgba(127,116,99,.8);font-size:.78rem;font-style:italic;margin-top:20px;font-family:Inter,system-ui,sans-serif">Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.</p>
 <!-- /wp:paragraph -->
 
 </div>
