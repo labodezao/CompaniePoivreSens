@@ -83,8 +83,6 @@ add_shortcode('ps_galerie', function (): string {
           <h2 class="galerie__t" id="titre-galerie">Images de la compagnie</h2>
           <div class="regle"></div>
         </div>
-        <p class="galerie__n">Photos de la compagnie — ajoutez vos clichés via<br>
-          <strong>Galerie › Ajouter</strong> dans l'admin WordPress.</p>
       </div>
       <div class="galerie__g" role="list">
         <?php foreach ($items as $item) : ?>
