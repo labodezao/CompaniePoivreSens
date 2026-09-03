@@ -96,7 +96,8 @@ function ps_textes_defaut(): array {
                     'role'     => 'Luthier-ingénieur · Musicien · Danseur',
                     'textes'   => [
                         "Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.",
-                        "Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.",
+                        "Il porte aussi des troubles dys — il l'écrit lui-même sur son propre site : « Dys sur Dys ». Il n'est pas venu à la lutherie malgré cette différence, mais grâce à elle : traverser une différence oblige à inventer ses propres chemins, dans l'atelier comme sur scène.",
+                        "Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement — une synergie, plutôt qu'une somme de gestes.",
                     ],
                     'tags' => ['Lutherie', 'Musique improvisée', 'Contact-improvisation', 'Somatique', 'Aïkido', 'Enseignement'],
                 ],

@@ -675,7 +675,11 @@ body.page .nm-header {
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
-<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.</p>
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Il porte aussi des troubles dys — il l'écrit lui-même sur son propre site : « Dys sur Dys ». Il n'est pas venu à la lutherie malgré cette différence, mais grâce à elle : traverser une différence oblige à inventer ses propres chemins, dans l'atelier comme sur scène.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"rgba(236,227,203,0.65)"},"typography":{"fontSize":"0.9rem","lineHeight":"1.82"}}} -->
+<p style="color:rgba(236,227,203,.65);font-size:.9rem;line-height:1.82;font-family:Inter,system-ui,sans-serif">Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement — une synergie, plutôt qu'une somme de gestes.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:html -->
