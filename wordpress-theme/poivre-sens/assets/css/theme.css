@@ -756,6 +756,10 @@ h4.co-h {
 [data-theme="foret"] .nl-form-btn        { color: #edf4eb; }
 [data-theme="foret"] .axe__n             { color: rgba(109,143,112,.13); }
 [data-theme="foret"] .axe:hover .axe__n  { color: rgba(109,143,112,.27); }
+/* .act__n n'a pas de fond propre (contrairement à .axe) : sur le fond
+   clair de ce thème, l'opacité d'origine (réglée pour un fond sombre)
+   rend le chiffre presque invisible — on la remonte nettement ici. */
+[data-theme="foret"] .act__n             { color: rgba(109,143,112,.42); }
 [data-theme="foret"] .bio__tg            { border-color: rgba(109,143,112,.28); color: rgba(109,143,112,.88); }
 [data-theme="foret"] .bio__tg:hover      { background: rgba(109,143,112,.1); }
 [data-theme="foret"] .evt-card__type     { color: rgba(109,143,112,.8); border-color: rgba(109,143,112,.28); }
@@ -868,6 +872,10 @@ h4.co-h {
 /* Accents dorés sombres sur fond clair */
 [data-theme="lumiere"] .axe__n             { color: rgba(182,137,82,.12); }
 [data-theme="lumiere"] .axe:hover .axe__n  { color: rgba(182,137,82,.25); }
+/* .act__n n'a pas de fond propre (contrairement à .axe) : sur le fond
+   clair de ce thème, l'opacité d'origine (réglée pour un fond sombre)
+   rend le chiffre presque invisible — on la remonte nettement ici. */
+[data-theme="lumiere"] .act__n             { color: rgba(182,137,82,.42); }
 [data-theme="lumiere"] .bio__tg            { border-color: rgba(182,137,82,.3); color: rgba(182,137,82,.88); }
 [data-theme="lumiere"] .bio__tg:hover      { background: rgba(182,137,82,.1); }
 [data-theme="lumiere"] .evt-card__type     { color: rgba(182,137,82,.8); border-color: rgba(182,137,82,.28); }
