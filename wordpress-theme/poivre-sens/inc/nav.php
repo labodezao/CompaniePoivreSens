@@ -26,6 +26,15 @@ function ps_nav_sections_accueil(): array {
         'artistes'   => __('Artistes', 'poivre-sens'),
         'esthetique' => __('Esthétique', 'poivre-sens'),
         'contact'    => __('Contact', 'poivre-sens'),
+        // Projet et Activités sont aujourd'hui des shortcodes (voir
+        // $labels_shortcode ci-dessous) — mais un bloc natif portant
+        // directement anchor="projet"/"activites" (un pattern antérieur
+        // à cette PR, ou une page modifiée à la main) doit être reconnu
+        // tout autant : un signalement de revue (PR #20) a montré que
+        // s'en remettre à une seule représentation fait disparaître ces
+        // deux entrées dès que l'autre se présente.
+        'projet'     => __('Projet', 'poivre-sens'),
+        'activites'  => __('Activités', 'poivre-sens'),
     ];
     $labels_shortcode = [
         'ps_galerie'    => ['galerie',    __('Galerie', 'poivre-sens')],
