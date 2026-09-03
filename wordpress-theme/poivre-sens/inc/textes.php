@@ -93,10 +93,10 @@ function ps_textes_defaut(): array {
                 [
                     'initiale' => 'E',
                     'nom'      => "Ewen d'Aviau",
-                    'role'     => 'Luthier-ingénieur · Musicien · Danseur',
+                    'role'     => 'Dys sur Dys · Luthier · Musicien · Danseur',
                     'textes'   => [
-                        "Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.",
-                        "Il porte aussi des troubles dys — il l'écrit lui-même sur son propre site : « Dys sur Dys ». Il n'est pas venu à la lutherie malgré cette différence, mais grâce à elle : traverser une différence oblige à inventer ses propres chemins, dans l'atelier comme sur scène.",
+                        "Ewen d'Aviau porte des troubles dys — « Dys sur Dys », comme il l'écrit lui-même sur son propre site. Depuis douze ans, il cherche comment les traverser, et il apprend encore : ce n'est pas dans les livres qu'il a appris les dys, c'est en les vivant, jour après jour.",
+                        "Tout son parcours part de là. Il n'est venu ni à la lutherie, ni à la musique, ni à la danse malgré cette différence, mais grâce à elle : traverser une différence oblige à inventer ses propres chemins. Pour lui, cela a pris la forme d'instruments à cordes fabriqués à la main — un geste à la fois artisanal, scientifique et artistique, où le son devient une matière vivante, façonnable, imprévue.",
                         "Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement — une synergie, plutôt qu'une somme de gestes.",
                     ],
                     'tags' => ['Lutherie', 'Musique improvisée', 'Contact-improvisation', 'Somatique', 'Aïkido', 'Enseignement'],
