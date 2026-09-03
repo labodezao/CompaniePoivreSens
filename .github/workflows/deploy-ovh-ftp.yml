@@ -13,11 +13,11 @@ name: Deploy to OVH (FTP)
 #   OVH_FTP_USER      identifiant FTP
 #   OVH_FTP_PASSWORD  mot de passe FTP
 #
-# ── À vérifier avant le premier déploiement ──
-# Les chemins server-dir ci-dessous supposent une installation WordPress
-# à la racine du compte FTP. Adaptez-les à votre arborescence réelle
-# (visible dans un client FTP : FileZilla, etc.) si elle diffère —
-# notamment si WordPress est installé dans un sous-dossier.
+# ── Chemins ──
+# WordPress est installé dans /poivresens/ sur le compte FTP (confirmé
+# par l'utilisateur le 2026-09-03) — les chemins ci-dessous en tiennent
+# compte. Si l'installation est un jour déplacée, c'est ici qu'il faut
+# le répercuter.
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
           password: ${{ secrets.OVH_FTP_PASSWORD }}
           protocol: ftp
           local-dir: wordpress-theme/poivre-sens/
-          server-dir: /wp-content/themes/poivre-sens/
+          server-dir: /poivresens/wp-content/themes/poivre-sens/
           dangerous-clean-slate: false
 
       - name: Déployer le plugin
@@ -67,5 +67,5 @@ jobs:
           password: ${{ secrets.OVH_FTP_PASSWORD }}
           protocol: ftp
           local-dir: wordpress-plugin/cf-events-booking/
-          server-dir: /wp-content/plugins/cf-events-booking/
+          server-dir: /poivresens/wp-content/plugins/cf-events-booking/
           dangerous-clean-slate: false

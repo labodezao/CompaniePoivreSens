@@ -14,14 +14,12 @@
 defined('ABSPATH') || exit;
 
 add_action('admin_menu', function () {
-    add_menu_page(
+    add_options_page(
         __('Textes du site', 'poivre-sens'),
         __('Textes du site', 'poivre-sens'),
         'manage_options',
         'ps-textes',
-        'ps_textes_admin_page',
-        'dashicons-edit-page',
-        59
+        'ps_textes_admin_page'
     );
 });
 
@@ -225,7 +223,11 @@ function ps_textes_traiter_soumission(): ?string {
     }
     check_admin_referer('ps_textes_enregistrer', 'ps_textes_nonce');
 
-    $edite = ps_textes_lire_formulaire(wp_unslash($_POST['t'] ?? []));
+    // Pas de wp_unslash() ici : chaque champ le fait déjà lui-même
+    // (ps_textes_champ() et consorts). Le refaire au niveau du tableau
+    // entier double l'opération et corrompt les antislashs littéraux
+    // qu'un texte pourrait légitimement contenir.
+    $edite = ps_textes_lire_formulaire($_POST['t'] ?? []);
     update_option('ps_textes_overrides', $edite);
     return 'enregistre';
 }
