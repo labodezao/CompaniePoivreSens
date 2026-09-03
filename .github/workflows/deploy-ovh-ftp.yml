@@ -1,0 +1,71 @@
+name: Deploy to OVH (FTP)
+
+# Déploie le thème et le plugin sur l'hébergement OVH par FTP, à chaque
+# fusion sur main. Décision prise avec l'utilisateur : thème + plugin,
+# automatique sur merge, FTP simple (pas de SFTP/FTPS sur ce compte OVH).
+#
+# ── Ce que ce fichier NE contient PAS, volontairement ──
+# Les identifiants FTP ne transitent jamais par le dépôt ni par le chat.
+# À configurer une fois, dans GitHub → Settings → Secrets and variables
+# → Actions → New repository secret :
+#
+#   OVH_FTP_HOST      hôte FTP (ex. ftp.cluster0XX.hosting.ovh.net)
+#   OVH_FTP_USER      identifiant FTP
+#   OVH_FTP_PASSWORD  mot de passe FTP
+#
+# ── À vérifier avant le premier déploiement ──
+# Les chemins server-dir ci-dessous supposent une installation WordPress
+# à la racine du compte FTP. Adaptez-les à votre arborescence réelle
+# (visible dans un client FTP : FileZilla, etc.) si elle diffère —
+# notamment si WordPress est installé dans un sous-dossier.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wordpress-theme/poivre-sens/**'
+      - 'wordpress-plugin/cf-events-booking/**'
+      - '.github/workflows/deploy-ovh-ftp.yml'
+  workflow_dispatch: # permet de relancer un déploiement manuellement
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier la syntaxe PHP (thème + plugin)
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r -d '' f; do
+            php -l "$f" || fail=1
+          done < <(find wordpress-theme/poivre-sens wordpress-plugin/cf-events-booking -name '*.php' -print0)
+          exit $fail
+
+  deploy:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Déployer le thème
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.OVH_FTP_HOST }}
+          username: ${{ secrets.OVH_FTP_USER }}
+          password: ${{ secrets.OVH_FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: wordpress-theme/poivre-sens/
+          server-dir: /wp-content/themes/poivre-sens/
+          dangerous-clean-slate: false
+
+      - name: Déployer le plugin
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.OVH_FTP_HOST }}
+          username: ${{ secrets.OVH_FTP_USER }}
+          password: ${{ secrets.OVH_FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: wordpress-plugin/cf-events-booking/
+          server-dir: /wp-content/plugins/cf-events-booking/
+          dangerous-clean-slate: false
