@@ -47,7 +47,7 @@ function ps_textes_defaut(): array {
 
         /* ── ① Hero ─────────────────────────────────────────────── */
         'hero' => [
-            'surtitre'    => 'Jeune compagnie · Association loi 1901',
+            'surtitre'    => 'Compagnie artistique · Association loi 1901',
             'disciplines' => [
                 'Danse contemporaine',
                 'Contact-improvisation',
@@ -55,32 +55,22 @@ function ps_textes_defaut(): array {
                 'Pratiques somatiques',
             ],
             'cta'      => 'Découvrir la compagnie',
-            'citation' => "Le corps sait ce que l'esprit ne sait pas.",
-            'intro'    => "À peine formée, la compagnie fait ses premiers pas. Nous sommes deux, venus au mouvement par des chemins qui n'ont rien à voir. Ce qui nous met en joie : créer ensemble, sans savoir d'avance ce qui va arriver.",
+            'citation' => "Le corps sait ce que l'esprit cherche encore.",
+            'intro'    => "Née de la rencontre de deux corps, d'une main qui écoute, d'une oreille qui se déplace et d'une différence qui fait sens, la compagnie explore les relations, le mouvement et la présence.",
         ],
 
         /* ── ② Manifeste ────────────────────────────────────────── */
         'manifeste' => [
             'label'      => 'Manifeste',
-            'titre_html' => "Être plus proche de soi, <em>au contact des autres</em>",
+            'titre_html' => "Une rencontre entre <em>le corps</em> et <em>l'histoire</em>",
             'paragraphes' => [
-                "À peine formée, la compagnie fait ses premiers pas. Elle est née de la rencontre de deux corps aux histoires différentes : l'une venue de la danse contemporaine, l'autre de la lutherie, passé par plusieurs arts et techniques de danse en y cherchant chaque fois un dépassement.",
+                "Inspirée du Taoïsme, de l'Aïkido, des approches systémiques et des danses traditionnelles du monde, la compagnie croit en <em>la richesse</em> <em>collective</em> : chaque geste est danse, chaque personne est source, chaque instant est son.",
 
-                "Ce qui nous met en joie, c'est la créativité collective et partagée. L'inattendu, l'impromptu, l'improvisation. Ce moment où personne ne sait encore ce qui va se passer, et où l'on y va quand même.",
+                "Ce qui unit leurs univers, c'est la qualité de présence et la créativité : être là, pleinement, dans l'instant d'une rencontre — entre deux corps, entre une sensation et une idée, entre une initiative et sa réponse et entre ce qui est attendu et ce qui surgit.",
 
-                "Et puis chercher, encore et toujours : comment habiter davantage son corps, comment être dans une présence de plus en plus juste, de plus en plus fine. Nous nous appuyons pour cela sur les pratiques somatiques, le Tao et la kinésiologie.",
+                "La compagnie explore les relations entre la structure et le lâcher-prise, entre la transmission d'un savoir et l'ouverture à l'inconnu, entre l'un, l'autre et le Nous.",
 
-                "Il y a dans ce travail une recherche d'intimité, et ce n'est pas un repli — c'est l'inverse. <em>Être plus proche de soi, précisément au contact des autres.</em> Rester relié à soi pendant qu'on est en relation : c'est là, pour nous, que tout se joue.",
-
-                "Cela demande de savoir où l'on en est. « Je suis où, là ? » Il y a des jours où l'on n'est pas disponible pour être à deux, faute d'en avoir les ressources ce jour-là. Ce n'est pas un échec, c'est une information. Nous accueillons les limites telles qu'elles sont, dans le présent.",
-
-                "Nous enseignons à deux, depuis deux pratiques distinctes. C'est ce croisement — le somatique et la danse, le geste et le son — qui fait, nous semble-t-il, ce que l'on ne trouve pas ailleurs.",
-
-                "Vous n'avez pas besoin de savoir danser. Ce que nous entendons le plus souvent au début, ce sont ces phrases-là : « je n'ose pas danser devant les autres », « j'ai du mal avec mon corps », « j'ai peur du sol », « je me sens seul ». C'est exactement de là que l'on part. L'un de nous a bâti toute sa pratique en traversant des troubles dys : on ne vient pas ici <em>malgré</em> ce qui coince, on vient avec.",
-
-                "Il y a aussi une envie plus large : faire connaître ce que la danse fait à qui la pratique. Pas celle qu'on regarde — <em>celle qui change la vie</em>. C'est pourquoi nous assumons deux entrées plutôt qu'une : selon le thème, un rendez-vous sera tourné vers le développement personnel, ou franchement artistique. L'orientation est annoncée pour chaque date, pour que vous sachiez avant de venir dans quel espace vous entrez.",
-
-                "Nous espérons rencontrer des gens émerveillables, curieux d'aller chercher et d'expérimenter. Nous ne saurions pas quoi faire, en revanche, de quelqu'un qui viendrait chercher un chemin tout tracé, ou quelqu'un à admirer. Ici, l'engagement que vous mettez pour vous-même compte davantage que ce que nous pourrions vous apporter.",
+                "Ces créations cherchent profondément à <em>habiter</em>, avec un panel d'épices et beaucoup de <em>sens</em>.",
             ],
         ],
 
@@ -92,10 +82,11 @@ function ps_textes_defaut(): array {
                 [
                     'initiale' => 'A',
                     'nom'      => 'Ambre Lavignac',
-                    'role'     => 'Danseuse · Pédagogue · Praticienne du mouvement',
+                    'role'     => 'Danseuse · Pédagogue · Praticienne du mouvement · Masseuse',
                     'textes'   => [
-                        "Venue de la danse contemporaine, Ambre oriente sa recherche vers les pratiques somatiques et les savoirs corporels anciens : philosophie taoïste, méridiens, kinésiologie, massage. Elle explore les correspondances entre les éléments, la circulation de l'énergie et les qualités de mouvement.",
-                        "S'il ne lui fallait transmettre qu'une chose, ce serait la sensation — cette finesse d'écoute que l'on affine peu à peu, en allant contacter une part de soi et en l'écoutant. L'improvisation est pour elle un espace de création vivante, et une affaire de poésie.",
+                        "Formée à de nombreuses danses dont un D.E en danse contemporaine, Ambre Lavignac oriente sa recherche vers les pratiques somatiques et l'expression de la créativité spontanée.",
+                        "Inspirée par la philosophie taoïste et la médecine traditionnelle chinoise, elle explore les correspondances entre les éléments naturels, les saisons énergétiques et les qualités de mouvement.",
+                        "Praticienne en massage, elle travaille les liens entre le toucher, la conscience corporelle et la circulation de l'énergie. En tant que pédagogue et chorégraphe, elle s'intéresse à l'improvisation comme espace de création vivante, de jeu et de développement de soi. « Nourrir, par la conscience, sa santé et sa présence ; révéler sa danse, son mouvement ; tisser et créer la joie, son lien avec les autres. »",
                     ],
                     'tags' => ['Danse contemporaine', 'Improvisation', 'Somatique', 'Tao', 'Méridiens', 'Kinésiologie', 'Massage', 'Pédagogie'],
                 ],
@@ -104,8 +95,8 @@ function ps_textes_defaut(): array {
                     'nom'      => "Ewen d'Aviau",
                     'role'     => 'Luthier-ingénieur · Musicien · Danseur',
                     'textes'   => [
-                        "Luthier, Ewen porte des troubles dys — il l'écrit lui-même : « Dys sur Dys ». Il est venu au mouvement par plusieurs arts et techniques de danse, en y cherchant chaque fois un dépassement. Traverser une différence oblige à inventer ses propres chemins : c'est vrai de sa pratique comme de sa pédagogie.",
-                        "Il conçoit le son comme une matière vivante, façonnable, imprévue. S'il ne lui fallait transmettre qu'une chose, ce serait l'interconnexion : comment toutes les parties du corps peuvent être partie prenante d'un même mouvement. Une synergie, plutôt qu'une somme de gestes.",
+                        "Ingénieur de formation, Ewen d'Aviau se tourne vers la lutherie pour explorer la fabrication des instruments à cordes comme geste à la fois artisanal, scientifique et artistique. Il conçoit le son comme une matière vivante, façonnable, imprévue.",
+                        "Musicien, il pratique l'improvisation libre avec une oreille particulière pour l'espace, le silence et la relation. Danseur, imprégné du contact-improvisation et de l'aïkido, il retient l'art de la redirection et de la présence active non agressive.",
                     ],
                     'tags' => ['Lutherie', 'Musique improvisée', 'Contact-improvisation', 'Somatique', 'Aïkido', 'Enseignement'],
                 ],
@@ -212,7 +203,7 @@ function ps_textes_defaut(): array {
                 ['Limites',         "Savoir où l'on en est, ce qui est juste pour soi. On n'est pas toujours disponible pour être à deux : c'est une information, pas un échec."],
                 ['Joie',            "C'est le mot qui revient le plus souvent chez ceux qui repartent. La joie du relationnel, du jeu, de l'échange avec une autre personne."],
             ],
-            'citation_html'   => "Partir de ce que le corps sait déjà —<br>et le faire <em>germer</em>.",
+            'citation_html'   => "Habiter un espace de jeu partagé —<br>entre deux corps,<br><em>un son et un mouvement</em>.",
             'citation_source' => "Poivre &amp; Sens · Note d'intention",
         ],
 
@@ -220,7 +211,7 @@ function ps_textes_defaut(): array {
         'contact' => [
             'label' => 'Nous rejoindre',
             'titre' => 'Contact',
-            'note'  => "La compagnie débute. Pour être prévenu des premières dates — ateliers, stages, jams — le plus simple est de laisser votre adresse dans le formulaire ci-dessus.",
+            'note'  => "Retrouvez Poivre &amp; Sens dans les réseaux du spectacle vivant, les festivals de contact-improvisation et les scènes de musique improvisée en France et en Europe.",
         ],
     ];
 
