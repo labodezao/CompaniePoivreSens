@@ -36,6 +36,9 @@ require_once get_template_directory() . '/inc/event-meta-box.php';
 // Bascule des événements du thème vers le plugin CF (outil de migration)
 require_once get_template_directory() . '/inc/event-migration.php';
 
+// Dupliquer une page depuis Pages › Toutes les pages
+require_once get_template_directory() . '/inc/duplicate-page.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
