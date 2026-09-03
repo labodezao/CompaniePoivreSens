@@ -9,6 +9,9 @@ defined('ABSPATH') || exit;
 // Textes éditoriaux de la page d'accueil (source unique)
 require_once get_template_directory() . '/inc/textes.php';
 
+// Menu de la page d'accueil, déduit de l'ordre réel de ses sections
+require_once get_template_directory() . '/inc/nav.php';
+
 // Réglages › Textes du site — éditeur des textes ci-dessus, dans l'admin
 require_once get_template_directory() . '/inc/textes-admin.php';
 

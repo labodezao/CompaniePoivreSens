@@ -31,14 +31,9 @@ if ( $ps_scheme && $ps_scheme !== 'auto' ) {
 
   <?php if (is_front_page()): ?>
   <ul class="nav__list" id="nav-list" role="list">
-    <li><a href="#galerie"      onclick="closeMenu()">Galerie</a></li>
-    <li><a href="#projet"       onclick="closeMenu()">Projet</a></li>
-    <li><a href="#artistes"     onclick="closeMenu()">Artistes</a></li>
-    <li><a href="#activites"    onclick="closeMenu()">Activités</a></li>
-    <li><a href="#evenements"   onclick="closeMenu()">Événements</a></li>
-    <li><a href="#esthetique"   onclick="closeMenu()">Esthétique</a></li>
-    <li><a href="#newsletter"   onclick="closeMenu()">Newsletter</a></li>
-    <li><a href="#contact"      onclick="closeMenu()">Contact</a></li>
+    <?php foreach (ps_nav_sections_accueil() as $ps_section): ?>
+    <li><a href="#<?php echo esc_attr($ps_section['ancre']); ?>" onclick="closeMenu()"><?php echo esc_html($ps_section['label']); ?></a></li>
+    <?php endforeach; ?>
   </ul>
   <?php else: ?>
   <ul class="nav__list" id="nav-list" role="list">
