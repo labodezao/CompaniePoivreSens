@@ -101,11 +101,6 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
     <?php if (empty($grouped)): ?>
     <div class="cal-list__empty">
         <p><?= __('Aucun événement programmé pour le moment.', 'poivre-sens') ?></p>
-        <?php if (current_user_can('publish_posts')): ?>
-        <a href="<?= esc_url(admin_url('post-new.php?post_type=evenement')) ?>" class="cal-list__add-btn">
-            + <?= __('Créer un événement', 'poivre-sens') ?>
-        </a>
-        <?php endif; ?>
     </div>
     <?php else: ?>
 
