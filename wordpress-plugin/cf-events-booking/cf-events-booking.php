@@ -71,6 +71,10 @@ foreach ( [
 	'class-cf-privacy',
 	'class-cf-dashboard',
 	'class-cf-next-event',
+	'class-cf-event-editor',
+	'class-cf-event-migration',
+	'class-cf-event-bulk-create',
+	'class-cf-event-seed-saison',
 ] as $f ) {
 	require_once CFEB_DIR . 'includes/' . $f . '.php';
 }
@@ -248,3 +252,10 @@ add_action( 'rest_api_init',         [ 'CF_RestApi',        'init' ] );
 add_action( 'widgets_init',          [ 'CF_Widget',         'register' ] );
 add_action( 'init',                  [ 'CF_GoogleCalendar', 'init' ] );
 add_action( 'init',                  [ 'CF_ApptType',       'init' ] );
+
+/* ── Édition d'un événement : métaboîte, série, migration, semis ── */
+add_action( 'add_meta_boxes', [ 'CF_Event_Editor', 'register_meta_box' ] );
+add_action( 'save_post',      [ 'CF_Event_Editor', 'save' ] );
+add_action( 'admin_menu',     [ 'CF_Event_Migration',   'register_page' ] );
+add_action( 'admin_menu',     [ 'CF_Event_Bulk_Create', 'register_page' ] );
+add_action( 'admin_menu',     [ 'CF_Event_Seed_Saison', 'register_page' ] );
