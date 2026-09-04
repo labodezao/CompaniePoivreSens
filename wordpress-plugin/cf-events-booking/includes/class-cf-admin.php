@@ -1195,8 +1195,9 @@ class CF_Admin {
 				<div id="cfeb-locations-list" style="display:flex;flex-direction:column;gap:6px;margin:14px 0;max-width:700px;">
 					<?php foreach ( $locations as $loc ) : ?>
 					<div class="cfeb-location-row" data-id="<?php echo esc_attr( $loc['id'] ?? '' ); ?>" style="display:flex;align-items:center;gap:8px;">
-						<input type="text" class="cfeb-loc-nom" style="max-width:180px;" value="<?php echo esc_attr( $loc['nom'] ?? '' ); ?>" placeholder="Nom court (ex : Lyon)" />
-						<input type="text" class="cfeb-loc-adresse regular-text" value="<?php echo esc_attr( $loc['adresse'] ?? '' ); ?>" placeholder="Adresse complète" />
+						<input type="text" class="cfeb-loc-nom" style="max-width:180px;" value="<?php echo esc_attr( $loc['nom'] ?? '' ); ?>" placeholder="Nom court (ex : Salle Gambetta gauche)" />
+						<input type="text" class="cfeb-loc-adresse regular-text" value="<?php echo esc_attr( $loc['adresse'] ?? '' ); ?>" placeholder="Adresse" />
+						<input type="text" class="cfeb-loc-ville" style="max-width:160px;" value="<?php echo esc_attr( $loc['ville'] ?? '' ); ?>" placeholder="Ville" />
 						<button type="button" class="button-link cfeb-loc-rm" style="color:#b32d2e;" title="Supprimer ce lieu"><span class="dashicons dashicons-no-alt"></span></button>
 					</div>
 					<?php endforeach; ?>
@@ -1217,7 +1218,8 @@ class CF_Admin {
 							var id      = row.getAttribute('data-id') || '';
 							var nom     = row.querySelector('.cfeb-loc-nom').value.trim();
 							var adresse = row.querySelector('.cfeb-loc-adresse').value.trim();
-							if ( nom || adresse ) data.push({ id: id, nom: nom, adresse: adresse });
+							var ville   = row.querySelector('.cfeb-loc-ville').value.trim();
+							if ( nom || adresse || ville ) data.push({ id: id, nom: nom, adresse: adresse, ville: ville });
 						});
 						hidden.value = JSON.stringify(data);
 					}
@@ -1229,6 +1231,7 @@ class CF_Admin {
 					function wireRow(row){
 						row.querySelector('.cfeb-loc-nom').addEventListener('input', serialize);
 						row.querySelector('.cfeb-loc-adresse').addEventListener('input', serialize);
+						row.querySelector('.cfeb-loc-ville').addEventListener('input', serialize);
 						row.querySelector('.cfeb-loc-rm').addEventListener('click', function(){
 							row.remove();
 							serialize();
@@ -1243,8 +1246,9 @@ class CF_Admin {
 							row.className = 'cfeb-location-row';
 							row.setAttribute('data-id', genId());
 							row.style.cssText = 'display:flex;align-items:center;gap:8px;';
-							row.innerHTML = '<input type="text" class="cfeb-loc-nom" style="max-width:180px;" placeholder="Nom court (ex : Lyon)" />'
-								+ '<input type="text" class="cfeb-loc-adresse regular-text" placeholder="Adresse complète" />'
+							row.innerHTML = '<input type="text" class="cfeb-loc-nom" style="max-width:180px;" placeholder="Nom court (ex : Salle Gambetta gauche)" />'
+								+ '<input type="text" class="cfeb-loc-adresse regular-text" placeholder="Adresse" />'
+								+ '<input type="text" class="cfeb-loc-ville" style="max-width:160px;" placeholder="Ville" />'
 								+ '<button type="button" class="button-link cfeb-loc-rm" style="color:#b32d2e;" title="Supprimer ce lieu"><span class="dashicons dashicons-no-alt"></span></button>';
 							list.appendChild(row);
 							wireRow(row);
@@ -1315,6 +1319,7 @@ class CF_Admin {
 						'id'      => $id,
 						'nom'     => sanitize_text_field( $loc['nom'] ?? '' ),
 						'adresse' => sanitize_text_field( $loc['adresse'] ?? '' ),
+						'ville'   => sanitize_text_field( $loc['ville'] ?? '' ),
 					];
 				}
 			}
@@ -1368,7 +1373,7 @@ class CF_Admin {
 	 * Paramètres → 📍 Lieux, sélectionnés créneau par créneau dans chaque
 	 * type de RDV (voir CF_ApptType::resolve_location()).
 	 *
-	 * @return array [ ['id'=>string,'nom'=>string,'adresse'=>string], ... ]
+	 * @return array [ ['id'=>string,'nom'=>string,'adresse'=>string,'ville'=>string], ... ]
 	 */
 	public static function get_locations() {
 		$raw = get_option( 'cfeb_locations', '' );

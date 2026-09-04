@@ -218,6 +218,26 @@ class CF_Event_Bulk_Create {
 		          <input type="time" name="ps_evt_bulk_heure_fin" value="<?= esc_attr( $valeurs['heure_fin'] ) ?>">
 		        </td>
 		      </tr>
+		      <?php $lieux_enregistres = class_exists( 'CF_Admin' ) ? CF_Admin::get_locations() : []; ?>
+		      <?php if ( $lieux_enregistres ): ?>
+		      <tr>
+		        <th><label for="ps_evt_bulk_lieu_preremplir"><?= esc_html__( 'Remplir depuis un lieu enregistré', 'cf-events' ) ?></label></th>
+		        <td>
+		          <select id="ps_evt_bulk_lieu_preremplir">
+		            <option value=""><?= esc_html__( '— Choisir —', 'cf-events' ) ?></option>
+		            <?php foreach ( $lieux_enregistres as $loc ): ?>
+		            <option value="<?= esc_attr( $loc['id'] ?? '' ) ?>"
+		              data-lieu="<?= esc_attr( $loc['nom'] ?? '' ) ?>"
+		              data-adresse="<?= esc_attr( $loc['adresse'] ?? '' ) ?>"
+		              data-ville="<?= esc_attr( $loc['ville'] ?? '' ) ?>">
+		              <?= esc_html( $loc['nom'] ?: $loc['adresse'] ) ?>
+		            </option>
+		            <?php endforeach; ?>
+		          </select>
+		          <p class="description"><?= esc_html__( 'Remplit les trois champs ci-dessous — modifiables ensuite librement.', 'cf-events' ) ?></p>
+		        </td>
+		      </tr>
+		      <?php endif; ?>
 		      <tr>
 		        <th><label for="ps_evt_bulk_lieu"><?= esc_html__( 'Lieu', 'cf-events' ) ?></label></th>
 		        <td><input type="text" id="ps_evt_bulk_lieu" name="ps_evt_bulk_lieu" class="regular-text" value="<?= esc_attr( $valeurs['lieu'] ) ?>"></td>
@@ -263,6 +283,25 @@ class CF_Event_Bulk_Create {
 		    </button>
 		  </form>
 		</div>
+		<?php if ( $lieux_enregistres ): ?>
+		<script>
+		(function () {
+		  var presel = document.getElementById('ps_evt_bulk_lieu_preremplir');
+		  if (!presel) return;
+		  presel.addEventListener('change', function () {
+		    if (!presel.value) return;
+		    var opt = presel.options[presel.selectedIndex];
+		    var lieu    = document.getElementById('ps_evt_bulk_lieu');
+		    var adresse = document.getElementById('ps_evt_bulk_adresse');
+		    var ville   = document.getElementById('ps_evt_bulk_ville');
+		    if (lieu)    lieu.value    = opt.getAttribute('data-lieu')    || '';
+		    if (adresse) adresse.value = opt.getAttribute('data-adresse') || '';
+		    if (ville)   ville.value   = opt.getAttribute('data-ville')   || '';
+		    presel.selectedIndex = 0;
+		  });
+		})();
+		</script>
+		<?php endif; ?>
 		<?php
 	}
 }
