@@ -1060,6 +1060,13 @@ class CF_Admin {
 						<td><input type="text" id="cfeb_ical_calendar_name" name="cfeb_ical_calendar_name" value="<?php echo esc_attr( $opts['ical_calendar_name'] ); ?>" class="regular-text" /></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="cfeb_evenements_accueil_nombre">Événements affichés sur l'accueil</label></th>
+						<td>
+							<input type="number" id="cfeb_evenements_accueil_nombre" name="cfeb_evenements_accueil_nombre" value="<?php echo esc_attr( $opts['evenements_accueil_nombre'] ); ?>" class="small-text" min="1" max="12" />
+							<p class="description">Nombre de prochains événements affichés dans la section « Prochains événements » de la page d'accueil.</p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row">Options</th>
 						<td>
 							<label><input type="checkbox" name="cfeb_tel_obligatoire" value="1" <?php checked( $opts['tel_obligatoire'] ); ?> /> Téléphone obligatoire <span style="color:#646970;font-weight:normal;">(widget événements historique uniquement — pour les types de rendez-vous, réglez « Téléphone obligatoire » sur la fiche de chaque type)</span></label><br>
@@ -1195,8 +1202,9 @@ class CF_Admin {
 				<div id="cfeb-locations-list" style="display:flex;flex-direction:column;gap:6px;margin:14px 0;max-width:700px;">
 					<?php foreach ( $locations as $loc ) : ?>
 					<div class="cfeb-location-row" data-id="<?php echo esc_attr( $loc['id'] ?? '' ); ?>" style="display:flex;align-items:center;gap:8px;">
-						<input type="text" class="cfeb-loc-nom" style="max-width:180px;" value="<?php echo esc_attr( $loc['nom'] ?? '' ); ?>" placeholder="Nom court (ex : Lyon)" />
-						<input type="text" class="cfeb-loc-adresse regular-text" value="<?php echo esc_attr( $loc['adresse'] ?? '' ); ?>" placeholder="Adresse complète" />
+						<input type="text" class="cfeb-loc-nom" style="max-width:180px;" value="<?php echo esc_attr( $loc['nom'] ?? '' ); ?>" placeholder="Nom court (ex : Salle Gambetta gauche)" />
+						<input type="text" class="cfeb-loc-adresse regular-text" value="<?php echo esc_attr( $loc['adresse'] ?? '' ); ?>" placeholder="Adresse" />
+						<input type="text" class="cfeb-loc-ville" style="max-width:160px;" value="<?php echo esc_attr( $loc['ville'] ?? '' ); ?>" placeholder="Ville" />
 						<button type="button" class="button-link cfeb-loc-rm" style="color:#b32d2e;" title="Supprimer ce lieu"><span class="dashicons dashicons-no-alt"></span></button>
 					</div>
 					<?php endforeach; ?>
@@ -1217,7 +1225,8 @@ class CF_Admin {
 							var id      = row.getAttribute('data-id') || '';
 							var nom     = row.querySelector('.cfeb-loc-nom').value.trim();
 							var adresse = row.querySelector('.cfeb-loc-adresse').value.trim();
-							if ( nom || adresse ) data.push({ id: id, nom: nom, adresse: adresse });
+							var ville   = row.querySelector('.cfeb-loc-ville').value.trim();
+							if ( nom || adresse || ville ) data.push({ id: id, nom: nom, adresse: adresse, ville: ville });
 						});
 						hidden.value = JSON.stringify(data);
 					}
@@ -1229,6 +1238,7 @@ class CF_Admin {
 					function wireRow(row){
 						row.querySelector('.cfeb-loc-nom').addEventListener('input', serialize);
 						row.querySelector('.cfeb-loc-adresse').addEventListener('input', serialize);
+						row.querySelector('.cfeb-loc-ville').addEventListener('input', serialize);
 						row.querySelector('.cfeb-loc-rm').addEventListener('click', function(){
 							row.remove();
 							serialize();
@@ -1243,8 +1253,9 @@ class CF_Admin {
 							row.className = 'cfeb-location-row';
 							row.setAttribute('data-id', genId());
 							row.style.cssText = 'display:flex;align-items:center;gap:8px;';
-							row.innerHTML = '<input type="text" class="cfeb-loc-nom" style="max-width:180px;" placeholder="Nom court (ex : Lyon)" />'
-								+ '<input type="text" class="cfeb-loc-adresse regular-text" placeholder="Adresse complète" />'
+							row.innerHTML = '<input type="text" class="cfeb-loc-nom" style="max-width:180px;" placeholder="Nom court (ex : Salle Gambetta gauche)" />'
+								+ '<input type="text" class="cfeb-loc-adresse regular-text" placeholder="Adresse" />'
+								+ '<input type="text" class="cfeb-loc-ville" style="max-width:160px;" placeholder="Ville" />'
 								+ '<button type="button" class="button-link cfeb-loc-rm" style="color:#b32d2e;" title="Supprimer ce lieu"><span class="dashicons dashicons-no-alt"></span></button>';
 							list.appendChild(row);
 							wireRow(row);
@@ -1288,6 +1299,7 @@ class CF_Admin {
 			update_option( 'cfeb_liste_attente',         ! empty( $_POST['cfeb_liste_attente'] )   ? 1 : 0 );
 			update_option( 'cfeb_ical_calendar_name',    sanitize_text_field( wp_unslash( $_POST['cfeb_ical_calendar_name'] ?? '' ) ) );
 			update_option( 'cfeb_show_past_events_link', ! empty( $_POST['cfeb_show_past_events_link'] ) ? 1 : 0 );
+			update_option( 'cfeb_evenements_accueil_nombre', max( 1, min( 12, absint( $_POST['cfeb_evenements_accueil_nombre'] ?? 3 ) ) ) );
 			update_option( 'cfeb_confirmation_redirect', esc_url_raw( wp_unslash( $_POST['cfeb_confirmation_redirect'] ?? '' ) ) );
 			update_option( 'cfeb_groupes_categorie',     sanitize_text_field( wp_unslash( $_POST['cfeb_groupes_categorie'] ?? '' ) ) );
 		} elseif ( 'emails' === $tab ) {
@@ -1315,6 +1327,7 @@ class CF_Admin {
 						'id'      => $id,
 						'nom'     => sanitize_text_field( $loc['nom'] ?? '' ),
 						'adresse' => sanitize_text_field( $loc['adresse'] ?? '' ),
+						'ville'   => sanitize_text_field( $loc['ville'] ?? '' ),
 					];
 				}
 			}
@@ -1352,6 +1365,7 @@ class CF_Admin {
 			'followup_message'      => get_option( 'cfeb_followup_message',      '' ),
 			'ical_calendar_name'    => get_option( 'cfeb_ical_calendar_name',    get_bloginfo( 'name' ) ),
 			'show_past_events_link' => (bool) get_option( 'cfeb_show_past_events_link', 1 ),
+			'evenements_accueil_nombre' => (int) get_option( 'cfeb_evenements_accueil_nombre', 3 ),
 			'confirmation_redirect' => get_option( 'cfeb_confirmation_redirect', '' ),
 			'gcal_sync_all'         => (int)  get_option( 'cfeb_gcal_sync_all',   0 ),
 			'rappel_msg'            => get_option( 'cfeb_rappel_msg',        "Bonjour {prenom},\n\nRappel : votre réservation pour \xab {evenement} \xbb a lieu le {date}.\n\n{lieu}\n\n\xc0 bient\xf4t !" ),
@@ -1368,7 +1382,7 @@ class CF_Admin {
 	 * Paramètres → 📍 Lieux, sélectionnés créneau par créneau dans chaque
 	 * type de RDV (voir CF_ApptType::resolve_location()).
 	 *
-	 * @return array [ ['id'=>string,'nom'=>string,'adresse'=>string], ... ]
+	 * @return array [ ['id'=>string,'nom'=>string,'adresse'=>string,'ville'=>string], ... ]
 	 */
 	public static function get_locations() {
 		$raw = get_option( 'cfeb_locations', '' );

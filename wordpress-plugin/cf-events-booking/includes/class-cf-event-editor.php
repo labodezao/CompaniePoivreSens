@@ -194,6 +194,26 @@ class CF_Event_Editor {
 
 		    <div class="ps-evt-sec">
 		      <h4 class="ps-evt-sec__t">📍 <?= esc_html__( 'Où', 'cf-events' ) ?></h4>
+		      <?php $lieux_enregistres = class_exists( 'CF_Admin' ) ? CF_Admin::get_locations() : []; ?>
+		      <?php if ( $lieux_enregistres ): ?>
+		      <div class="ps-evt-full" style="margin-bottom:14px;">
+		        <label class="ps-evt-lab" for="evt_lieu_preremplir"><?= esc_html__( 'Remplir depuis un lieu enregistré', 'cf-events' ) ?></label>
+		        <select id="evt_lieu_preremplir">
+		          <option value=""><?= esc_html__( '— Choisir —', 'cf-events' ) ?></option>
+		          <?php foreach ( $lieux_enregistres as $loc ): ?>
+		          <option value="<?= esc_attr( $loc['id'] ?? '' ) ?>"
+		            data-lieu="<?= esc_attr( $loc['nom'] ?? '' ) ?>"
+		            data-adresse="<?= esc_attr( $loc['adresse'] ?? '' ) ?>"
+		            data-ville="<?= esc_attr( $loc['ville'] ?? '' ) ?>">
+		            <?= esc_html( $loc['nom'] ?: ( $loc['adresse'] ?: ( $loc['ville'] ?? '' ) ) ) ?>
+		          </option>
+		          <?php endforeach; ?>
+		        </select>
+		        <p class="ps-evt-hint">
+		          <?= esc_html__( 'Remplit les champs ci-dessous — vous pouvez ensuite les ajuster librement. Gérer la liste : ', 'cf-events' ) ?><a href="<?= esc_url( admin_url( 'edit.php?post_type=' . CFEB_SLUG . '&page=cfeb-settings&tab=lieux' ) ) ?>" target="_blank" rel="noopener noreferrer"><?= esc_html__( 'CF Réservations › Paramètres › Lieux', 'cf-events' ) ?></a>.
+		        </p>
+		      </div>
+		      <?php endif; ?>
 		      <div class="ps-evt-grid">
 		        <div class="ps-evt-full">
 		          <label class="ps-evt-lab" for="evt_lieu"><?= esc_html__( 'Lieu', 'cf-events' ) ?></label>
@@ -444,6 +464,20 @@ class CF_Event_Editor {
 		    var el = $(id);
 		    if (el) { el.addEventListener('input', maj); el.addEventListener('change', maj); }
 		  });
+
+		  // Remplir lieu/adresse/ville depuis un lieu enregistré (Paramètres › Lieux)
+		  var presel = $('evt_lieu_preremplir');
+		  if (presel) {
+		    presel.addEventListener('change', function () {
+		      if (!presel.value) return;
+		      var opt = presel.options[presel.selectedIndex];
+		      if ($('evt_lieu'))    $('evt_lieu').value    = opt.getAttribute('data-lieu')    || '';
+		      if ($('evt_adresse')) $('evt_adresse').value = opt.getAttribute('data-adresse') || '';
+		      if ($('evt_ville'))   $('evt_ville').value   = opt.getAttribute('data-ville')   || '';
+		      presel.selectedIndex = 0;
+		      maj();
+		    });
+		  }
 
 		  // Suivre le titre saisi dans Gutenberg
 		  try {

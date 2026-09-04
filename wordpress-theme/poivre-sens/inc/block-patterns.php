@@ -103,7 +103,8 @@ add_shortcode('ps_galerie', function (): string {
 /** [ps_evenements] — Prochains événements, quelle qu'en soit la source */
 add_shortcode('ps_evenements', function (): string {
     ob_start();
-    $q        = ps_get_upcoming_events(3);
+    $nb_evenements = class_exists('CF_Admin') ? (int) CF_Admin::get_options()['evenements_accueil_nombre'] : 3;
+    $q        = ps_get_upcoming_events($nb_evenements ?: 3);
     $today    = date('Y-m-d');
     $jours_fr = ['Sun' => 'Dim', 'Mon' => 'Lun', 'Tue' => 'Mar', 'Wed' => 'Mer',
                  'Thu' => 'Jeu', 'Fri' => 'Ven', 'Sat' => 'Sam'];
@@ -123,6 +124,7 @@ add_shortcode('ps_evenements', function (): string {
           $l  = ps_evt_champ($id, 'lieu');
           $v  = ps_evt_champ($id, 'ville');
           $ty = ps_evt_champ($id, 'type_label');
+          $tys = ps_evt_champ($id, 'type');
           $p  = ps_evt_champ($id, 'prix');
           $b  = ps_evt_champ($id, 'billetterie');
           $cp = ps_evt_champ($id, 'complet');
@@ -137,7 +139,7 @@ add_shortcode('ps_evenements', function (): string {
           </div>
           <div class="cal-list__line" aria-hidden="true"></div>
           <div class="cal-list__body">
-            <?php if ($ty) : ?><span class="cal-list__type"><?= esc_html($ty) ?></span><?php endif; ?>
+            <?php if ($ty) : ?><span class="cal-list__type cal-list__type--<?= esc_attr(sanitize_html_class($tys ?: 'autre')) ?>"><?= esc_html($ty) ?></span><?php endif; ?>
             <?php if ($se === 'annule') : ?><span class="cal-list__complet"><?php _e('Annulé', 'poivre-sens'); ?></span>
             <?php elseif ($se === 'reporte') : ?><span class="cal-list__complet"><?php _e('Reporté', 'poivre-sens'); ?></span>
             <?php elseif ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>

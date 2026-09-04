@@ -14,6 +14,12 @@
   --gris:   #7f7463;
   --bord:   rgba(194,139,54,.18);
   --bord2:  rgba(194,139,54,.28);
+  /* Couleurs des badges de type d'événement (agenda) — jam, résidence et
+     concert n'ont pas d'équivalent parmi les couleurs déjà nommées ;
+     spectacle/atelier/autre réutilisent --rouge/--or/--gris. */
+  --cat-jam:       #5288a6;
+  --cat-residence: #9352a6;
+  --cat-concert:   #a65257;
   --fh: 'Cormorant Garamond', Georgia, serif;
   --fb: 'Inter', system-ui, sans-serif;
   --ease: cubic-bezier(.25,.46,.45,.94);
@@ -534,6 +540,14 @@ h4.co-h {
 .cal-list__event:hover .cal-list__line{background:var(--or)}
 .cal-list__body{padding:2px 0 16px}
 .cal-list__type{display:inline-block;font-size:.6rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:rgba(194,139,54,.7);border:1px solid rgba(194,139,54,.22);padding:2px 8px;margin-bottom:10px}
+/* Une couleur par type d'événement, pour les distinguer d'un coup d'œil
+   dans l'agenda et l'aperçu de l'accueil — atelier garde la couleur par
+   défaut ci-dessus (c'est de loin le type le plus courant). */
+.cal-list__type--spectacle{color:var(--rouge);border-color:var(--rouge)}
+.cal-list__type--jam{color:var(--cat-jam);border-color:var(--cat-jam)}
+.cal-list__type--residence{color:var(--cat-residence);border-color:var(--cat-residence)}
+.cal-list__type--concert{color:var(--cat-concert);border-color:var(--cat-concert)}
+.cal-list__type--autre{color:var(--gris);border-color:var(--gris)}
 .cal-list__complet{display:inline-block;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rouge);border:1px solid rgba(158,55,16,.3);padding:2px 8px;margin-bottom:10px;margin-left:6px}
 .cal-list__title{font-family:var(--fh);font-size:1.15rem;font-weight:400;color:var(--creme);line-height:1.25;margin-bottom:10px}
 .cal-list__title a{color:inherit;transition:color .2s}
@@ -654,6 +668,9 @@ h4.co-h {
   --gris:  #9a7850;
   --bord:  rgba(212,152,32,.2);
   --bord2: rgba(212,152,32,.32);
+  --cat-jam:       #4483b0;
+  --cat-residence: #9e44b0;
+  --cat-concert:   #b04444;
 }
 [data-theme="aurore"] .nav.scrolled       { background: rgba(31,16,8,.93); }
 [data-theme="aurore"] .nav__list          { background: rgba(31,16,8,.97); }
@@ -692,6 +709,9 @@ h4.co-h {
   --gris:  #566b58;
   --bord:  rgba(20,32,25,.11);
   --bord2: rgba(20,32,25,.18);
+  --cat-jam:       #9858a4;
+  --cat-residence: #a46b58;
+  --cat-concert:   #84a458;
 }
 [data-theme="foret"] .hero {
   background:
@@ -799,6 +819,9 @@ h4.co-h {
   --gris:  #685d53;
   --bord:  rgba(23,18,15,.11);
   --bord2: rgba(23,18,15,.18);
+  --cat-jam:       #5f93a9;
+  --cat-residence: #945fa9;
+  --cat-concert:   #a95f68;
 }
 [data-theme="lumiere"] .hero {
   background:
