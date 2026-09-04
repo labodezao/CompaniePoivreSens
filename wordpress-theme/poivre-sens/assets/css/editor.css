@@ -88,8 +88,12 @@
   line-height:1.42; color:var(--creme); margin-bottom:36px;
 }
 .editor-styles-wrapper .hero__q::before {
-  content:'\201C'; display:block; font-size:3.8rem; line-height:1;
-  color:var(--or); font-style:normal; margin-bottom:6px;
+  content:'\201C'; font-size:1.3em; line-height:0;
+  color:var(--or); font-style:normal; margin-right:.06em;
+}
+.editor-styles-wrapper .hero__q::after {
+  content:'\201D'; font-size:1.3em; line-height:0;
+  color:var(--or); font-style:normal; margin-left:.06em;
 }
 .editor-styles-wrapper .hero__intro {
   font-size:.92rem; line-height:1.85; color:rgba(236,227,203,.6);
