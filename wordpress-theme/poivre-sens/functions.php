@@ -35,6 +35,10 @@ require_once get_template_directory() . '/inc/event-data.php';
 // Dupliquer une page depuis Pages › Toutes les pages
 require_once get_template_directory() . '/inc/duplicate-page.php';
 
+// Outil ponctuel : repasser la page d'accueil déjà en ligne en shortcodes
+// (voir inc/block-patterns.php, dont elle dépend pour _ps_pat_*())
+require_once get_template_directory() . '/inc/fix-homepage-content.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */

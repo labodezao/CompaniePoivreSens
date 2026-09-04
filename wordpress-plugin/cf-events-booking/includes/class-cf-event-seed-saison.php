@@ -26,7 +26,7 @@ class CF_Event_Seed_Saison {
 		$series = [
 			[
 				'commun' => [
-					'titre' => 'Vendredi Corps Vivant', 'type' => 'atelier',
+					'titre' => 'Vendredi Corps Vivant', 'type' => 'corps-vivant', 'type_label' => 'Corps Vivant',
 					'heure' => '19:00', 'heure_fin' => '20:30',
 					'lieu' => 'Salle Gambetta gauche', 'adresse' => '62 rue Gardurand', 'ville' => 'Saint-Nazaire',
 					'prix' => "230 € l'année - 15 € à l'unité - Cours d'essai gratuit",
@@ -40,7 +40,7 @@ class CF_Event_Seed_Saison {
 			],
 			[
 				'commun' => [
-					'titre' => 'Sens & Mouvement', 'type' => 'atelier',
+					'titre' => 'Sens & Mouvement', 'type' => 'sens-mouvement', 'type_label' => 'Sens & Mouvement',
 					'heure' => '10:00', 'heure_fin' => '12:30',
 					'lieu' => 'Salle Hibiscus', 'adresse' => 'rue des Hibiscus', 'ville' => 'Saint-Nazaire',
 					'prix' => '30 € (35 € tarif solidaire)',
@@ -52,7 +52,7 @@ class CF_Event_Seed_Saison {
 			],
 			[
 				'commun' => [
-					'titre' => 'Labo Danse — Quai des Bals', 'type' => 'atelier',
+					'titre' => 'Labo Danse — Quai des Bals', 'type' => 'labo-danse', 'type_label' => 'Labo Danse',
 					'heure' => '19:00', 'heure_fin' => '20:30',
 					'lieu' => 'Salle Gambetta gauche', 'adresse' => '62 rue Gardurand', 'ville' => 'Saint-Nazaire',
 					'prix' => '15 €',
@@ -78,6 +78,23 @@ class CF_Event_Seed_Saison {
 					$crees++;
 				}
 			}
+
+			// Recatégorise aussi les occurrences déjà publiées avant ce
+			// changement : elles ont été créées avec l'ancien type
+			// ('atelier', partagé par les trois séries), ce que la boucle
+			// ci-dessus — qui ne crée que les dates manquantes — ne
+			// corrige pas de lui-même.
+			$existants = get_posts( [
+				'post_type'      => ps_evt_cpt(),
+				'post_status'    => 'any',
+				'title'          => $titre,
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			] );
+			foreach ( $existants as $post_id ) {
+				CF_Event_Editor::assign_type( $post_id, $serie['commun']['type'], $serie['commun']['type_label'] ?? '' );
+			}
+
 			$bilan[ $titre ] = [ 'crees' => $crees, 'deja_la' => $deja_la, 'total' => count( $serie['dates'] ) ];
 		}
 		return $bilan;
@@ -109,7 +126,7 @@ class CF_Event_Seed_Saison {
 		  </p>
 		  <p style="max-width:46em">
 		    <strong><?= esc_html__( 'Sans risque à relancer', 'cf-events' ) ?></strong> —
-		    <?= esc_html__( 'un événement déjà créé à une date donnée est détecté et ignoré, jamais dupliqué.', 'cf-events' ) ?>
+		    <?= esc_html__( 'un événement déjà créé à une date donnée est détecté et ignoré, jamais dupliqué. Relancer met aussi à jour la catégorie des événements déjà présents (utile pour leur donner une couleur distincte dans l\'agenda).', 'cf-events' ) ?>
 		  </p>
 
 		  <?php if ( $bilan !== null ): ?>

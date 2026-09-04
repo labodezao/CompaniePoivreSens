@@ -84,9 +84,17 @@ function ps_evt_champ($post_id, $champ) {
 
         case 'type':
         case 'type_label':
+        case 'type_color':
             if (!defined('CFEB_TAX')) return '';
             $termes = get_the_terms($post_id, CFEB_TAX);
             if (!is_array($termes) || !$termes) return '';
+            if ($champ === 'type_color') {
+                // La couleur se choisit dans CF Réservations › Catégories.
+                // Vide tant qu'elle n'a pas été personnalisée (pas de méta
+                // enregistrée), pour laisser l'affichage retomber sur la
+                // couleur par défaut de son type (feuille de style).
+                return (string) get_term_meta($termes[0]->term_id, 'cfeb_cat_color', true);
+            }
             return $champ === 'type' ? $termes[0]->slug : $termes[0]->name;
 
         case 'prix':

@@ -98,6 +98,7 @@ class CF_Event_Bulk_Create {
 			'evt_adresse'      => $commun['adresse']     ?? '',
 			'evt_ville'        => $commun['ville']       ?? '',
 			'evt_type'         => $commun['type']        ?? '',
+			'evt_type_label'   => $commun['type_label']  ?? '',
 			'evt_prix'         => $commun['prix']        ?? '',
 			'evt_billetterie'  => $commun['billetterie'] ?? '',
 			'evt_max_places'   => $commun['max_places']  ?? '',
@@ -204,7 +205,7 @@ class CF_Event_Bulk_Create {
 		        <td>
 		          <select id="ps_evt_bulk_type" name="ps_evt_bulk_type">
 		            <option value=""><?= esc_html__( '—', 'cf-events' ) ?></option>
-		            <?php foreach ( CF_Event_Editor::types() as $cle => $libelle ): ?>
+		            <?php foreach ( CF_Event_Editor::types_disponibles() as $cle => $libelle ): ?>
 		            <option value="<?= esc_attr( $cle ) ?>" <?= selected( $valeurs['type'], $cle, false ) ?>><?= esc_html( $libelle ) ?></option>
 		            <?php endforeach; ?>
 		          </select>

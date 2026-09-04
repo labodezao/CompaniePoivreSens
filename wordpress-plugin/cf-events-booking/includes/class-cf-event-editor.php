@@ -21,7 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class CF_Event_Editor {
 
-	/** Types d'événement proposés. */
+	/**
+	 * Types d'événement de départ : sert à peupler la catégorie (CFEB_TAX)
+	 * la première fois qu'un slug est utilisé, et de repli si la taxonomie
+	 * est encore vide. Une fois créées, ces catégories se gèrent — se
+	 * renommer, se recolorer, s'en ajouter de nouvelles — depuis
+	 * CF Réservations › Catégories (voir class-cf-cpt.php) : ce tableau
+	 * ne borne plus la liste des types disponibles.
+	 */
 	public static function types() {
 		return [
 			'spectacle' => __( 'Spectacle vivant', 'cf-events' ),
@@ -31,6 +38,70 @@ class CF_Event_Editor {
 			'concert'   => __( 'Concert', 'cf-events' ),
 			'autre'     => __( 'Autre', 'cf-events' ),
 		];
+	}
+
+	/**
+	 * Types réellement proposés dans les formulaires : les catégories déjà
+	 * créées (CFEB_TAX), avec leur libellé actuel — donc à jour d'un
+	 * éventuel renommage depuis CF Réservations › Catégories. En repli,
+	 * la liste de départ ci-dessus, pour ne jamais présenter un menu vide.
+	 */
+	public static function types_disponibles() {
+		if ( ! defined( 'CFEB_TAX' ) || ! taxonomy_exists( CFEB_TAX ) ) {
+			return self::types();
+		}
+		$termes = get_terms( [ 'taxonomy' => CFEB_TAX, 'hide_empty' => false, 'orderby' => 'name' ] );
+		if ( is_wp_error( $termes ) || ! $termes ) {
+			return self::types();
+		}
+		$liste = [];
+		foreach ( $termes as $terme ) {
+			$liste[ $terme->slug ] = $terme->name;
+		}
+		return $liste;
+	}
+
+	/**
+	 * Palette de repli pour une catégorie qui vient d'être créée sans
+	 * couleur choisie (nouveau type saisi dans un outil de création en
+	 * série, par exemple) : évite que deux catégories distinctes se
+	 * retrouvent avec le même badge par défaut le temps que quelqu'un
+	 * passe par CF Réservations › Catégories pour la personnaliser.
+	 */
+	private static function couleur_par_defaut() {
+		$palette = [ '#9C3E1C', '#57624A', '#2F6F76', '#8A5A9E', '#B0793A', '#4A6FA5' ];
+		$deja    = wp_count_terms( [ 'taxonomy' => CFEB_TAX, 'hide_empty' => false ] );
+		$deja    = is_wp_error( $deja ) ? 0 : (int) $deja;
+		return $palette[ $deja % count( $palette ) ];
+	}
+
+	/**
+	 * Rattache un événement à sa catégorie de type, en la créant si besoin
+	 * (avec une couleur de repli distincte — voir couleur_par_defaut()).
+	 * Centralise ce que save() faisait en ligne, pour que les outils de
+	 * création en série (bulk-create, semis de saison) puissent aussi
+	 * re-rattacher un événement déjà publié sans dupliquer cette logique.
+	 */
+	public static function assign_type( $post_id, string $type, string $label_repli = '' ) {
+		if ( ! defined( 'CFEB_TAX' ) || ! taxonomy_exists( CFEB_TAX ) ) return;
+
+		if ( $type === '' ) {
+			wp_set_object_terms( $post_id, [], CFEB_TAX );
+			return;
+		}
+
+		$libelles = self::types();
+		$existant = term_exists( $type, CFEB_TAX );
+		$nouveau  = ! $existant;
+		$label    = $label_repli !== '' ? $label_repli : ( $libelles[ $type ] ?? ucfirst( $type ) );
+		$terme    = $existant ?: wp_insert_term( $label, CFEB_TAX, [ 'slug' => $type ] );
+		if ( is_wp_error( $terme ) ) return;
+
+		$term_id = (int) $terme['term_id'];
+		if ( $nouveau && ! get_term_meta( $term_id, 'cfeb_cat_color', true ) ) {
+			update_term_meta( $term_id, 'cfeb_cat_color', self::couleur_par_defaut() );
+		}
+		wp_set_object_terms( $post_id, [ $term_id ], CFEB_TAX );
 	}
 
 	/*
@@ -78,9 +149,10 @@ class CF_Event_Editor {
 		$featured       = $plugin_actif ? ps_evt_champ( $post->ID, 'featured' )      : false;
 		$places_restantes = $plugin_actif ? ps_evt_places_restantes( $post->ID ) : null;
 
-		// Aux types du plugin s'ajoutent les catégories déjà créées côté
-		// plugin, pour ne pas perdre celles nées de la migration.
-		$types  = self::types() + ps_evt_liste_types();
+		// Les catégories déjà créées (CF Réservations › Catégories) sont la
+		// source de vérité : elles reflètent un éventuel renommage ou une
+		// nouvelle catégorie ajoutée depuis cet écran.
+		$types  = self::types_disponibles();
 		$vignette = has_post_thumbnail( $post->ID ) ? get_the_post_thumbnail_url( $post->ID, 'evt-card' ) : '';
 		?>
 		<style>
@@ -590,19 +662,8 @@ class CF_Event_Editor {
 		}
 
 		// Le type devient une catégorie du plugin.
-		$type = (string) ( $valeurs['_evt_type'] ?? '' );
-		if ( defined( 'CFEB_TAX' ) && taxonomy_exists( CFEB_TAX ) ) {
-			if ( $type === '' ) {
-				wp_set_object_terms( $post_id, [], CFEB_TAX );
-			} else {
-				$libelles = self::types();
-				$existant = term_exists( $type, CFEB_TAX );
-				$terme    = $existant ?: wp_insert_term( $libelles[ $type ] ?? ucfirst( $type ), CFEB_TAX, [ 'slug' => $type ] );
-				if ( ! is_wp_error( $terme ) ) {
-					wp_set_object_terms( $post_id, [ (int) $terme['term_id'] ], CFEB_TAX );
-				}
-			}
-		}
+		$type_label = isset( $_POST['evt_type_label'] ) ? sanitize_text_field( wp_unslash( $_POST['evt_type_label'] ) ) : '';
+		self::assign_type( $post_id, (string) ( $valeurs['_evt_type'] ?? '' ), $type_label );
 	}
 }
 

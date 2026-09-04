@@ -17,6 +17,70 @@ self::register_venue_post_type();
 self::register_event_tag_taxonomy();
 
 add_filter( 'cfeb_cat_color', [ __CLASS__, 'get_cat_color' ], 10, 1 );
+
+// Champ couleur sur les écrans d'ajout/édition de catégorie — la seule
+// façon pour l'administrateur de choisir la couleur d'une catégorie,
+// maintenant que l'écran de gestion est visible (show_ui ci-dessus).
+add_action( CFEB_TAX . '_add_form_fields',  [ __CLASS__, 'render_color_field_add' ] );
+add_action( CFEB_TAX . '_edit_form_fields', [ __CLASS__, 'render_color_field_edit' ] );
+add_action( 'create_' . CFEB_TAX, [ __CLASS__, 'save_color_field' ] );
+add_action( 'edited_' . CFEB_TAX, [ __CLASS__, 'save_color_field' ] );
+add_filter( 'manage_edit-' . CFEB_TAX . '_columns',       [ __CLASS__, 'add_color_column' ] );
+add_filter( 'manage_' . CFEB_TAX . '_custom_column',      [ __CLASS__, 'render_color_column' ], 10, 3 );
+}
+
+/* ── Champ couleur de catégorie ───────────────────────────────
+   Le reste du plugin (get_cat_color() ci-dessus) sait déjà lire cette
+   couleur ; il ne manquait qu'un endroit pour la choisir. */
+public static function render_color_field_add() {
+?>
+<div class="form-field">
+<label for="cfeb_cat_color"><?php esc_html_e( 'Couleur', 'cf-events' ); ?></label>
+<input type="color" name="cfeb_cat_color" id="cfeb_cat_color" value="#3b82f6">
+<p><?php esc_html_e( 'Couleur du badge affiché sur le site pour les événements de cette catégorie.', 'cf-events' ); ?></p>
+</div>
+<?php
+}
+
+public static function render_color_field_edit( $term ) {
+$couleur = self::get_cat_color( $term->term_id );
+?>
+<tr class="form-field">
+<th scope="row"><label for="cfeb_cat_color"><?php esc_html_e( 'Couleur', 'cf-events' ); ?></label></th>
+<td>
+<input type="color" name="cfeb_cat_color" id="cfeb_cat_color" value="<?php echo esc_attr( $couleur ); ?>">
+<p class="description"><?php esc_html_e( 'Couleur du badge affiché sur le site pour les événements de cette catégorie.', 'cf-events' ); ?></p>
+</td>
+</tr>
+<?php
+}
+
+public static function save_color_field( $term_id ) {
+if ( ! isset( $_POST['cfeb_cat_color'] ) ) return;
+$couleur = sanitize_text_field( wp_unslash( $_POST['cfeb_cat_color'] ) );
+if ( preg_match( '/^#[0-9a-fA-F]{6}$/', $couleur ) ) {
+update_term_meta( $term_id, 'cfeb_cat_color', $couleur );
+}
+}
+
+public static function add_color_column( $columns ) {
+$nouvelles = [];
+foreach ( $columns as $cle => $label ) {
+$nouvelles[ $cle ] = $label;
+if ( 'name' === $cle ) {
+$nouvelles['cfeb_cat_color'] = __( 'Couleur', 'cf-events' );
+}
+}
+return $nouvelles;
+}
+
+public static function render_color_column( $contenu, $colonne, $term_id ) {
+if ( 'cfeb_cat_color' !== $colonne ) return $contenu;
+$couleur = self::get_cat_color( $term_id );
+return sprintf(
+'<span style="display:inline-block;width:16px;height:16px;border-radius:50%%;background:%1$s;border:1px solid rgba(0,0,0,.15);vertical-align:middle;margin-right:6px"></span>%1$s',
+esc_html( $couleur )
+);
 }
 
 /* ── CPT Événements ──────────────────────────────────────────── */
@@ -57,8 +121,9 @@ register_taxonomy( CFEB_TAX, CFEB_SLUG, [
 'labels'            => [ 'name' => 'Catégories', 'singular_name' => 'Catégorie', 'menu_name' => 'Catégories' ],
 'hierarchical'      => true,
 'public'            => false,
-'show_ui'           => false,
-'show_admin_column' => false,
+'show_ui'           => true,
+'show_in_menu'      => true,
+'show_admin_column' => true,
 'show_in_rest'      => false,
 ] );
 }
