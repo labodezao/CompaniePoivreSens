@@ -205,12 +205,12 @@ class CF_Event_Editor {
 		            data-lieu="<?= esc_attr( $loc['nom'] ?? '' ) ?>"
 		            data-adresse="<?= esc_attr( $loc['adresse'] ?? '' ) ?>"
 		            data-ville="<?= esc_attr( $loc['ville'] ?? '' ) ?>">
-		            <?= esc_html( $loc['nom'] ?: $loc['adresse'] ) ?>
+		            <?= esc_html( $loc['nom'] ?: ( $loc['adresse'] ?: ( $loc['ville'] ?? '' ) ) ) ?>
 		          </option>
 		          <?php endforeach; ?>
 		        </select>
 		        <p class="ps-evt-hint">
-		          <?= esc_html__( 'Remplit les champs ci-dessous — vous pouvez ensuite les ajuster librement. Gérer la liste : ', 'cf-events' ) ?><a href="<?= esc_url( admin_url( 'edit.php?post_type=' . CFEB_SLUG . '&page=cfeb-settings&tab=lieux' ) ) ?>" target="_blank"><?= esc_html__( 'CF Réservations › Paramètres › Lieux', 'cf-events' ) ?></a>.
+		          <?= esc_html__( 'Remplit les champs ci-dessous — vous pouvez ensuite les ajuster librement. Gérer la liste : ', 'cf-events' ) ?><a href="<?= esc_url( admin_url( 'edit.php?post_type=' . CFEB_SLUG . '&page=cfeb-settings&tab=lieux' ) ) ?>" target="_blank" rel="noopener noreferrer"><?= esc_html__( 'CF Réservations › Paramètres › Lieux', 'cf-events' ) ?></a>.
 		        </p>
 		      </div>
 		      <?php endif; ?>

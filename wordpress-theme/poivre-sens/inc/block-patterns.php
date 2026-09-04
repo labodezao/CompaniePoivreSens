@@ -139,7 +139,7 @@ add_shortcode('ps_evenements', function (): string {
           </div>
           <div class="cal-list__line" aria-hidden="true"></div>
           <div class="cal-list__body">
-            <?php if ($ty) : ?><span class="cal-list__type cal-list__type--<?= esc_attr($tys ?: 'autre') ?>"><?= esc_html($ty) ?></span><?php endif; ?>
+            <?php if ($ty) : ?><span class="cal-list__type cal-list__type--<?= esc_attr(sanitize_html_class($tys ?: 'autre')) ?>"><?= esc_html($ty) ?></span><?php endif; ?>
             <?php if ($se === 'annule') : ?><span class="cal-list__complet"><?php _e('Annulé', 'poivre-sens'); ?></span>
             <?php elseif ($se === 'reporte') : ?><span class="cal-list__complet"><?php _e('Reporté', 'poivre-sens'); ?></span>
             <?php elseif ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>

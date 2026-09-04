@@ -230,7 +230,7 @@ class CF_Event_Bulk_Create {
 		              data-lieu="<?= esc_attr( $loc['nom'] ?? '' ) ?>"
 		              data-adresse="<?= esc_attr( $loc['adresse'] ?? '' ) ?>"
 		              data-ville="<?= esc_attr( $loc['ville'] ?? '' ) ?>">
-		              <?= esc_html( $loc['nom'] ?: $loc['adresse'] ) ?>
+		              <?= esc_html( $loc['nom'] ?: ( $loc['adresse'] ?: ( $loc['ville'] ?? '' ) ) ) ?>
 		            </option>
 		            <?php endforeach; ?>
 		          </select>

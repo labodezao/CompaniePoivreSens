@@ -140,7 +140,7 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
             <div class="cal-list__body">
 
                 <?php if ($e['type']): ?>
-                <span class="cal-list__type cal-list__type--<?= esc_attr($e['type_slug'] ?: 'autre') ?>"><?= esc_html($e['type']) ?></span>
+                <span class="cal-list__type cal-list__type--<?= esc_attr(sanitize_html_class($e['type_slug'] ?: 'autre')) ?>"><?= esc_html($e['type']) ?></span>
                 <?php endif; ?>
 
                 <?php if ($e['statut_event'] === 'annule'): ?>
