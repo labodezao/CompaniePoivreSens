@@ -1060,6 +1060,13 @@ class CF_Admin {
 						<td><input type="text" id="cfeb_ical_calendar_name" name="cfeb_ical_calendar_name" value="<?php echo esc_attr( $opts['ical_calendar_name'] ); ?>" class="regular-text" /></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="cfeb_evenements_accueil_nombre">Événements affichés sur l'accueil</label></th>
+						<td>
+							<input type="number" id="cfeb_evenements_accueil_nombre" name="cfeb_evenements_accueil_nombre" value="<?php echo esc_attr( $opts['evenements_accueil_nombre'] ); ?>" class="small-text" min="1" max="12" />
+							<p class="description">Nombre de prochains événements affichés dans la section « Prochains événements » de la page d'accueil.</p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row">Options</th>
 						<td>
 							<label><input type="checkbox" name="cfeb_tel_obligatoire" value="1" <?php checked( $opts['tel_obligatoire'] ); ?> /> Téléphone obligatoire <span style="color:#646970;font-weight:normal;">(widget événements historique uniquement — pour les types de rendez-vous, réglez « Téléphone obligatoire » sur la fiche de chaque type)</span></label><br>
@@ -1292,6 +1299,7 @@ class CF_Admin {
 			update_option( 'cfeb_liste_attente',         ! empty( $_POST['cfeb_liste_attente'] )   ? 1 : 0 );
 			update_option( 'cfeb_ical_calendar_name',    sanitize_text_field( wp_unslash( $_POST['cfeb_ical_calendar_name'] ?? '' ) ) );
 			update_option( 'cfeb_show_past_events_link', ! empty( $_POST['cfeb_show_past_events_link'] ) ? 1 : 0 );
+			update_option( 'cfeb_evenements_accueil_nombre', max( 1, min( 12, absint( $_POST['cfeb_evenements_accueil_nombre'] ?? 3 ) ) ) );
 			update_option( 'cfeb_confirmation_redirect', esc_url_raw( wp_unslash( $_POST['cfeb_confirmation_redirect'] ?? '' ) ) );
 			update_option( 'cfeb_groupes_categorie',     sanitize_text_field( wp_unslash( $_POST['cfeb_groupes_categorie'] ?? '' ) ) );
 		} elseif ( 'emails' === $tab ) {
@@ -1357,6 +1365,7 @@ class CF_Admin {
 			'followup_message'      => get_option( 'cfeb_followup_message',      '' ),
 			'ical_calendar_name'    => get_option( 'cfeb_ical_calendar_name',    get_bloginfo( 'name' ) ),
 			'show_past_events_link' => (bool) get_option( 'cfeb_show_past_events_link', 1 ),
+			'evenements_accueil_nombre' => (int) get_option( 'cfeb_evenements_accueil_nombre', 3 ),
 			'confirmation_redirect' => get_option( 'cfeb_confirmation_redirect', '' ),
 			'gcal_sync_all'         => (int)  get_option( 'cfeb_gcal_sync_all',   0 ),
 			'rappel_msg'            => get_option( 'cfeb_rappel_msg',        "Bonjour {prenom},\n\nRappel : votre réservation pour \xab {evenement} \xbb a lieu le {date}.\n\n{lieu}\n\n\xc0 bient\xf4t !" ),

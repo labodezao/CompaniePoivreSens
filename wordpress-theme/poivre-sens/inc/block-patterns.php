@@ -103,7 +103,8 @@ add_shortcode('ps_galerie', function (): string {
 /** [ps_evenements] — Prochains événements, quelle qu'en soit la source */
 add_shortcode('ps_evenements', function (): string {
     ob_start();
-    $q        = ps_get_upcoming_events(3);
+    $nb_evenements = class_exists('CF_Admin') ? (int) CF_Admin::get_options()['evenements_accueil_nombre'] : 3;
+    $q        = ps_get_upcoming_events($nb_evenements ?: 3);
     $today    = date('Y-m-d');
     $jours_fr = ['Sun' => 'Dim', 'Mon' => 'Lun', 'Tue' => 'Mar', 'Wed' => 'Mer',
                  'Thu' => 'Jeu', 'Fri' => 'Ven', 'Sat' => 'Sam'];
