@@ -67,12 +67,36 @@ class CF_Event_Editor {
 	 * série, par exemple) : évite que deux catégories distinctes se
 	 * retrouvent avec le même badge par défaut le temps que quelqu'un
 	 * passe par CF Réservations › Catégories pour la personnaliser.
+	 *
+	 * Renvoie la première couleur de la palette qu'aucune catégorie
+	 * existante n'utilise déjà (déterminé en relisant les couleurs déjà
+	 * enregistrées, plutôt qu'un compteur du type wp_count_terms() — un
+	 * tel compteur ne reflèterait pas forcément les catégories qui
+	 * viennent tout juste d'être créées plus tôt dans la même requête, ce
+	 * qui a déjà produit deux catégories du même semis avec la même
+	 * couleur par repli). Ne se répète que si les six couleurs sont
+	 * toutes déjà prises par d'autres catégories.
 	 */
-	private static function couleur_par_defaut() {
+	private static function couleur_par_defaut( string $type ) {
 		$palette = [ '#9C3E1C', '#57624A', '#2F6F76', '#8A5A9E', '#B0793A', '#4A6FA5' ];
-		$deja    = wp_count_terms( [ 'taxonomy' => CFEB_TAX, 'hide_empty' => false ] );
-		$deja    = is_wp_error( $deja ) ? 0 : (int) $deja;
-		return $palette[ $deja % count( $palette ) ];
+
+		$prises = [];
+		$termes = get_terms( [ 'taxonomy' => CFEB_TAX, 'hide_empty' => false ] );
+		if ( ! is_wp_error( $termes ) ) {
+			foreach ( $termes as $terme ) {
+				$couleur = get_term_meta( (int) $terme->term_id, 'cfeb_cat_color', true );
+				if ( $couleur ) {
+					$prises[ strtoupper( $couleur ) ] = true;
+				}
+			}
+		}
+
+		foreach ( $palette as $couleur ) {
+			if ( empty( $prises[ strtoupper( $couleur ) ] ) ) {
+				return $couleur;
+			}
+		}
+		return $palette[ crc32( $type ) % count( $palette ) ];
 	}
 
 	/**
@@ -99,7 +123,7 @@ class CF_Event_Editor {
 
 		$term_id = (int) $terme['term_id'];
 		if ( $nouveau && ! get_term_meta( $term_id, 'cfeb_cat_color', true ) ) {
-			update_term_meta( $term_id, 'cfeb_cat_color', self::couleur_par_defaut() );
+			update_term_meta( $term_id, 'cfeb_cat_color', self::couleur_par_defaut( $type ) );
 		}
 		wp_set_object_terms( $post_id, [ $term_id ], CFEB_TAX );
 	}
