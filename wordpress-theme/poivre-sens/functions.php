@@ -27,23 +27,13 @@ require_once get_template_directory() . '/inc/construction-popup.php';
 // Balises description / Open Graph / données structurées
 require_once get_template_directory() . '/inc/seo.php';
 
-// Où lire les événements : module du thème ou plugin CF
+// Où lire les événements : module du thème ou plugin CF (l'édition d'un
+// événement — métaboîte, série, migration, semis — vit désormais dans
+// le plugin CF Événements & Réservations, includes/class-cf-event-*.php)
 require_once get_template_directory() . '/inc/event-data.php';
-
-// Interface d'édition d'un événement (champs + aperçu en direct)
-require_once get_template_directory() . '/inc/event-meta-box.php';
-
-// Bascule des événements du thème vers le plugin CF (outil de migration)
-require_once get_template_directory() . '/inc/event-migration.php';
 
 // Dupliquer une page depuis Pages › Toutes les pages
 require_once get_template_directory() . '/inc/duplicate-page.php';
-
-// Créer une série d'événements identiques (même titre, dates multiples)
-require_once get_template_directory() . '/inc/event-bulk-create.php';
-
-// Semis en un clic de la saison 2026-2027 (outil à usage unique)
-require_once get_template_directory() . '/inc/event-seed-saison-2026-2027.php';
 
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
