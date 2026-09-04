@@ -14,7 +14,11 @@
 defined('ABSPATH') || exit;
 
 add_action('admin_menu', function () {
-    add_options_page(
+    // Sous Apparence plutôt que Réglages : c'est un contenu propre au
+    // thème (les textes de la page d'accueil), pas un réglage général
+    // du site — et Réglages, plein d'entrées WordPress génériques sans
+    // rapport, le rendait difficile à retrouver.
+    add_theme_page(
         __('Textes du site', 'poivre-sens'),
         __('Textes du site', 'poivre-sens'),
         'manage_options',
