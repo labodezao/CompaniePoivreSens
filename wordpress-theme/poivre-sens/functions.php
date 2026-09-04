@@ -42,6 +42,9 @@ require_once get_template_directory() . '/inc/duplicate-page.php';
 // Créer une série d'événements identiques (même titre, dates multiples)
 require_once get_template_directory() . '/inc/event-bulk-create.php';
 
+// Semis en un clic de la saison 2026-2027 (outil à usage unique)
+require_once get_template_directory() . '/inc/event-seed-saison-2026-2027.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
