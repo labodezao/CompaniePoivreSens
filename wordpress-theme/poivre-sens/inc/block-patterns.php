@@ -57,13 +57,21 @@ add_shortcode('ps_galerie', function (): string {
         $i = 0;
         while ($q->have_posts() && $i < 6) {
             $q->the_post();
+            $id = get_the_ID();
+            // « ?: » traiterait la chaîne "0" (point de mise au point sur le
+            // bord gauche/haut) comme fausse et la remplacerait par 50 à tort.
+            $fx = get_post_meta($id, '_galerie_focus_x', true);
+            $fy = get_post_meta($id, '_galerie_focus_y', true);
+            $fx = $fx === '' ? '50' : $fx;
+            $fy = $fy === '' ? '50' : $fy;
             $items[] = [
                 'img'     => get_the_post_thumbnail_url(null, 'galerie-thumb')
                              ?: ($theme_img . 'galerie-0' . ($i + 1) . '-' . $svg_slugs[$i] . '.svg'),
                 'alt'     => get_the_title(),
                 'titre'   => get_the_title(),
-                'caption' => get_post_meta(get_the_ID(), '_galerie_caption', true)
+                'caption' => get_post_meta($id, '_galerie_caption', true)
                              ?: ($svg_caps_def[$i][1] ?? ''),
+                'focus'   => "{$fx}% {$fy}%",
             ];
             $i++;
         }
@@ -75,6 +83,7 @@ add_shortcode('ps_galerie', function (): string {
             'alt'     => $svg_caps_def[$i][0],
             'titre'   => $svg_caps_def[$i][0],
             'caption' => $svg_caps_def[$i][1],
+            'focus'   => '50% 50%',
         ];
     }
     ?>
@@ -89,7 +98,7 @@ add_shortcode('ps_galerie', function (): string {
       <div class="galerie__g" role="list">
         <?php foreach ($items as $item) : ?>
         <figure class="photo" role="listitem" aria-label="<?= esc_attr($item['titre']) ?>">
-          <img src="<?= esc_url($item['img']) ?>" alt="<?= esc_attr($item['alt']) ?>" loading="lazy">
+          <img src="<?= esc_url($item['img']) ?>" alt="<?= esc_attr($item['alt']) ?>" loading="lazy" style="object-position:<?= esc_attr($item['focus']) ?>">
           <div class="phcap">
             <p class="phcap-t"><?= esc_html($item['titre']) ?></p>
             <p class="phcap-d"><?= esc_html($item['caption']) ?></p>

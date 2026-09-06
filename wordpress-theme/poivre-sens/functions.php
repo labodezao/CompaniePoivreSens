@@ -304,9 +304,56 @@ add_action('add_meta_boxes', function () {
         __('Légende photo', 'poivre-sens'),
         function ($post) {
             wp_nonce_field('ps_galerie_save', 'ps_galerie_nonce');
-            $caption = get_post_meta($post->ID, '_galerie_caption', true);
-            echo '<label style="display:block;margin-bottom:6px;font-size:11px;text-transform:uppercase;color:#555;letter-spacing:.1em;font-weight:600">' . __('Sous-titre (affiché au survol)', 'poivre-sens') . '</label>';
-            echo '<input type="text" name="galerie_caption" value="' . esc_attr($caption) . '" style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px">';
+            $caption  = get_post_meta($post->ID, '_galerie_caption', true);
+            $x        = get_post_meta($post->ID, '_galerie_focus_x', true);
+            $y        = get_post_meta($post->ID, '_galerie_focus_y', true);
+            $x        = in_array($x, ['0', '50', '100'], true) ? $x : '50';
+            $y        = in_array($y, ['0', '50', '100'], true) ? $y : '50';
+            $vignette = get_the_post_thumbnail_url($post->ID, 'galerie-thumb');
+            ?>
+            <label style="display:block;margin-bottom:6px;font-size:11px;text-transform:uppercase;color:#555;letter-spacing:.1em;font-weight:600"><?php _e('Sous-titre (affiché au survol)', 'poivre-sens'); ?></label>
+            <input type="text" name="galerie_caption" value="<?php echo esc_attr($caption); ?>" style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px;margin-bottom:18px;">
+
+            <label style="display:block;margin-bottom:6px;font-size:11px;text-transform:uppercase;color:#555;letter-spacing:.1em;font-weight:600"><?php _e('Point de mise au point (recadrage)', 'poivre-sens'); ?></label>
+            <?php if ($vignette): ?>
+            <div id="ps-focus-<?php echo (int) $post->ID; ?>" style="position:relative;width:100%;max-width:220px;aspect-ratio:16/10;border-radius:4px;overflow:hidden;background:#eee url('<?php echo esc_url($vignette); ?>') <?php echo esc_attr("$x% $y%"); ?>/cover;">
+              <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);">
+                <?php foreach ([['0','0'],['50','0'],['100','0'],['0','50'],['50','50'],['100','50'],['0','100'],['50','100'],['100','100']] as [$px, $py]): ?>
+                <button type="button" class="ps-focus-pt" data-x="<?php echo esc_attr($px); ?>" data-y="<?php echo esc_attr($py); ?>" aria-label="<?php echo esc_attr(sprintf(__('Point de mise au point : %1$s, %2$s', 'poivre-sens'), $px, $py)); ?>" style="border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,0);cursor:pointer;padding:0;"></button>
+                <?php endforeach; ?>
+              </div>
+            </div>
+            <p class="description" style="margin-top:6px;max-width:220px;"><?php _e('Cliquez sur la zone à garder visible quand la photo est recadrée dans la grille de l\'accueil.', 'poivre-sens'); ?></p>
+            <input type="hidden" name="galerie_focus_x" class="ps-focus-x" value="<?php echo esc_attr($x); ?>">
+            <input type="hidden" name="galerie_focus_y" class="ps-focus-y" value="<?php echo esc_attr($y); ?>">
+            <script>
+            (function () {
+                var conteneur = document.getElementById('ps-focus-<?php echo (int) $post->ID; ?>');
+                if (!conteneur) return;
+                var champX = conteneur.parentElement.querySelector('.ps-focus-x');
+                var champY = conteneur.parentElement.querySelector('.ps-focus-y');
+                function marquer() {
+                    conteneur.querySelectorAll('.ps-focus-pt').forEach(function (b) {
+                        b.style.background = (b.dataset.x === champX.value && b.dataset.y === champY.value) ? 'rgba(194,139,54,.55)' : 'rgba(0,0,0,0)';
+                    });
+                }
+                conteneur.querySelectorAll('.ps-focus-pt').forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        champX.value = b.dataset.x;
+                        champY.value = b.dataset.y;
+                        conteneur.style.backgroundPosition = b.dataset.x + '% ' + b.dataset.y + '%';
+                        marquer();
+                    });
+                });
+                marquer();
+            })();
+            </script>
+            <?php else: ?>
+            <p class="description"><?php _e('Ajoutez d\'abord une image mise en avant pour régler le point de mise au point.', 'poivre-sens'); ?></p>
+            <input type="hidden" name="galerie_focus_x" value="<?php echo esc_attr($x); ?>">
+            <input type="hidden" name="galerie_focus_y" value="<?php echo esc_attr($y); ?>">
+            <?php endif; ?>
+            <?php
         },
         'galerie', 'normal', 'default'
     );
@@ -317,6 +364,11 @@ add_action('save_post_galerie', function ($post_id) {
     if (!current_user_can('edit_post', $post_id)) return;
     if (isset($_POST['galerie_caption'])) {
         update_post_meta($post_id, '_galerie_caption', sanitize_text_field($_POST['galerie_caption']));
+    }
+    foreach (['galerie_focus_x' => '_galerie_focus_x', 'galerie_focus_y' => '_galerie_focus_y'] as $champ => $meta) {
+        if (!isset($_POST[$champ])) continue;
+        $valeur = in_array($_POST[$champ], ['0', '50', '100'], true) ? $_POST[$champ] : '50';
+        update_post_meta($post_id, $meta, $valeur);
     }
 });
 
