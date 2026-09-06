@@ -129,7 +129,13 @@ body.nav-open { overflow:hidden; }
 .galerie__hdr { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:40px; }
 .galerie__t { font-family:var(--fh); font-size:clamp(2rem,3.5vw,2.8rem); font-weight:300; color:var(--creme); line-height:1.1; }
 .galerie__n { font-size:.78rem; color:var(--gris); line-height:1.6; max-width:320px; text-align:right; padding-bottom:4px; }
-.galerie__g { display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:260px 260px 220px; gap:4px; }
+/* Rangée du bas sur deux cases pleine largeur (6 colonnes) : 220px les
+   rendait bien trop larges pour leur hauteur (ratio ~2.9:1, voire plus sur
+   grand écran) — la photo s'y retrouvait rognée sur l'essentiel de sa
+   largeur. 440px ramène ce ratio à ~1.5:1, proche d'une photo « paysage »
+   classique. max-width borne aussi ce ratio sur les très grands écrans,
+   où une grille fluide l'aurait sinon fait grandir sans limite. */
+.galerie__g { display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:260px 260px 440px; gap:4px; max-width:1500px; margin-inline:auto; }
 .photo:nth-child(1) { grid-column:1/5; grid-row:1/3; }
 .photo:nth-child(2) { grid-column:5/9; grid-row:1/2; }
 .photo:nth-child(3) { grid-column:9/13; grid-row:1/3; }
@@ -409,7 +415,10 @@ body.nav-open { overflow:hidden; }
   .mf-ax { writing-mode:horizontal-tb; transform:none; }
   .mf-tx { columns:1; }
   .galerie { padding:72px 40px; }
-  .galerie__g { grid-template-columns:1fr 1fr; grid-template-rows:repeat(4,200px); }
+  /* La dernière case (nth-child(6)) occupe les deux colonnes : à 200px
+     partout elle serait presque deux fois plus large que haute (ratio
+     ~4:1) — sa rangée passe donc à 460px, les trois autres restent à 200px. */
+  .galerie__g { grid-template-columns:1fr 1fr; grid-template-rows:200px 200px 200px 460px; }
   .photo:nth-child(1) { grid-column:1/2; grid-row:1/3; }
   .photo:nth-child(2) { grid-column:2/3; grid-row:1/2; }
   .photo:nth-child(3) { grid-column:2/3; grid-row:2/3; }
