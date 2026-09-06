@@ -41,6 +41,11 @@ function ps_textes_champ_html(array $post, string $cle): string {
     return isset($post[$cle]) ? wp_kses_post(wp_unslash($post[$cle])) : '';
 }
 
+/** Champ lien : ancre interne (#projet) ou URL complète. */
+function ps_textes_champ_url(array $post, string $cle): string {
+    return isset($post[$cle]) ? esc_url_raw(wp_unslash($post[$cle])) : '';
+}
+
 /** Textarea → liste de lignes non vides (une entrée par ligne). */
 function ps_textes_lignes(array $post, string $cle): array {
     if (!isset($post[$cle])) {
@@ -140,6 +145,7 @@ function ps_textes_lire_formulaire(array $post): array {
         'surtitre'    => ps_textes_champ($post['hero'] ?? [], 'surtitre'),
         'disciplines' => ps_textes_lignes($post['hero'] ?? [], 'disciplines'),
         'cta'         => ps_textes_champ($post['hero'] ?? [], 'cta'),
+        'cta_lien'    => ps_textes_champ_url($post['hero'] ?? [], 'cta_lien'),
         'citation'    => ps_textes_champ_html($post['hero'] ?? [], 'citation'),
         'intro'       => ps_textes_champ_html($post['hero'] ?? [], 'intro'),
     ];
@@ -362,6 +368,9 @@ function ps_textes_section_hero(array $v): void { ?>
         <textarea name="t[hero][disciplines]" rows="4"><?= esc_textarea(implode("\n", $v['disciplines'])) ?></textarea></div>
       <div class="ps-champ"><label><?php _e('Texte du bouton', 'poivre-sens'); ?></label>
         <input type="text" name="t[hero][cta]" value="<?= esc_attr($v['cta']) ?>"></div>
+      <div class="ps-champ"><label><?php _e('Lien du bouton', 'poivre-sens'); ?></label>
+        <input type="text" name="t[hero][cta_lien]" value="<?= esc_attr($v['cta_lien']) ?>" placeholder="#projet">
+        <p class="description"><?php _e('Une ancre de la page (ex. #projet, #activites) ou une adresse complète (https://…).', 'poivre-sens'); ?></p></div>
       <div class="ps-champ"><label><?php _e('Citation', 'poivre-sens'); ?></label>
         <input type="text" name="t[hero][citation]" value="<?= esc_attr($v['citation']) ?>"></div>
       <div class="ps-champ"><label><?php _e("Chapô d'introduction", 'poivre-sens'); ?></label>

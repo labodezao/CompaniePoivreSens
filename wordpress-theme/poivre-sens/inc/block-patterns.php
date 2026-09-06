@@ -413,7 +413,7 @@ add_shortcode('ps_hero', function (): string {
         <p class="hero__sup"><?= $t['surtitre'] ?></p>
         <h1 class="hero__nom">Poivre<span class="et">&amp;</span>Sens</h1>
         <p class="hero__disc"><strong>Ambre Lavignac &amp; Ewen d'Aviau</strong><br><?= implode('<br>', $t['disciplines']) ?></p>
-        <p><a href="#projet" class="hero__cta"><?= $t['cta'] ?></a></p>
+        <p><a href="<?= esc_url($t['cta_lien']) ?>" class="hero__cta"><?= $t['cta'] ?></a></p>
       </div>
       <div class="hero__d">
         <p class="hero__q"><?= $t['citation'] ?></p>
