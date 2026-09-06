@@ -55,6 +55,7 @@ function ps_textes_defaut(): array {
                 'Pratiques somatiques',
             ],
             'cta'      => 'Découvrir la compagnie',
+            'cta_lien' => '#projet',
             'citation' => "Le corps sait ce que l'esprit cherche encore.",
             'intro'    => "Née de la rencontre de deux corps, d'une main qui écoute, d'une oreille qui se déplace et d'une différence qui fait sens, la compagnie explore les relations, le mouvement et la présence.",
         ],
