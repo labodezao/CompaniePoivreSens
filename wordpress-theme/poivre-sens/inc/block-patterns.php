@@ -13,6 +13,8 @@
  * Shortcodes dynamiques (contenu chargé depuis les CPT/formulaire) :
  *   [ps_galerie]         — galerie photos (CPT « Photo »)
  *   [ps_evenements]      — prochains événements (CPT « Événement »)
+ *   [ps_temoignages]     — témoignages publiés (CPT « Témoignage ») — absent
+ *        de la page tant qu'aucun n'est publié (voir inc/testimonials.php)
  *   [ps_newsletter]      — formulaire d'inscription newsletter (section complète)
  *   [ps_newsletter_liste slug="..." bouton="..."] — formulaire compact rattaché
  *        à une liste précise, à insérer (bloc Shortcode) au milieu de blocs
@@ -21,7 +23,7 @@
  *
  * Patterns disponibles dans Blocs › Patterns › Poivre & Sens :
  *   ① Hero, ② Manifeste, ③ Artistes, ④ Projet artistique,
- *   ⑤ Nos activités, ⑥ Événements, ⑦ Esthétique, ⑧ Contact,
+ *   ⑤ Nos activités, ⑥ Événements, ⑦ Esthétique, ⑧ Témoignages, ⑨ Contact,
  *      Page d'accueil complète
  */
 defined('ABSPATH') || exit;
@@ -489,6 +491,63 @@ add_shortcode('ps_esthetique', function (): string {
     return ob_get_clean();
 });
 
+/**
+ * [ps_temoignages] — Témoignages publiés (brouillon = pas encore autorisé
+ * à la publication, voir inc/testimonials.php). Rien à afficher tant
+ * qu'aucun n'est publié : section absente plutôt que vide.
+ */
+add_shortcode('ps_temoignages', function (): string {
+    $q = new WP_Query([
+        'post_type'      => 'temoignage',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
+    ]);
+    if (!$q->have_posts()) {
+        return '';
+    }
+    ob_start();
+    ?>
+    <section class="sec sec2 temoignages" id="temoignages" aria-labelledby="titre-temoignages">
+      <div style="margin-bottom:56px">
+        <p class="lbl"><?php _e('Témoignages', 'poivre-sens') ?></p>
+        <h2 class="sh" id="titre-temoignages"><?php _e('Ce qu\'ils en disent', 'poivre-sens') ?></h2>
+        <div class="regle"></div>
+      </div>
+      <div class="tem-grid">
+        <?php while ($q->have_posts()) : $q->the_post();
+          $id         = get_the_ID();
+          $role       = get_post_meta($id, '_temoignage_role', true);
+          $etoiles    = (int) get_post_meta($id, '_temoignage_etoiles', true);
+          $photo      = get_the_post_thumbnail_url($id, 'thumbnail');
+          $video_url  = get_post_meta($id, '_temoignage_video', true);
+          $video_html = $video_url ? wp_oembed_get($video_url, ['width' => 600]) : false;
+        ?>
+        <figure class="tem-card">
+          <?php if ($etoiles > 0) : ?>
+          <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $etoiles) . str_repeat('☆', 5 - $etoiles) ?></div>
+          <?php endif; ?>
+          <?php if ($video_html) : ?>
+          <div class="tem-video"><?= $video_html ?></div>
+          <?php else : ?>
+          <blockquote class="tem-texte"><?php the_content(); ?></blockquote>
+          <?php endif; ?>
+          <figcaption class="tem-auteur">
+            <?php if ($photo) : ?><img src="<?= esc_url($photo) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
+            <div>
+              <p class="tem-nom"><?php the_title(); ?></p>
+              <?php if ($role) : ?><p class="tem-role"><?= esc_html($role) ?></p><?php endif; ?>
+            </div>
+          </figcaption>
+        </figure>
+        <?php endwhile; wp_reset_postdata(); ?>
+      </div>
+    </section>
+    <?php
+    return ob_get_clean();
+});
+
 add_shortcode('ps_contact', function (): string {
     $t = ps_textes()['contact'];
     ob_start();
@@ -544,6 +603,7 @@ add_action('init', function () {
                        . _ps_pat_manifeste() . _ps_pat_artistes()
                        . _ps_pat_projet() . _ps_pat_activites()
                        . _ps_pat_evenements_sc() . _ps_pat_esthetique()
+                       . _ps_pat_temoignages_sc()
                        . _ps_pat_newsletter_sc() . _ps_pat_contact(),
     ]);
 
@@ -590,8 +650,15 @@ add_action('init', function () {
         'content'    => _ps_pat_esthetique(),
     ]);
 
+    register_block_pattern('poivre-sens/temoignages', [
+        'title'       => '⑧ Témoignages',
+        'description' => 'Absent tant qu\'aucun témoignage n\'est publié. Alimenté via Témoignages › Ajouter.',
+        'categories'  => ['poivre-sens'],
+        'content'     => _ps_pat_temoignages_sc(),
+    ]);
+
     register_block_pattern('poivre-sens/contact', [
-        'title'      => '⑧ Contact',
+        'title'      => '⑨ Contact',
         'categories' => ['poivre-sens'],
         'content'    => _ps_pat_contact(),
     ]);
@@ -608,6 +675,7 @@ function _ps_sc(string $tag): string {
 function _ps_pat_galerie_sc(): string    { return _ps_sc('ps_galerie'); }
 function _ps_pat_evenements_sc(): string { return _ps_sc('ps_evenements'); }
 function _ps_pat_newsletter_sc(): string { return _ps_sc('ps_newsletter'); }
+function _ps_pat_temoignages_sc(): string { return _ps_sc('ps_temoignages'); }
 
 /* ── ① Hero ────────────────────────────────────────────────── */
 function _ps_pat_hero(): string {
