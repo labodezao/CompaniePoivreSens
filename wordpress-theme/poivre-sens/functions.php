@@ -39,6 +39,12 @@ require_once get_template_directory() . '/inc/duplicate-page.php';
 // (voir inc/block-patterns.php, dont elle dépend pour _ps_pat_*())
 require_once get_template_directory() . '/inc/fix-homepage-content.php';
 
+// Réorganiser la galerie par glisser-déposer (ordre d'affichage sur l'accueil)
+require_once get_template_directory() . '/inc/galerie-reorder.php';
+
+// Témoignages (CPT + champs admin) — shortcode [ps_temoignages] dans block-patterns.php
+require_once get_template_directory() . '/inc/testimonials.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
@@ -284,7 +290,7 @@ add_action('init', function () {
         'show_in_menu'  => true,
         'menu_icon'     => 'dashicons-format-gallery',
         'menu_position' => 6,
-        'supports'      => ['title', 'thumbnail', 'excerpt'],
+        'supports'      => ['title', 'thumbnail', 'excerpt', 'page-attributes'],
         'show_in_rest'  => true,
     ]);
 });
