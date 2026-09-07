@@ -1016,10 +1016,23 @@ function ps_nl_page_reglages() {
     // Envoi d'un e-mail de test via le SMTP configuré
     if (isset($_POST['ps_test_smtp']) && check_admin_referer('ps_save_reglages')) {
         $dest = sanitize_email(wp_unslash($_POST['smtp_test_email'] ?? '')) ?: get_option('admin_email');
-        $ok   = wp_mail($dest, __('Test SMTP — Poivre & Sens', 'poivre-sens'), __("Cet e-mail confirme que la configuration SMTP fonctionne.", 'poivre-sens'));
-        $notice = $ok
-            ? '<div class="ps-notice ps-notice-ok">' . sprintf(__('E-mail de test envoyé à %s via le SMTP configuré.', 'poivre-sens'), esc_html($dest)) . '</div>'
-            : '<div class="ps-notice ps-notice-err">' . __('L\'envoi a échoué — vérifiez l\'hôte, le port, l\'identifiant et le mot de passe SMTP.', 'poivre-sens') . '</div>';
+
+        // wp_mail() ne renvoie qu'un booléen : la vraie raison de l'échec (PHPMailer)
+        // n'est disponible que via l'action wp_mail_failed, qu'on capture ici pour
+        // l'afficher — sinon impossible de distinguer un mauvais mot de passe d'un
+        // hôte injoignable ou d'un port bloqué par l'hébergeur.
+        $erreur_smtp = null;
+        $capture_erreur = function ($wp_error) use (&$erreur_smtp) { $erreur_smtp = $wp_error; };
+        add_action('wp_mail_failed', $capture_erreur);
+        $ok = wp_mail($dest, __('Test SMTP — Poivre & Sens', 'poivre-sens'), __("Cet e-mail confirme que la configuration SMTP fonctionne.", 'poivre-sens'));
+        remove_action('wp_mail_failed', $capture_erreur);
+
+        if ($ok) {
+            $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('E-mail de test envoyé à %s via le SMTP configuré.', 'poivre-sens'), esc_html($dest)) . '</div>';
+        } else {
+            $detail = $erreur_smtp ? ' ' . esc_html($erreur_smtp->get_error_message()) : '';
+            $notice = '<div class="ps-notice ps-notice-err">' . __('L\'envoi a échoué — vérifiez l\'hôte, le port, l\'identifiant et le mot de passe SMTP.', 'poivre-sens') . $detail . '</div>';
+        }
     }
 
     // Restaurer le modèle par défaut
