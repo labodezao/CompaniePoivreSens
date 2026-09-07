@@ -195,6 +195,36 @@ function ps_nl_set_subscriber_lists($subscriber_id, array $list_ids) {
     }
 }
 
+/** Fusionne une liste source dans une liste destination : déplace tous les abonnés de la
+ *  source vers la destination (sans doublon) — la liste source est toujours vidée de ses
+ *  abonnés, seule sa suppression (l'entrée de liste elle-même) est optionnelle. Les abonnés
+ *  restent inscrits dans tous les cas, seule leur appartenance à la liste source disparaît.
+ *  Renvoie le nombre d'abonnés déplacés. */
+function ps_nl_merge_lists($source_id, $dest_id, $delete_source = false) {
+    global $wpdb;
+    $source_id = (int)$source_id;
+    $dest_id   = (int)$dest_id;
+    if (!$source_id || !$dest_id || $source_id === $dest_id) return 0;
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+
+    $nb = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tj WHERE list_id=%d", $source_id));
+    if ($nb === 0) return 0;
+
+    $wpdb->query($wpdb->prepare(
+        "INSERT IGNORE INTO $tj (subscriber_id, list_id, date_ajout)
+         SELECT subscriber_id, %d, %s FROM $tj WHERE list_id=%d",
+        $dest_id, current_time('mysql'), $source_id
+    ));
+
+    // La fusion déplace toujours les abonnés : la liste source est vidée dans tous les cas.
+    $wpdb->delete($tj, ['list_id' => $source_id]);
+
+    if ($delete_source) {
+        $wpdb->delete($wpdb->prefix . 'ps_newsletter_lists', ['id' => $source_id]);
+    }
+    return $nb;
+}
+
 /** Normalise une valeur de ciblage (« 2,5 » ou tableau) en tableau d'ids. */
 function ps_nl_parse_target($target) {
     if (is_array($target)) $ids = $target;
@@ -1010,6 +1040,30 @@ function ps_nl_page_listes() {
         $notice = '<div class="ps-notice ps-notice-ok">' . __('Liste supprimée. Les abonnés concernés restent inscrits.', 'poivre-sens') . '</div>';
     }
 
+    // Fusion de deux listes
+    if (isset($_POST['ps_merge_lists']) && check_admin_referer('ps_merge_lists')) {
+        $src_id  = (int)($_POST['merge_source'] ?? 0);
+        $dst_id  = (int)($_POST['merge_dest'] ?? 0);
+        $del_src = !empty($_POST['merge_delete_source']);
+        if (!$src_id || !$dst_id) {
+            $notice = '<div class="ps-notice ps-notice-err">' . __('Choisissez une liste source et une liste destination.', 'poivre-sens') . '</div>';
+        } elseif ($src_id === $dst_id) {
+            $notice = '<div class="ps-notice ps-notice-err">' . __('La liste source et la liste destination doivent être différentes.', 'poivre-sens') . '</div>';
+        } else {
+            $src = ps_nl_get_list($src_id);
+            $dst = ps_nl_get_list($dst_id);
+            if (!$src || !$dst) {
+                $notice = '<div class="ps-notice ps-notice-err">' . __('Liste introuvable.', 'poivre-sens') . '</div>';
+            } else {
+                $nb = ps_nl_merge_lists($src_id, $dst_id, $del_src);
+                $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(
+                    __('%1$d abonné(s) de « %2$s » rattaché(s) à « %3$s ».', 'poivre-sens'),
+                    $nb, esc_html($src->nom), esc_html($dst->nom)
+                ) . '</div>';
+            }
+        }
+    }
+
     $edit = null;
     if (isset($_GET['edit_id'])) $edit = ps_nl_get_list((int)$_GET['edit_id']);
     $lists = ps_nl_get_lists();
@@ -1090,6 +1144,43 @@ function ps_nl_page_listes() {
         </div>
 
     </div>
+
+    <div class="ps-card" style="margin-top:20px">
+        <h3>🔀 <?= __('Fusionner deux listes', 'poivre-sens') ?></h3>
+        <p style="font-size:13px;color:#666;margin-bottom:14px">
+            <?= __('Rattache tous les abonnés d\'une liste source à une liste destination (un abonné déjà présent dans les deux n\'est pas dupliqué).', 'poivre-sens') ?>
+        </p>
+        <?php if (count($lists) < 2): ?>
+        <p style="color:#aaa"><?= __('Il faut au moins deux listes pour pouvoir en fusionner.', 'poivre-sens') ?></p>
+        <?php else: ?>
+        <form method="post" style="display:flex;gap:14px;align-items:end;flex-wrap:wrap">
+            <?php wp_nonce_field('ps_merge_lists'); ?>
+            <div class="ps-field">
+                <label><?= __('Liste source (sera vidée)', 'poivre-sens') ?></label>
+                <select name="merge_source" required>
+                    <option value=""></option>
+                    <?php foreach ($lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>"><?= esc_html($l->nom) ?> (<?= (int)$l->nb_total ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="ps-field">
+                <label><?= __('Liste destination', 'poivre-sens') ?></label>
+                <select name="merge_dest" required>
+                    <option value=""></option>
+                    <?php foreach ($lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>"><?= esc_html($l->nom) ?> (<?= (int)$l->nb_total ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="ps-field">
+                <label style="font-weight:normal"><input type="checkbox" name="merge_delete_source" value="1"> <?= __('Supprimer la liste source après fusion', 'poivre-sens') ?></label>
+            </div>
+            <button type="submit" name="ps_merge_lists" class="ps-btn ps-btn-primary" onclick="return confirm('<?= esc_js(__('Fusionner ces deux listes ?', 'poivre-sens')) ?>')"><?= __('Fusionner', 'poivre-sens') ?></button>
+        </form>
+        <?php endif; ?>
+    </div>
+
     </div><!-- .ps-wrap -->
     <?php
 }
@@ -1196,6 +1287,80 @@ function ps_nl_page_campagnes() {
     }
 }
 
+/** Sanitise un e-mail HTML complet collé tel quel (ex. export MailPoet) : contrairement à
+ *  wp_kses_post(), ne retire pas les balises <style>/<html>/<head> ni les mises en page par
+ *  tableaux — seules les constructions réellement dangereuses sont neutralisées (scripts,
+ *  gestionnaires d'événements, URI javascript:). Réservé à ce formulaire, accessible aux seuls
+ *  administrateurs (capacité manage_options). */
+function ps_nl_sanitize_email_html($html) {
+    $html = (string) $html;
+    if (trim($html) === '') return '';
+
+    // Balises actives : jamais nécessaires dans un e-mail. <script> est retiré avec son
+    // contenu ; les balises intégrables (iframe/object/embed/…) et le meta-refresh sont
+    // retirées elles-mêmes (leur éventuel contenu textuel, inoffensif, est conservé).
+    $html = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $html);
+    $html = preg_replace('#</?(iframe|object|embed|applet|link|base)\b[^>]*>#i', '', $html);
+    $html = preg_replace('#<meta\b[^>]*\bhttp-equiv\b[^>]*>#i', '', $html);
+
+    // Gestionnaires d'événements (onclick=, onerror=, …), y compris juste après un "/" de
+    // fermeture de balise auto-fermante.
+    $html = preg_replace('#[\s/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html);
+
+    // URI dangereuses (javascript:, vbscript:, data: hors image) dans les attributs de
+    // ressource usuels — href, src, action, formaction, poster, background, xlink:href —
+    // qu'elles soient entre guillemets ou non. Les caractères de contrôle (tabulations,
+    // retours à la ligne) parfois utilisés pour contourner la détection du schéma sont
+    // retirés avant comparaison.
+    $attrs = 'href|src|action|formaction|poster|background|xlink:href|dynsrc|lowsrc';
+    $html = preg_replace_callback(
+        '#(' . $attrs . ')(\s*=\s*)("[^"]*"|\'[^\']*\'|[^\s>]+)#i',
+        function ($m) {
+            $val    = $m[3];
+            $quote  = ($val !== '' && ($val[0] === '"' || $val[0] === "'")) ? $val[0] : '';
+            $inner  = $quote !== '' ? substr($val, 1, -1) : $val;
+            $propre = preg_replace('/[\x00-\x1F]/', '', $inner);
+            if (preg_match('/^\s*(javascript|vbscript)\s*:/i', $propre)
+                || preg_match('/^\s*data\s*:(?!\s*image\/)/i', $propre)) {
+                return $m[1] . $m[2] . $quote . '#' . $quote;
+            }
+            return $m[0];
+        },
+        $html
+    );
+
+    // srcset : plusieurs URLs séparées par des virgules — neutralise l'attribut entier si un
+    // schéma dangereux y apparaît, plutôt que de tenter une réécriture partielle risquée.
+    $html = preg_replace_callback(
+        '#(srcset\s*=\s*)("[^"]*"|\'[^\']*\')#i',
+        function ($m) {
+            $propre = preg_replace('/[\x00-\x1F]/', '', $m[2]);
+            if (preg_match('/(javascript|vbscript)\s*:/i', $propre)) {
+                $quote = $m[2][0];
+                return $m[1] . $quote . $quote;
+            }
+            return $m[0];
+        },
+        $html
+    );
+
+    // style="…" contenant une URI javascript: ou une expression CSS (vecteur historique
+    // d'IE, expression(...)) : l'attribut entier est retiré plutôt qu'édité partiellement.
+    $html = preg_replace_callback(
+        '#\sstyle\s*=\s*("[^"]*"|\'[^\']*\')#i',
+        function ($m) {
+            $propre = preg_replace('/[\x00-\x1F]/', '', $m[1]);
+            if (preg_match('/javascript\s*:|expression\s*\(/i', $propre)) {
+                return '';
+            }
+            return $m[0];
+        },
+        $html
+    );
+
+    return $html;
+}
+
 /* ═══════════════════════════════════════════════════════════
    PAGE : CRÉER / MODIFIER UNE CAMPAGNE
    ═══════════════════════════════════════════════════════════ */
@@ -1215,11 +1380,14 @@ function ps_nl_page_nouvelle_campagne() {
 
     // Sauvegarde / envoi
     if (isset($_POST['ps_save_campaign']) && check_admin_referer('ps_save_campaign')) {
-        $target_ids = array_map('intval', (array)($_POST['target_lists'] ?? []));
+        $target_ids   = array_map('intval', (array)($_POST['target_lists'] ?? []));
+        $html_importe = wp_unslash($_POST['contenu_html_brut'] ?? '');
         $data = [
             'sujet'         => sanitize_text_field($_POST['sujet'] ?? ''),
             'preheader'     => sanitize_text_field($_POST['preheader'] ?? ''),
-            'contenu_html'  => wp_kses_post($_POST['contenu_html'] ?? ''),
+            'contenu_html'  => trim($html_importe) !== ''
+                ? ps_nl_sanitize_email_html($html_importe)
+                : wp_kses_post(wp_unslash($_POST['contenu_html'] ?? '')),
             'contenu_texte' => sanitize_textarea_field($_POST['contenu_texte'] ?? ''),
             'from_nom'      => sanitize_text_field($_POST['from_nom'] ?? ''),
             'from_email'    => sanitize_email($_POST['from_email'] ?? ''),
@@ -1307,9 +1475,18 @@ function ps_nl_page_nouvelle_campagne() {
                             <input type="text" name="preheader" placeholder="<?= esc_attr(__('Visible après l\'objet dans certains clients mail…', 'poivre-sens')) ?>" value="<?= esc_attr($camp->preheader ?? '') ?>">
                         </div>
                     </div>
+                    <div class="ps-form-row full" style="margin-top:16px">
+                        <details>
+                            <summary style="cursor:pointer;font-weight:600;font-size:13px;color:#c28b36"><?= __('Importer un e-mail HTML complet (ex. export MailPoet)', 'poivre-sens') ?></summary>
+                            <div style="margin-top:10px">
+                                <p class="help" style="margin-bottom:8px"><?= __('Collez ici le code HTML exporté depuis MailPoet (ou un autre outil). Il remplacera le contenu de l\'éditeur visuel ci-dessous à l\'enregistrement — laissez ce champ vide pour continuer à utiliser l\'éditeur visuel.', 'poivre-sens') ?></p>
+                                <textarea name="contenu_html_brut" rows="8" placeholder="<?= esc_attr('<html>…</html>') ?>" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace"></textarea>
+                            </div>
+                        </details>
+                    </div>
                     <div class="ps-form-row full" style="margin-top:8px">
                         <div class="ps-field">
-                            <label><?= __('Contenu HTML', 'poivre-sens') ?></label>
+                            <label><?= __('Éditeur visuel', 'poivre-sens') ?></label>
                         </div>
                     </div>
                     <?php
