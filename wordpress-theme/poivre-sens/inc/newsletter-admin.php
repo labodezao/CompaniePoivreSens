@@ -907,6 +907,76 @@ function ps_nl_confirm_render($texte, $prenom, $email, $unsub) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   CONFIGURATION SMTP  (envoi natif, sans extension externe)
+   ═══════════════════════════════════════════════════════════ */
+
+/** Valeurs par défaut des réglages SMTP. */
+function ps_nl_smtp_defaults() {
+    return [
+        'ps_nl_smtp_active'     => '0',
+        'ps_nl_smtp_host'       => '',
+        'ps_nl_smtp_port'       => '587',
+        'ps_nl_smtp_encryption' => 'tls', // '', 'tls' ou 'ssl'
+        'ps_nl_smtp_user'       => '',
+        'ps_nl_smtp_pass'       => '',
+        'ps_nl_smtp_from_email' => '',
+        'ps_nl_smtp_from_name'  => '',
+    ];
+}
+
+/** Lit tous les réglages SMTP courants (options WordPress). */
+function ps_nl_smtp_options() {
+    $out = [];
+    foreach (ps_nl_smtp_defaults() as $cle => $defaut) {
+        $out[substr($cle, strlen('ps_nl_smtp_'))] = get_option($cle, $defaut);
+    }
+    return $out;
+}
+
+/**
+ * Applique une configuration SMTP à une instance PHPMailer — logique pure, sans lire
+ * les options WordPress elle-même (voir ps_nl_configure_smtp() pour le point d'entrée
+ * réel), ce qui la rend testable indépendamment de la base de données. $opts attend les
+ * clés : active, host, port, encryption, user, pass, from_email, from_name. Renvoie
+ * false sans rien modifier si le SMTP est désactivé ou si l'hôte est vide.
+ */
+function ps_nl_apply_smtp_config($phpmailer, array $opts) {
+    if (empty($opts['active']) || empty($opts['host'])) return false;
+
+    $phpmailer->isSMTP();
+    $phpmailer->Host = $opts['host'];
+    $phpmailer->Port = (int) ($opts['port'] ?: 587);
+
+    $encryption = in_array($opts['encryption'] ?? '', ['tls', 'ssl'], true) ? $opts['encryption'] : '';
+    $phpmailer->SMTPSecure  = $encryption;
+    $phpmailer->SMTPAutoTLS = $encryption !== '';
+
+    if (!empty($opts['user'])) {
+        $phpmailer->SMTPAuth = true;
+        $phpmailer->Username = $opts['user'];
+        $phpmailer->Password = (string) ($opts['pass'] ?? '');
+    } else {
+        $phpmailer->SMTPAuth = false;
+    }
+
+    if (!empty($opts['from_email']) && is_email($opts['from_email'])) {
+        $phpmailer->setFrom($opts['from_email'], $opts['from_name'] ?: '', false);
+    }
+
+    return true;
+}
+
+/** Point d'entrée réel, accroché à phpmailer_init : configure PHPMailer pour TOUS les
+ *  e-mails du site (pas seulement ceux de la newsletter) dès que le SMTP maison est
+ *  activé dans Newsletter → Réglages — remplace une extension externe type WP Mail SMTP. */
+function ps_nl_configure_smtp($phpmailer) {
+    $opts = ps_nl_smtp_options();
+    $opts['active'] = $opts['active'] === '1';
+    ps_nl_apply_smtp_config($phpmailer, $opts);
+}
+add_action('phpmailer_init', 'ps_nl_configure_smtp');
+
+/* ═══════════════════════════════════════════════════════════
    PAGE : RÉGLAGES
    ═══════════════════════════════════════════════════════════ */
 function ps_nl_page_reglages() {
@@ -916,7 +986,31 @@ function ps_nl_page_reglages() {
         update_option('ps_nl_confirm_actif', isset($_POST['confirm_actif']) ? '1' : '0');
         update_option('ps_nl_confirm_sujet', sanitize_text_field(wp_unslash($_POST['confirm_sujet'] ?? '')));
         update_option('ps_nl_confirm_corps', sanitize_textarea_field(wp_unslash($_POST['confirm_corps'] ?? '')));
+
+        update_option('ps_nl_smtp_active', isset($_POST['smtp_active']) ? '1' : '0');
+        update_option('ps_nl_smtp_host', sanitize_text_field(wp_unslash($_POST['smtp_host'] ?? '')));
+        update_option('ps_nl_smtp_port', (string) (int) ($_POST['smtp_port'] ?? 587));
+        $enc = sanitize_text_field(wp_unslash($_POST['smtp_encryption'] ?? 'tls'));
+        update_option('ps_nl_smtp_encryption', in_array($enc, ['', 'tls', 'ssl'], true) ? $enc : 'tls');
+        update_option('ps_nl_smtp_user', sanitize_text_field(wp_unslash($_POST['smtp_user'] ?? '')));
+        // Le mot de passe n'est jamais réaffiché dans le formulaire : un champ laissé
+        // vide conserve la valeur déjà enregistrée plutôt que de l'effacer.
+        if (!empty($_POST['smtp_pass'])) {
+            update_option('ps_nl_smtp_pass', wp_unslash($_POST['smtp_pass']));
+        }
+        update_option('ps_nl_smtp_from_email', sanitize_email(wp_unslash($_POST['smtp_from_email'] ?? '')));
+        update_option('ps_nl_smtp_from_name', sanitize_text_field(wp_unslash($_POST['smtp_from_name'] ?? '')));
+
         $notice = '<div class="ps-notice ps-notice-ok">' . __('Réglages enregistrés.', 'poivre-sens') . '</div>';
+    }
+
+    // Envoi d'un e-mail de test via le SMTP configuré
+    if (isset($_POST['ps_test_smtp']) && check_admin_referer('ps_save_reglages')) {
+        $dest = sanitize_email(wp_unslash($_POST['smtp_test_email'] ?? '')) ?: get_option('admin_email');
+        $ok   = wp_mail($dest, __('Test SMTP — Poivre & Sens', 'poivre-sens'), __("Cet e-mail confirme que la configuration SMTP fonctionne.", 'poivre-sens'));
+        $notice = $ok
+            ? '<div class="ps-notice ps-notice-ok">' . sprintf(__('E-mail de test envoyé à %s via le SMTP configuré.', 'poivre-sens'), esc_html($dest)) . '</div>'
+            : '<div class="ps-notice ps-notice-err">' . __('L\'envoi a échoué — vérifiez l\'hôte, le port, l\'identifiant et le mot de passe SMTP.', 'poivre-sens') . '</div>';
     }
 
     // Restaurer le modèle par défaut
@@ -939,6 +1033,7 @@ function ps_nl_page_reglages() {
     $actif = ps_nl_confirm_opt('ps_nl_confirm_actif') === '1';
     $sujet = ps_nl_confirm_opt('ps_nl_confirm_sujet');
     $corps = ps_nl_confirm_opt('ps_nl_confirm_corps');
+    $smtp  = ps_nl_smtp_options();
 
     ps_nl_header(__('Réglages', 'poivre-sens'), 'ps-nl-reglages');
     echo $notice;
@@ -1007,6 +1102,77 @@ function ps_nl_page_reglages() {
                         <?= __('Le test utilise le modèle enregistré. Enregistrez d\'abord vos modifications.', 'poivre-sens') ?>
                     </p>
                 </div>
+            </div>
+
+            <div class="ps-card" style="grid-column:1 / -1">
+                <h3>📡 <?= __('Configuration SMTP', 'poivre-sens') ?></h3>
+                <p style="font-size:13px;color:#666;margin-bottom:18px">
+                    <?= __('Envoi natif des e-mails du site via un serveur SMTP (ex. Brevo, Gmail, OVH…), sans extension externe. Tant que ce réglage est désactivé, WordPress envoie les e-mails avec sa méthode par défaut.', 'poivre-sens') ?>
+                </p>
+
+                <div class="ps-field" style="margin-bottom:16px">
+                    <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:400;color:#333">
+                        <input type="checkbox" name="smtp_active" value="1" <?= checked($smtp['active'] === '1', true, false) ?> style="width:auto">
+                        <?= __('Activer l\'envoi via SMTP', 'poivre-sens') ?>
+                    </label>
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px">
+                    <div class="ps-field">
+                        <label><?= __('Serveur SMTP (host)', 'poivre-sens') ?></label>
+                        <input type="text" name="smtp_host" value="<?= esc_attr($smtp['host']) ?>" placeholder="smtp-relay.brevo.com">
+                    </div>
+                    <div class="ps-field">
+                        <label><?= __('Port', 'poivre-sens') ?></label>
+                        <input type="number" name="smtp_port" value="<?= esc_attr($smtp['port']) ?>" placeholder="587">
+                    </div>
+                    <div class="ps-field">
+                        <label><?= __('Chiffrement', 'poivre-sens') ?></label>
+                        <select name="smtp_encryption">
+                            <option value="tls" <?= selected($smtp['encryption'], 'tls', false) ?>>TLS</option>
+                            <option value="ssl" <?= selected($smtp['encryption'], 'ssl', false) ?>>SSL</option>
+                            <option value=""    <?= selected($smtp['encryption'], '', false) ?>><?= __('Aucun', 'poivre-sens') ?></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                    <div class="ps-field">
+                        <label><?= __('Identifiant SMTP', 'poivre-sens') ?></label>
+                        <input type="text" name="smtp_user" value="<?= esc_attr($smtp['user']) ?>" autocomplete="off">
+                    </div>
+                    <div class="ps-field">
+                        <label><?= __('Mot de passe SMTP', 'poivre-sens') ?></label>
+                        <input type="password" name="smtp_pass" value="" autocomplete="new-password"
+                            placeholder="<?= $smtp['pass'] !== '' ? esc_attr__('•••••••• (laisser vide pour ne pas changer)', 'poivre-sens') : '' ?>">
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                    <div class="ps-field">
+                        <label><?= __('E-mail expéditeur', 'poivre-sens') ?></label>
+                        <input type="email" name="smtp_from_email" value="<?= esc_attr($smtp['from_email']) ?>" placeholder="contact@cie.poivresens.fr">
+                    </div>
+                    <div class="ps-field">
+                        <label><?= __('Nom expéditeur', 'poivre-sens') ?></label>
+                        <input type="text" name="smtp_from_name" value="<?= esc_attr($smtp['from_name']) ?>" placeholder="Cie Poivre & Sens">
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+                    <button type="submit" name="ps_save_reglages" class="ps-btn ps-btn-primary">💾 <?= __('Enregistrer', 'poivre-sens') ?></button>
+                </div>
+
+                <div style="border-top:1px solid #eee;padding-top:16px;display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
+                    <div class="ps-field" style="margin-bottom:0;flex:1;min-width:220px">
+                        <label><?= __('Tester le SMTP — envoyer à', 'poivre-sens') ?></label>
+                        <input type="email" name="smtp_test_email" value="<?= esc_attr(get_option('admin_email')) ?>">
+                    </div>
+                    <button type="submit" name="ps_test_smtp" class="ps-btn ps-btn-outline"><?= __('Envoyer le test SMTP', 'poivre-sens') ?></button>
+                </div>
+                <p style="font-size:11px;color:#999;margin-top:10px">
+                    <?= __('Enregistrez d\'abord vos modifications avant de tester.', 'poivre-sens') ?>
+                </p>
             </div>
 
         </div>
@@ -1378,6 +1544,14 @@ function ps_nl_sanitize_email_html($html) {
     return $html;
 }
 
+/** Vrai si le formulaire de la page Nouvelle campagne a été soumis, quel que soit le
+ *  bouton d'action cliqué (« Enregistrer le brouillon », « Envoyer maintenant » ou
+ *  « Envoyer un e-mail de test ») — un formulaire HTML n'ajoute au POST que le nom du
+ *  bouton submit réellement cliqué, jamais celui des autres boutons du même formulaire. */
+function ps_nl_campaign_form_submitted(array $post) {
+    return isset($post['ps_save_campaign']) || isset($post['ps_send_now']) || isset($post['ps_send_test']);
+}
+
 /* ═══════════════════════════════════════════════════════════
    PAGE : CRÉER / MODIFIER UNE CAMPAGNE
    ═══════════════════════════════════════════════════════════ */
@@ -1396,7 +1570,7 @@ function ps_nl_page_nouvelle_campagne() {
     if ($view_id) $camp = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tc WHERE id=%d", $view_id));
 
     // Sauvegarde / envoi
-    if (isset($_POST['ps_save_campaign']) && check_admin_referer('ps_save_campaign')) {
+    if (ps_nl_campaign_form_submitted($_POST) && check_admin_referer('ps_save_campaign')) {
         $target_ids   = array_map('intval', (array)($_POST['target_lists'] ?? []));
         $html_importe = wp_unslash($_POST['contenu_html_brut'] ?? '');
         $data = [
@@ -1487,6 +1661,11 @@ function ps_nl_page_nouvelle_campagne() {
 
     <form method="post">
         <?php wp_nonce_field('ps_save_campaign'); ?>
+        <!-- Bouton submit invisible placé en premier dans le DOM : une soumission implicite
+             du formulaire (touche Entrée dans un champ) enregistre le brouillon plutôt que
+             de déclencher, selon l'ordre des boutons visibles, un envoi de test ou réel. -->
+        <button type="submit" name="ps_save_campaign" aria-hidden="true" tabindex="-1"
+            style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"></button>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
 
             <div>
