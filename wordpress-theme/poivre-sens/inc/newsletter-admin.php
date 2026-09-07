@@ -1280,6 +1280,20 @@ function ps_nl_page_campagnes() {
     }
 }
 
+/** Sanitise un e-mail HTML complet collé tel quel (ex. export MailPoet) : contrairement à
+ *  wp_kses_post(), ne retire pas les balises <style>/<html>/<head> ni les mises en page par
+ *  tableaux — seules les constructions réellement dangereuses sont neutralisées (scripts,
+ *  gestionnaires d'événements, URI javascript:). Réservé à ce formulaire, accessible aux seuls
+ *  administrateurs (capacité manage_options). */
+function ps_nl_sanitize_email_html($html) {
+    $html = (string) $html;
+    if (trim($html) === '') return '';
+    $html = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $html);
+    $html = preg_replace('#\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html);
+    $html = preg_replace('#(href|src)(\s*=\s*)(["\'])\s*javascript:[^"\']*\3#i', '$1$2$3#$3', $html);
+    return $html;
+}
+
 /* ═══════════════════════════════════════════════════════════
    PAGE : CRÉER / MODIFIER UNE CAMPAGNE
    ═══════════════════════════════════════════════════════════ */
@@ -1299,11 +1313,14 @@ function ps_nl_page_nouvelle_campagne() {
 
     // Sauvegarde / envoi
     if (isset($_POST['ps_save_campaign']) && check_admin_referer('ps_save_campaign')) {
-        $target_ids = array_map('intval', (array)($_POST['target_lists'] ?? []));
+        $target_ids   = array_map('intval', (array)($_POST['target_lists'] ?? []));
+        $html_importe = wp_unslash($_POST['contenu_html_brut'] ?? '');
         $data = [
             'sujet'         => sanitize_text_field($_POST['sujet'] ?? ''),
             'preheader'     => sanitize_text_field($_POST['preheader'] ?? ''),
-            'contenu_html'  => wp_kses_post($_POST['contenu_html'] ?? ''),
+            'contenu_html'  => trim($html_importe) !== ''
+                ? ps_nl_sanitize_email_html($html_importe)
+                : wp_kses_post($_POST['contenu_html'] ?? ''),
             'contenu_texte' => sanitize_textarea_field($_POST['contenu_texte'] ?? ''),
             'from_nom'      => sanitize_text_field($_POST['from_nom'] ?? ''),
             'from_email'    => sanitize_email($_POST['from_email'] ?? ''),
@@ -1391,9 +1408,18 @@ function ps_nl_page_nouvelle_campagne() {
                             <input type="text" name="preheader" placeholder="<?= esc_attr(__('Visible après l\'objet dans certains clients mail…', 'poivre-sens')) ?>" value="<?= esc_attr($camp->preheader ?? '') ?>">
                         </div>
                     </div>
+                    <div class="ps-form-row full" style="margin-top:16px">
+                        <details>
+                            <summary style="cursor:pointer;font-weight:600;font-size:13px;color:#c28b36"><?= __('Importer un e-mail HTML complet (ex. export MailPoet)', 'poivre-sens') ?></summary>
+                            <div style="margin-top:10px">
+                                <p class="help" style="margin-bottom:8px"><?= __('Collez ici le code HTML exporté depuis MailPoet (ou un autre outil). Il remplacera le contenu de l\'éditeur visuel ci-dessous à l\'enregistrement — laissez ce champ vide pour continuer à utiliser l\'éditeur visuel.', 'poivre-sens') ?></p>
+                                <textarea name="contenu_html_brut" rows="8" placeholder="<?= esc_attr('<html>…</html>') ?>" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;font-size:12px;font-family:monospace"></textarea>
+                            </div>
+                        </details>
+                    </div>
                     <div class="ps-form-row full" style="margin-top:8px">
                         <div class="ps-field">
-                            <label><?= __('Contenu HTML', 'poivre-sens') ?></label>
+                            <label><?= __('Éditeur visuel', 'poivre-sens') ?></label>
                         </div>
                     </div>
                     <?php
