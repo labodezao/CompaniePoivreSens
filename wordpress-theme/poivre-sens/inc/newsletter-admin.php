@@ -310,6 +310,52 @@ function ps_nl_page_dispatch() {
     }
 }
 
+/** Export CSV des abonnés — filtrable par statut ET par liste (par id ou par slug).
+ *  Accroché à admin_init (et non exécuté depuis ps_nl_page_abonnes()) car à ce stade
+ *  WordPress a déjà émis l'en-tête et le menu de l'admin : envoyer les en-têtes CSV
+ *  depuis le rendu de la page provoque un "headers already sent". admin_init s'exécute
+ *  avant tout affichage, donc header()+exit y fonctionnent normalement. */
+add_action('admin_init', 'ps_nl_handle_csv_export');
+function ps_nl_handle_csv_export() {
+    if (($_GET['page'] ?? '') !== 'ps-nl-abonnes' || !isset($_GET['export']) || !current_user_can('manage_options')) return;
+    check_admin_referer('ps_export_csv');
+
+    global $wpdb;
+    $table      = $wpdb->prefix . 'ps_newsletter';
+    $statut     = sanitize_text_field($_GET['statut'] ?? 'actif');
+    $liste_slug = sanitize_title($_GET['liste_slug'] ?? '');
+    $list_id    = (int)($_GET['liste'] ?? 0);
+    $liste_obj  = ps_nl_resolve_export_list($list_id, $liste_slug);
+    if ($liste_obj) $list_id = (int)$liste_obj->id;
+    $tj      = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $join    = $list_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $list_id : '';
+    $where   = $statut === 'tous' ? 'WHERE 1=1' : $wpdb->prepare('WHERE t.statut=%s', $statut);
+    $rows    = $wpdb->get_results("SELECT t.id, t.email, t.prenom, t.nom, t.statut, t.source, t.date_creation FROM $table t $join $where ORDER BY t.date_creation DESC");
+
+    // Précharge les listes de tous les abonnés exportés en une seule requête
+    // (évite une requête par ligne sur un export volumineux).
+    $list_names = [];
+    $sub_ids = wp_list_pluck($rows, 'id');
+    if ($sub_ids) {
+        $tl   = $wpdb->prefix . 'ps_newsletter_lists';
+        $in   = implode(',', array_map('intval', $sub_ids));
+        $rels = $wpdb->get_results("SELECT j.subscriber_id, l.nom FROM $tj j INNER JOIN $tl l ON l.id = j.list_id WHERE j.subscriber_id IN ($in) ORDER BY l.nom ASC");
+        foreach ($rels as $rel) $list_names[$rel->subscriber_id][] = $rel->nom;
+    }
+
+    $nom_fichier = 'newsletter-abonnes' . ($liste_obj ? '-' . sanitize_file_name($liste_obj->slug) : '') . '-' . date('Y-m-d') . '.csv';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $nom_fichier . '"');
+    $out = fopen('php://output', 'w');
+    fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
+    fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Listes', 'Date inscription']);
+    foreach ($rows as $r) {
+        $noms = implode(', ', $list_names[$r->id] ?? []);
+        fputcsv($out, [(string)$r->email, (string)$r->prenom, (string)$r->nom, (string)$r->statut, (string)$r->source, $noms, (string)$r->date_creation]);
+    }
+    fclose($out); exit;
+}
+
 /* ─── CSS commun admin ───────────────────────────────────── */
 add_action('admin_head', function () {
     if (!isset($_GET['page']) || strpos($_GET['page'], 'ps-n') === false) return;
@@ -520,43 +566,6 @@ function ps_nl_page_abonnes() {
 
     /* ── Actions POST ─────────────────────────────────────── */
     $notice = '';
-
-    // Export CSV — filtrable par statut ET par liste (par id ou par slug)
-    if (isset($_GET['export']) && current_user_can('manage_options')) {
-        check_admin_referer('ps_export_csv');
-        $statut     = sanitize_text_field($_GET['statut'] ?? 'actif');
-        $liste_slug = sanitize_title($_GET['liste_slug'] ?? '');
-        $list_id    = (int)($_GET['liste'] ?? 0);
-        $liste_obj  = ps_nl_resolve_export_list($list_id, $liste_slug);
-        if ($liste_obj) $list_id = (int)$liste_obj->id;
-        $tj      = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
-        $join    = $list_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $list_id : '';
-        $where   = $statut === 'tous' ? 'WHERE 1=1' : $wpdb->prepare('WHERE t.statut=%s', $statut);
-        $rows    = $wpdb->get_results("SELECT t.id, t.email, t.prenom, t.nom, t.statut, t.source, t.date_creation FROM $table t $join $where ORDER BY t.date_creation DESC");
-
-        // Précharge les listes de tous les abonnés exportés en une seule requête
-        // (évite une requête par ligne sur un export volumineux).
-        $list_names = [];
-        $sub_ids = wp_list_pluck($rows, 'id');
-        if ($sub_ids) {
-            $tl   = $wpdb->prefix . 'ps_newsletter_lists';
-            $in   = implode(',', array_map('intval', $sub_ids));
-            $rels = $wpdb->get_results("SELECT j.subscriber_id, l.nom FROM $tj j INNER JOIN $tl l ON l.id = j.list_id WHERE j.subscriber_id IN ($in) ORDER BY l.nom ASC");
-            foreach ($rels as $rel) $list_names[$rel->subscriber_id][] = $rel->nom;
-        }
-
-        $nom_fichier = 'newsletter-abonnes' . ($liste_obj ? '-' . sanitize_file_name($liste_obj->slug) : '') . '-' . date('Y-m-d') . '.csv';
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="' . $nom_fichier . '"');
-        $out = fopen('php://output', 'w');
-        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
-        fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Listes', 'Date inscription']);
-        foreach ($rows as $r) {
-            $noms = implode(', ', $list_names[$r->id] ?? []);
-            fputcsv($out, [(string)$r->email, (string)$r->prenom, (string)$r->nom, (string)$r->statut, (string)$r->source, $noms, (string)$r->date_creation]);
-        }
-        fclose($out); exit;
-    }
 
     // Import CSV — avec affectation à une liste
     if (isset($_POST['ps_import_csv']) && check_admin_referer('ps_import_csv')) {
