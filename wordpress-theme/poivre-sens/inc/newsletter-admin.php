@@ -195,27 +195,34 @@ function ps_nl_set_subscriber_lists($subscriber_id, array $list_ids) {
     }
 }
 
-/** Fusionne une liste source dans une liste destination : rattache tous les abonnés de la
- *  source à la destination (sans doublon), puis supprime éventuellement la liste source — les
- *  abonnés restent inscrits, seule l'appartenance à cette liste disparaît. Renvoie le nombre
- *  d'abonnés rattachés. */
+/** Fusionne une liste source dans une liste destination : déplace tous les abonnés de la
+ *  source vers la destination (sans doublon) — la liste source est toujours vidée de ses
+ *  abonnés, seule sa suppression (l'entrée de liste elle-même) est optionnelle. Les abonnés
+ *  restent inscrits dans tous les cas, seule leur appartenance à la liste source disparaît.
+ *  Renvoie le nombre d'abonnés déplacés. */
 function ps_nl_merge_lists($source_id, $dest_id, $delete_source = false) {
     global $wpdb;
     $source_id = (int)$source_id;
     $dest_id   = (int)$dest_id;
     if (!$source_id || !$dest_id || $source_id === $dest_id) return 0;
     $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
-    $subscriber_ids = array_map('intval', $wpdb->get_col($wpdb->prepare(
-        "SELECT subscriber_id FROM $tj WHERE list_id=%d", $source_id
-    )));
-    foreach ($subscriber_ids as $sid) {
-        ps_nl_add_subscriber_to_list($sid, $dest_id);
-    }
+
+    $nb = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $tj WHERE list_id=%d", $source_id));
+    if ($nb === 0) return 0;
+
+    $wpdb->query($wpdb->prepare(
+        "INSERT IGNORE INTO $tj (subscriber_id, list_id, date_ajout)
+         SELECT subscriber_id, %d, %s FROM $tj WHERE list_id=%d",
+        $dest_id, current_time('mysql'), $source_id
+    ));
+
+    // La fusion déplace toujours les abonnés : la liste source est vidée dans tous les cas.
+    $wpdb->delete($tj, ['list_id' => $source_id]);
+
     if ($delete_source) {
         $wpdb->delete($wpdb->prefix . 'ps_newsletter_lists', ['id' => $source_id]);
-        $wpdb->delete($tj, ['list_id' => $source_id]);
     }
-    return count($subscriber_ids);
+    return $nb;
 }
 
 /** Normalise une valeur de ciblage (« 2,5 » ou tableau) en tableau d'ids. */
@@ -1288,9 +1295,69 @@ function ps_nl_page_campagnes() {
 function ps_nl_sanitize_email_html($html) {
     $html = (string) $html;
     if (trim($html) === '') return '';
+
+    // Balises actives : jamais nécessaires dans un e-mail. <script> est retiré avec son
+    // contenu ; les balises intégrables (iframe/object/embed/…) et le meta-refresh sont
+    // retirées elles-mêmes (leur éventuel contenu textuel, inoffensif, est conservé).
     $html = preg_replace('#<script\b[^>]*>.*?</script>#is', '', $html);
-    $html = preg_replace('#\s+on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html);
-    $html = preg_replace('#(href|src)(\s*=\s*)(["\'])\s*javascript:[^"\']*\3#i', '$1$2$3#$3', $html);
+    $html = preg_replace('#</?(iframe|object|embed|applet|link|base)\b[^>]*>#i', '', $html);
+    $html = preg_replace('#<meta\b[^>]*\bhttp-equiv\b[^>]*>#i', '', $html);
+
+    // Gestionnaires d'événements (onclick=, onerror=, …), y compris juste après un "/" de
+    // fermeture de balise auto-fermante.
+    $html = preg_replace('#[\s/]on[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)#i', '', $html);
+
+    // URI dangereuses (javascript:, vbscript:, data: hors image) dans les attributs de
+    // ressource usuels — href, src, action, formaction, poster, background, xlink:href —
+    // qu'elles soient entre guillemets ou non. Les caractères de contrôle (tabulations,
+    // retours à la ligne) parfois utilisés pour contourner la détection du schéma sont
+    // retirés avant comparaison.
+    $attrs = 'href|src|action|formaction|poster|background|xlink:href|dynsrc|lowsrc';
+    $html = preg_replace_callback(
+        '#(' . $attrs . ')(\s*=\s*)("[^"]*"|\'[^\']*\'|[^\s>]+)#i',
+        function ($m) {
+            $val    = $m[3];
+            $quote  = ($val !== '' && ($val[0] === '"' || $val[0] === "'")) ? $val[0] : '';
+            $inner  = $quote !== '' ? substr($val, 1, -1) : $val;
+            $propre = preg_replace('/[\x00-\x1F]/', '', $inner);
+            if (preg_match('/^\s*(javascript|vbscript)\s*:/i', $propre)
+                || preg_match('/^\s*data\s*:(?!\s*image\/)/i', $propre)) {
+                return $m[1] . $m[2] . $quote . '#' . $quote;
+            }
+            return $m[0];
+        },
+        $html
+    );
+
+    // srcset : plusieurs URLs séparées par des virgules — neutralise l'attribut entier si un
+    // schéma dangereux y apparaît, plutôt que de tenter une réécriture partielle risquée.
+    $html = preg_replace_callback(
+        '#(srcset\s*=\s*)("[^"]*"|\'[^\']*\')#i',
+        function ($m) {
+            $propre = preg_replace('/[\x00-\x1F]/', '', $m[2]);
+            if (preg_match('/(javascript|vbscript)\s*:/i', $propre)) {
+                $quote = $m[2][0];
+                return $m[1] . $quote . $quote;
+            }
+            return $m[0];
+        },
+        $html
+    );
+
+    // style="…" contenant une URI javascript: ou une expression CSS (vecteur historique
+    // d'IE, expression(...)) : l'attribut entier est retiré plutôt qu'édité partiellement.
+    $html = preg_replace_callback(
+        '#\sstyle\s*=\s*("[^"]*"|\'[^\']*\')#i',
+        function ($m) {
+            $propre = preg_replace('/[\x00-\x1F]/', '', $m[1]);
+            if (preg_match('/javascript\s*:|expression\s*\(/i', $propre)) {
+                return '';
+            }
+            return $m[0];
+        },
+        $html
+    );
+
     return $html;
 }
 
@@ -1320,7 +1387,7 @@ function ps_nl_page_nouvelle_campagne() {
             'preheader'     => sanitize_text_field($_POST['preheader'] ?? ''),
             'contenu_html'  => trim($html_importe) !== ''
                 ? ps_nl_sanitize_email_html($html_importe)
-                : wp_kses_post($_POST['contenu_html'] ?? ''),
+                : wp_kses_post(wp_unslash($_POST['contenu_html'] ?? '')),
             'contenu_texte' => sanitize_textarea_field($_POST['contenu_texte'] ?? ''),
             'from_nom'      => sanitize_text_field($_POST['from_nom'] ?? ''),
             'from_email'    => sanitize_email($_POST['from_email'] ?? ''),
