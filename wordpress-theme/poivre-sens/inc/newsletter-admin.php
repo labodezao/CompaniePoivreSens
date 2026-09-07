@@ -195,6 +195,29 @@ function ps_nl_set_subscriber_lists($subscriber_id, array $list_ids) {
     }
 }
 
+/** Fusionne une liste source dans une liste destination : rattache tous les abonnés de la
+ *  source à la destination (sans doublon), puis supprime éventuellement la liste source — les
+ *  abonnés restent inscrits, seule l'appartenance à cette liste disparaît. Renvoie le nombre
+ *  d'abonnés rattachés. */
+function ps_nl_merge_lists($source_id, $dest_id, $delete_source = false) {
+    global $wpdb;
+    $source_id = (int)$source_id;
+    $dest_id   = (int)$dest_id;
+    if (!$source_id || !$dest_id || $source_id === $dest_id) return 0;
+    $tj = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
+    $subscriber_ids = array_map('intval', $wpdb->get_col($wpdb->prepare(
+        "SELECT subscriber_id FROM $tj WHERE list_id=%d", $source_id
+    )));
+    foreach ($subscriber_ids as $sid) {
+        ps_nl_add_subscriber_to_list($sid, $dest_id);
+    }
+    if ($delete_source) {
+        $wpdb->delete($wpdb->prefix . 'ps_newsletter_lists', ['id' => $source_id]);
+        $wpdb->delete($tj, ['list_id' => $source_id]);
+    }
+    return count($subscriber_ids);
+}
+
 /** Normalise une valeur de ciblage (« 2,5 » ou tableau) en tableau d'ids. */
 function ps_nl_parse_target($target) {
     if (is_array($target)) $ids = $target;
@@ -1010,6 +1033,30 @@ function ps_nl_page_listes() {
         $notice = '<div class="ps-notice ps-notice-ok">' . __('Liste supprimée. Les abonnés concernés restent inscrits.', 'poivre-sens') . '</div>';
     }
 
+    // Fusion de deux listes
+    if (isset($_POST['ps_merge_lists']) && check_admin_referer('ps_merge_lists')) {
+        $src_id  = (int)($_POST['merge_source'] ?? 0);
+        $dst_id  = (int)($_POST['merge_dest'] ?? 0);
+        $del_src = !empty($_POST['merge_delete_source']);
+        if (!$src_id || !$dst_id) {
+            $notice = '<div class="ps-notice ps-notice-err">' . __('Choisissez une liste source et une liste destination.', 'poivre-sens') . '</div>';
+        } elseif ($src_id === $dst_id) {
+            $notice = '<div class="ps-notice ps-notice-err">' . __('La liste source et la liste destination doivent être différentes.', 'poivre-sens') . '</div>';
+        } else {
+            $src = ps_nl_get_list($src_id);
+            $dst = ps_nl_get_list($dst_id);
+            if (!$src || !$dst) {
+                $notice = '<div class="ps-notice ps-notice-err">' . __('Liste introuvable.', 'poivre-sens') . '</div>';
+            } else {
+                $nb = ps_nl_merge_lists($src_id, $dst_id, $del_src);
+                $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(
+                    __('%1$d abonné(s) de « %2$s » rattaché(s) à « %3$s ».', 'poivre-sens'),
+                    $nb, esc_html($src->nom), esc_html($dst->nom)
+                ) . '</div>';
+            }
+        }
+    }
+
     $edit = null;
     if (isset($_GET['edit_id'])) $edit = ps_nl_get_list((int)$_GET['edit_id']);
     $lists = ps_nl_get_lists();
@@ -1090,6 +1137,43 @@ function ps_nl_page_listes() {
         </div>
 
     </div>
+
+    <div class="ps-card" style="margin-top:20px">
+        <h3>🔀 <?= __('Fusionner deux listes', 'poivre-sens') ?></h3>
+        <p style="font-size:13px;color:#666;margin-bottom:14px">
+            <?= __('Rattache tous les abonnés d\'une liste source à une liste destination (un abonné déjà présent dans les deux n\'est pas dupliqué).', 'poivre-sens') ?>
+        </p>
+        <?php if (count($lists) < 2): ?>
+        <p style="color:#aaa"><?= __('Il faut au moins deux listes pour pouvoir en fusionner.', 'poivre-sens') ?></p>
+        <?php else: ?>
+        <form method="post" style="display:flex;gap:14px;align-items:end;flex-wrap:wrap">
+            <?php wp_nonce_field('ps_merge_lists'); ?>
+            <div class="ps-field">
+                <label><?= __('Liste source (sera vidée)', 'poivre-sens') ?></label>
+                <select name="merge_source" required>
+                    <option value=""></option>
+                    <?php foreach ($lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>"><?= esc_html($l->nom) ?> (<?= (int)$l->nb_total ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="ps-field">
+                <label><?= __('Liste destination', 'poivre-sens') ?></label>
+                <select name="merge_dest" required>
+                    <option value=""></option>
+                    <?php foreach ($lists as $l): ?>
+                    <option value="<?= (int)$l->id ?>"><?= esc_html($l->nom) ?> (<?= (int)$l->nb_total ?>)</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="ps-field">
+                <label style="font-weight:normal"><input type="checkbox" name="merge_delete_source" value="1"> <?= __('Supprimer la liste source après fusion', 'poivre-sens') ?></label>
+            </div>
+            <button type="submit" name="ps_merge_lists" class="ps-btn ps-btn-primary" onclick="return confirm('<?= esc_js(__('Fusionner ces deux listes ?', 'poivre-sens')) ?>')"><?= __('Fusionner', 'poivre-sens') ?></button>
+        </form>
+        <?php endif; ?>
+    </div>
+
     </div><!-- .ps-wrap -->
     <?php
 }
