@@ -1661,6 +1661,11 @@ function ps_nl_page_nouvelle_campagne() {
 
     <form method="post">
         <?php wp_nonce_field('ps_save_campaign'); ?>
+        <!-- Bouton submit invisible placé en premier dans le DOM : une soumission implicite
+             du formulaire (touche Entrée dans un champ) enregistre le brouillon plutôt que
+             de déclencher, selon l'ordre des boutons visibles, un envoi de test ou réel. -->
+        <button type="submit" name="ps_save_campaign" aria-hidden="true" tabindex="-1"
+            style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"></button>
         <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
 
             <div>
