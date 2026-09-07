@@ -149,6 +149,17 @@ function ps_nl_get_list($id) {
     return $wpdb->get_row($wpdb->prepare("SELECT * FROM $tl WHERE id=%d", (int)$id));
 }
 
+/** Résout la liste ciblée par un export CSV : l'id numérique (s'il est fourni et non
+ *  nul) est toujours prioritaire sur le slug ; à défaut, on résout par slug. Renvoie
+ *  null si aucun des deux ne désigne une liste existante (export non filtré). */
+function ps_nl_resolve_export_list($list_id, $liste_slug) {
+    $list_id = (int) $list_id;
+    $liste_slug = (string) $liste_slug;
+    if ($list_id) return ps_nl_get_list($list_id);
+    if ($liste_slug !== '') return ps_nl_get_list_by_slug($liste_slug);
+    return null;
+}
+
 /** Une liste par son slug. */
 function ps_nl_get_list_by_slug($slug) {
     global $wpdb;
@@ -510,11 +521,14 @@ function ps_nl_page_abonnes() {
     /* ── Actions POST ─────────────────────────────────────── */
     $notice = '';
 
-    // Export CSV — filtrable par statut ET par liste
+    // Export CSV — filtrable par statut ET par liste (par id ou par slug)
     if (isset($_GET['export']) && current_user_can('manage_options')) {
         check_admin_referer('ps_export_csv');
-        $statut  = sanitize_text_field($_GET['statut'] ?? 'actif');
-        $list_id = (int)($_GET['liste'] ?? 0);
+        $statut     = sanitize_text_field($_GET['statut'] ?? 'actif');
+        $liste_slug = sanitize_title($_GET['liste_slug'] ?? '');
+        $list_id    = (int)($_GET['liste'] ?? 0);
+        $liste_obj  = ps_nl_resolve_export_list($list_id, $liste_slug);
+        if ($liste_obj) $list_id = (int)$liste_obj->id;
         $tj      = $wpdb->prefix . 'ps_newsletter_subscriber_lists';
         $join    = $list_id ? "INNER JOIN $tj j ON j.subscriber_id = t.id AND j.list_id = " . $list_id : '';
         $where   = $statut === 'tous' ? 'WHERE 1=1' : $wpdb->prepare('WHERE t.statut=%s', $statut);
@@ -531,8 +545,9 @@ function ps_nl_page_abonnes() {
             foreach ($rels as $rel) $list_names[$rel->subscriber_id][] = $rel->nom;
         }
 
+        $nom_fichier = 'newsletter-abonnes' . ($liste_obj ? '-' . sanitize_file_name($liste_obj->slug) : '') . '-' . date('Y-m-d') . '.csv';
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="newsletter-abonnes-' . date('Y-m-d') . '.csv"');
+        header('Content-Disposition: attachment; filename="' . $nom_fichier . '"');
         $out = fopen('php://output', 'w');
         fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
         fputcsv($out, ['Email', 'Prénom', 'Nom', 'Statut', 'Source', 'Listes', 'Date inscription']);
@@ -1102,6 +1117,8 @@ function ps_nl_page_listes() {
                         <span style="color:#bbb;font-size:11px"> / <?= (int)$l->nb_total ?> <?= __('au total', 'poivre-sens') ?></span>
                     </td>
                     <td class="actions">
+                        <?php $export_liste = wp_nonce_url(add_query_arg(['page'=>'ps-nl-abonnes','export'=>1,'statut'=>'actif','liste_slug'=>$l->slug], admin_url('admin.php')), 'ps_export_csv'); ?>
+                        <a href="<?= esc_url($export_liste) ?>" class="ps-btn ps-btn-grey ps-btn-sm">⬇ <?= __('Exporter CSV', 'poivre-sens') ?></a>
                         <a href="<?= esc_url(admin_url('admin.php?page=ps-nl-listes&edit_id='.$l->id)) ?>" class="ps-btn ps-btn-outline ps-btn-sm"><?= __('Modifier', 'poivre-sens') ?></a>
                         <?php $del = wp_nonce_url(add_query_arg(['page'=>'ps-nl-listes','delete_id'=>$l->id], admin_url('admin.php')), 'ps_del_list_'.$l->id); ?>
                         <a href="<?= esc_url($del) ?>" class="ps-btn ps-btn-danger ps-btn-sm" onclick="return confirm('<?= esc_js(__('Supprimer cette liste ? Les abonnés ne seront pas supprimés.', 'poivre-sens')) ?>')"><?= __('Supprimer', 'poivre-sens') ?></a>
@@ -1418,6 +1435,18 @@ function ps_nl_page_nouvelle_campagne() {
                     exit;
                 }
             }
+
+            // Envoi d'un test ?
+            if (isset($_POST['ps_send_test'])) {
+                $test_email = sanitize_email(wp_unslash($_POST['test_email'] ?? ''));
+                if (!is_email($test_email)) {
+                    $notice = '<div class="ps-notice ps-notice-err">' . __('Adresse e-mail de test invalide.', 'poivre-sens') . '</div>';
+                } elseif (ps_nl_send_test_email($camp_id, $test_email)) {
+                    $notice = '<div class="ps-notice ps-notice-ok">' . sprintf(__('E-mail de test envoyé à %s.', 'poivre-sens'), esc_html($test_email)) . '</div>';
+                } else {
+                    $notice = '<div class="ps-notice ps-notice-err">' . __('Échec de l\'envoi du test — vérifiez la configuration d\'envoi du site.', 'poivre-sens') . '</div>';
+                }
+            }
             // Recharger le camp
             $camp = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tc WHERE id=%d", $camp_id));
             $edit_id = $camp_id;
@@ -1429,6 +1458,7 @@ function ps_nl_page_nouvelle_campagne() {
     $actifs         = ps_nl_count_active($camp->target_lists ?? '');
     $def_nom  = get_bloginfo('name');
     $def_mail = get_option('admin_email');
+    $test_mail_default = wp_get_current_user()->user_email ?: $def_mail;
     $view_only = $view_id && $camp && $camp->statut === 'envoye';
 
     ps_nl_header($view_only ? __('Aperçu de la campagne', 'poivre-sens') : ($edit_id ? __('Modifier la campagne', 'poivre-sens') : __('Nouvelle campagne', 'poivre-sens')), 'ps-nl-nouvelle-campagne');
@@ -1542,6 +1572,12 @@ function ps_nl_page_nouvelle_campagne() {
                         <label><?= __('E-mail expéditeur', 'poivre-sens') ?></label>
                         <input type="email" name="from_email" value="<?= esc_attr($camp->from_email ?? 'contact@cie.poivresens.fr') ?>">
                     </div>
+                    <hr style="border:none;border-top:1px solid #f0f0f0;margin:16px 0">
+                    <div class="ps-field" style="margin-bottom:10px">
+                        <label><?= __('Envoyer un test à', 'poivre-sens') ?></label>
+                        <input type="email" name="test_email" value="<?= esc_attr($test_mail_default) ?>">
+                    </div>
+                    <button type="submit" name="ps_send_test" value="1" class="ps-btn ps-btn-outline" style="width:100%;margin-bottom:16px">✉ <?= __('Envoyer un e-mail de test', 'poivre-sens') ?></button>
                     <hr style="border:none;border-top:1px solid #f0f0f0;margin:16px 0">
                     <div style="background:#fdf9f3;border:1px solid #e8d5a3;border-radius:4px;padding:14px;font-size:13px;margin-bottom:16px">
                         <strong style="color:#c28b36">📬 <span id="ps-cible-count"><?= $actifs ?></span> <?= __('abonné(s) actif(s)', 'poivre-sens') ?></strong><br>
@@ -1699,6 +1735,38 @@ function ps_nl_send_campaign($campaign_id) {
     ], ['id' => $campaign_id]);
 
     return $nb_envoyes;
+}
+
+/** Envoie un e-mail de test (contenu final, avec placeholders factices) à une adresse
+ *  donnée, sans toucher aux statistiques ni à la liste des envois réels de la campagne —
+ *  aucune ligne n'est ajoutée à ps_newsletter_sends, aucun compteur n'est modifié. */
+function ps_nl_send_test_email($campaign_id, $to_email) {
+    global $wpdb;
+    $tc = $wpdb->prefix . 'ps_newsletter_campaigns';
+    $camp = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tc WHERE id=%d", $campaign_id));
+    if (!$camp) return false;
+
+    $unsub_url = add_query_arg(['action' => 'ps_newsletter_unsubscribe', 'token' => 'apercu-test'], admin_url('admin-ajax.php'));
+
+    $html = str_replace(
+        ['{prenom}', '{email}', '{desinscription}'],
+        ['Testeur', esc_html($to_email), esc_url($unsub_url)],
+        $camp->contenu_html
+    );
+
+    $texte = $camp->contenu_texte ?: wp_strip_all_tags($html);
+    $texte = str_replace(['{prenom}', '{email}', '{desinscription}'], ['Testeur', $to_email, $unsub_url], $texte);
+
+    $from_nom   = $camp->from_nom   ?: get_bloginfo('name');
+    $from_email = $camp->from_email ?: 'contact@cie.poivresens.fr';
+    $headers = [
+        'Content-Type: text/html; charset=UTF-8',
+        "From: $from_nom <$from_email>",
+        "Reply-To: $from_email",
+        'X-Mailer: Poivre-Sens-Newsletter/1.0',
+    ];
+
+    return wp_mail($to_email, '[TEST] ' . $camp->sujet, $html, $headers);
 }
 
 /* ── Tracking pixel ouverture ────────────────────────────── */
