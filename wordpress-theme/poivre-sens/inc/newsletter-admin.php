@@ -1378,6 +1378,14 @@ function ps_nl_sanitize_email_html($html) {
     return $html;
 }
 
+/** Vrai si le formulaire de la page Nouvelle campagne a été soumis, quel que soit le
+ *  bouton d'action cliqué (« Enregistrer le brouillon », « Envoyer maintenant » ou
+ *  « Envoyer un e-mail de test ») — un formulaire HTML n'ajoute au POST que le nom du
+ *  bouton submit réellement cliqué, jamais celui des autres boutons du même formulaire. */
+function ps_nl_campaign_form_submitted(array $post) {
+    return isset($post['ps_save_campaign']) || isset($post['ps_send_now']) || isset($post['ps_send_test']);
+}
+
 /* ═══════════════════════════════════════════════════════════
    PAGE : CRÉER / MODIFIER UNE CAMPAGNE
    ═══════════════════════════════════════════════════════════ */
@@ -1396,7 +1404,7 @@ function ps_nl_page_nouvelle_campagne() {
     if ($view_id) $camp = $wpdb->get_row($wpdb->prepare("SELECT * FROM $tc WHERE id=%d", $view_id));
 
     // Sauvegarde / envoi
-    if (isset($_POST['ps_save_campaign']) && check_admin_referer('ps_save_campaign')) {
+    if (ps_nl_campaign_form_submitted($_POST) && check_admin_referer('ps_save_campaign')) {
         $target_ids   = array_map('intval', (array)($_POST['target_lists'] ?? []));
         $html_importe = wp_unslash($_POST['contenu_html_brut'] ?? '');
         $data = [
