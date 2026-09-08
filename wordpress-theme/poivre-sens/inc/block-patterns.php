@@ -501,15 +501,40 @@ add_shortcode('ps_esthetique', function (): string {
 });
 
 /**
+ * Champs d'un témoignage, calculés une seule fois pour les deux affichages
+ * (grille de l'accueil et page dédiée) : évite de relire deux fois les
+ * mêmes métadonnées et de dupliquer la logique vidéo/type.
+ */
+function ps_temoignage_donnees($id): array {
+    $video_url = get_post_meta($id, '_temoignage_video', true);
+    return [
+        'role'       => get_post_meta($id, '_temoignage_role', true),
+        'etoiles'    => (int) get_post_meta($id, '_temoignage_etoiles', true),
+        'photo'      => get_the_post_thumbnail_url($id, 'thumbnail'),
+        'video_html' => $video_url ? wp_oembed_get($video_url, ['width' => 600]) : false,
+        'type'       => function_exists('ps_temoignage_type') ? ps_temoignage_type($id) : [],
+    ];
+}
+
+/** Pastille de type d'un témoignage (couleur personnalisée si réglée). */
+function ps_temoignage_type_badge_html(array $type): string {
+    if (empty($type['label'])) return '';
+    $style = $type['couleur'] ? ' style="color:' . esc_attr($type['couleur']) . ';border-color:' . esc_attr($type['couleur']) . '"' : '';
+    return '<span class="tem-type"' . $style . '>' . esc_html($type['label']) . '</span>';
+}
+
+/**
  * [ps_temoignages] — Témoignages publiés (brouillon = pas encore autorisé
  * à la publication, voir inc/testimonials.php). Rien à afficher tant
- * qu'aucun n'est publié : section absente plutôt que vide.
+ * qu'aucun n'est publié : section absente plutôt que vide. Aperçu limité
+ * pour l'accueil — voir [ps_temoignages_page] pour la liste complète.
  */
-add_shortcode('ps_temoignages', function (): string {
+add_shortcode('ps_temoignages', function ($atts): string {
+    $atts = shortcode_atts(['nombre' => 6], $atts, 'ps_temoignages');
     $q = new WP_Query([
         'post_type'      => 'temoignage',
         'post_status'    => 'publish',
-        'posts_per_page' => -1,
+        'posts_per_page' => (int) $atts['nombre'],
         'orderby'        => 'menu_order',
         'order'          => 'ASC',
     ]);
@@ -526,33 +551,84 @@ add_shortcode('ps_temoignages', function (): string {
       </div>
       <div class="tem-grid">
         <?php while ($q->have_posts()) : $q->the_post();
-          $id         = get_the_ID();
-          $role       = get_post_meta($id, '_temoignage_role', true);
-          $etoiles    = (int) get_post_meta($id, '_temoignage_etoiles', true);
-          $photo      = get_the_post_thumbnail_url($id, 'thumbnail');
-          $video_url  = get_post_meta($id, '_temoignage_video', true);
-          $video_html = $video_url ? wp_oembed_get($video_url, ['width' => 600]) : false;
+          $id = get_the_ID();
+          $d  = ps_temoignage_donnees($id);
         ?>
         <figure class="tem-card">
-          <?php if ($etoiles > 0) : ?>
-          <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $etoiles) . str_repeat('☆', 5 - $etoiles) ?></div>
+          <?= ps_temoignage_type_badge_html($d['type']) ?>
+          <?php if ($d['etoiles'] > 0) : ?>
+          <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $d['etoiles']) . str_repeat('☆', 5 - $d['etoiles']) ?></div>
           <?php endif; ?>
-          <?php if ($video_html) : ?>
-          <div class="tem-video"><?= $video_html ?></div>
+          <?php if ($d['video_html']) : ?>
+          <div class="tem-video"><?= $d['video_html'] ?></div>
           <?php else : ?>
           <blockquote class="tem-texte"><?php the_content(); ?></blockquote>
           <?php endif; ?>
           <figcaption class="tem-auteur">
-            <?php if ($photo) : ?><img src="<?= esc_url($photo) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
+            <?php if ($d['photo']) : ?><img src="<?= esc_url($d['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
             <div>
               <p class="tem-nom"><?php the_title(); ?></p>
-              <?php if ($role) : ?><p class="tem-role"><?= esc_html($role) ?></p><?php endif; ?>
+              <?php if ($d['role']) : ?><p class="tem-role"><?= esc_html($d['role']) ?></p><?php endif; ?>
             </div>
           </figcaption>
         </figure>
         <?php endwhile; wp_reset_postdata(); ?>
       </div>
     </section>
+    <?php
+    return ob_get_clean();
+});
+
+/**
+ * [ps_temoignages_page] — liste complète des témoignages publiés, en
+ * colonne (inspirée d'une page d'avis dédiée) plutôt qu'en grille limitée :
+ * compte total en en-tête, un témoignage par ligne. Prévu pour une page
+ * « Témoignages » à part (voir le pattern Gutenberg du même nom), le
+ * shortcode [ps_temoignages] de l'accueil restant l'aperçu condensé.
+ */
+add_shortcode('ps_temoignages_page', function (): string {
+    $q = new WP_Query([
+        'post_type'      => 'temoignage',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
+    ]);
+    if (!$q->have_posts()) {
+        return '';
+    }
+    $total = $q->post_count;
+    ob_start();
+    ?>
+    <div class="tem-page">
+      <p class="tem-page__compte">
+        <strong><?= (int) $total ?></strong>
+        <?= esc_html(_n('témoignage', 'témoignages', $total, 'poivre-sens')) ?>
+      </p>
+      <?php while ($q->have_posts()) : $q->the_post();
+        $id = get_the_ID();
+        $d  = ps_temoignage_donnees($id);
+      ?>
+      <article class="tem-page-item">
+        <?= ps_temoignage_type_badge_html($d['type']) ?>
+        <?php if ($d['etoiles'] > 0) : ?>
+        <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $d['etoiles']) . str_repeat('☆', 5 - $d['etoiles']) ?></div>
+        <?php endif; ?>
+        <?php if ($d['video_html']) : ?>
+        <div class="tem-video"><?= $d['video_html'] ?></div>
+        <?php else : ?>
+        <blockquote class="tem-texte"><?php the_content(); ?></blockquote>
+        <?php endif; ?>
+        <div class="tem-auteur">
+          <?php if ($d['photo']) : ?><img src="<?= esc_url($d['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
+          <div>
+            <p class="tem-nom"><?php the_title(); ?></p>
+            <?php if ($d['role']) : ?><p class="tem-role"><?= esc_html($d['role']) ?></p><?php endif; ?>
+          </div>
+        </div>
+      </article>
+      <?php endwhile; wp_reset_postdata(); ?>
+    </div>
     <?php
     return ob_get_clean();
 });
@@ -664,6 +740,13 @@ add_action('init', function () {
         'description' => 'Absent tant qu\'aucun témoignage n\'est publié. Alimenté via Témoignages › Ajouter.',
         'categories'  => ['poivre-sens'],
         'content'     => _ps_pat_temoignages_sc(),
+    ]);
+
+    register_block_pattern('poivre-sens/temoignages-page', [
+        'title'       => 'Témoignages — page complète',
+        'description' => 'Liste complète des témoignages publiés (pas de limite), en colonne. À insérer sur une page dédiée, ex. « Témoignages ».',
+        'categories'  => ['poivre-sens'],
+        'content'     => _ps_sc('ps_temoignages_page'),
     ]);
 
     register_block_pattern('poivre-sens/contact', [

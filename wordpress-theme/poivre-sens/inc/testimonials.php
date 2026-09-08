@@ -32,7 +32,76 @@ add_action('init', function () {
         'supports'      => ['title', 'editor', 'thumbnail', 'page-attributes'],
         'show_in_rest'  => true,
     ]);
+
+    // Type de témoignage (Atelier, Stage, Résidence…) — même principe que les
+    // catégories d'événement du plugin CF Réservations : une couleur par type,
+    // affichée en pastille sur chaque témoignage plutôt qu'un simple libellé.
+    register_taxonomy('temoignage_type', 'temoignage', [
+        'labels' => [
+            'name'          => __('Types de témoignage', 'poivre-sens'),
+            'singular_name' => __('Type',                'poivre-sens'),
+            'add_new_item'  => __('Nouveau type',         'poivre-sens'),
+        ],
+        'hierarchical'      => false,
+        'public'            => false,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+    ]);
 });
+
+/** Couleur d'un type de témoignage (choisie sur sa page de modification). */
+function ps_temoignage_type_couleur($term_id) {
+    return (string) get_term_meta($term_id, '_temoignage_type_color', true);
+}
+
+/** Champ couleur sur l'écran d'AJOUT d'un type de témoignage. */
+add_action('temoignage_type_add_form_fields', function () {
+    ?>
+    <div class="form-field">
+        <label for="temoignage_type_color"><?php _e('Couleur', 'poivre-sens'); ?></label>
+        <input type="color" name="temoignage_type_color" id="temoignage_type_color" value="#c28b36">
+        <p><?php _e('Couleur de la pastille affichée sur les témoignages de ce type.', 'poivre-sens'); ?></p>
+    </div>
+    <?php
+});
+
+/** Champ couleur sur l'écran de MODIFICATION d'un type de témoignage. */
+add_action('temoignage_type_edit_form_fields', function ($term) {
+    $couleur = ps_temoignage_type_couleur($term->term_id) ?: '#c28b36';
+    ?>
+    <tr class="form-field">
+        <th scope="row"><label for="temoignage_type_color"><?php _e('Couleur', 'poivre-sens'); ?></label></th>
+        <td>
+            <input type="color" name="temoignage_type_color" id="temoignage_type_color" value="<?php echo esc_attr($couleur); ?>">
+            <p class="description"><?php _e('Couleur de la pastille affichée sur les témoignages de ce type.', 'poivre-sens'); ?></p>
+        </td>
+    </tr>
+    <?php
+});
+
+foreach (['created_temoignage_type', 'edited_temoignage_type'] as $ps_hook_couleur) {
+    add_action($ps_hook_couleur, function ($term_id) {
+        if (!isset($_POST['temoignage_type_color'])) return;
+        $couleur = sanitize_hex_color(wp_unslash($_POST['temoignage_type_color']));
+        update_term_meta($term_id, '_temoignage_type_color', $couleur ?: '#c28b36');
+    });
+}
+
+/**
+ * Type de témoignage effectif (un seul, comme pour les événements) : clé,
+ * libellé et couleur — ou tableau vide si aucun type n'est assigné.
+ */
+function ps_temoignage_type($post_id) {
+    $termes = get_the_terms($post_id, 'temoignage_type');
+    if (!is_array($termes) || !$termes) return [];
+    $terme = $termes[0];
+    return [
+        'slug'    => $terme->slug,
+        'label'   => $terme->name,
+        'couleur' => ps_temoignage_type_couleur($terme->term_id),
+    ];
+}
 
 add_action('add_meta_boxes', function () {
     add_meta_box(
