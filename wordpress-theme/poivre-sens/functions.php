@@ -45,6 +45,9 @@ require_once get_template_directory() . '/inc/galerie-reorder.php';
 // Témoignages (CPT + champs admin) — shortcode [ps_temoignages] dans block-patterns.php
 require_once get_template_directory() . '/inc/testimonials.php';
 
+// Widgets de paiement HelloAsso (adhésions, dons…) — shortcodes [helloasso]
+require_once get_template_directory() . '/inc/helloasso.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
