@@ -39,6 +39,10 @@ if ( $ps_scheme && $ps_scheme !== 'auto' ) {
   <ul class="nav__list" id="nav-list" role="list">
     <li><a href="<?php echo esc_url(home_url('/')); ?>">Accueil</a></li>
     <li><a href="<?php echo esc_url(home_url('/evenements/')); ?>" <?php if (is_post_type_archive(ps_evt_cpt()) || is_singular(ps_evt_cpt())) echo 'class="current-menu-item"'; ?>>Événements</a></li>
+    <?php $ps_page_temoignages = get_page_by_path('temoignages'); ?>
+    <?php if ($ps_page_temoignages && $ps_page_temoignages->post_status === 'publish'): ?>
+    <li><a href="<?php echo esc_url(get_permalink($ps_page_temoignages)); ?>" <?php if (is_page($ps_page_temoignages->ID)) echo 'class="current-menu-item"'; ?>>Témoignages</a></li>
+    <?php endif; ?>
     <li><a href="<?php echo esc_url(home_url('/#contact')); ?>">Contact</a></li>
   </ul>
   <?php endif; ?>
