@@ -48,6 +48,9 @@ require_once get_template_directory() . '/inc/testimonials.php';
 // Widgets de paiement HelloAsso (adhésions, dons…) — shortcodes [helloasso]
 require_once get_template_directory() . '/inc/helloasso.php';
 
+// Widgets de paiement AssoConnect (adhésions, dons…) — shortcodes [assoconnect]
+require_once get_template_directory() . '/inc/assoconnect.php';
+
 /* ═══════════════════════════════════════════════════════════
    0. INDEXATION — pages utilitaires à exclure de Google
    ═══════════════════════════════════════════════════════════ */
