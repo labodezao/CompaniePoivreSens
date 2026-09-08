@@ -15,9 +15,13 @@
  * et un seul script partagé quel que soit le nombre de widgets sur la page.
  *
  * Usage (bloc « Shortcode » de l'éditeur) :
- *   [assoconnect]                          → campagne par défaut
+ *   [assoconnect]                          → widget intégré, campagne par défaut
  *   [assoconnect campagne="dons"]          → une autre campagne enregistrée
  *   [assoconnect collect_id="01ABCDEF…"]   → campagne ponctuelle, non enregistrée
+ *   [assoconnect lien="1"]                 → simple lien « click and pay » vers
+ *       la page de paiement AssoConnect (plutôt que le widget intégré) — pratique
+ *       quand le widget ne convient pas à la mise en page, ou pour un lien dans
+ *       un menu/bouton existant.
  */
 defined('ABSPATH') || exit;
 
@@ -25,26 +29,19 @@ defined('ABSPATH') || exit;
    1. STOCKAGE DES CAMPAGNES — option ps_assoconnect_campagnes
    ═══════════════════════════════════════════════════════════ */
 
-/** Campagne pré-remplie à la première utilisation (celle déjà en ligne). */
-function ps_assoconnect_campagnes_defaut() {
-    return [
-        'adhesion' => [
-            'label'      => __('Adhésion', 'poivre-sens'),
-            'site'       => 'compagnie-poivresens',
-            'collect_id' => '01M20DSQS51GK8S413328KY1TP',
-        ],
-    ];
-}
-
-/** Toutes les campagnes enregistrées, clé => [label, site, collect_id]. */
+/** Toutes les campagnes enregistrées, clé => [label, site, collect_id, slug].
+ *  Aucune campagne pré-remplie : les identifiants de l'association (et leur
+ *  renouvellement annuel) sont une donnée de configuration, pas une valeur
+ *  à coder en dur dans le thème — à saisir depuis Apparence → Campagnes
+ *  AssoConnect après l'activation. */
 function ps_assoconnect_campagnes() {
-    $campagnes = get_option('ps_assoconnect_campagnes', ps_assoconnect_campagnes_defaut());
+    $campagnes = get_option('ps_assoconnect_campagnes', []);
     return is_array($campagnes) ? $campagnes : [];
 }
 
 /** Clé de la campagne utilisée quand le shortcode n'en précise aucune. */
 function ps_assoconnect_campagne_defaut_cle() {
-    return (string) get_option('ps_assoconnect_campagne_defaut', 'adhesion');
+    return (string) get_option('ps_assoconnect_campagne_defaut', '');
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -59,13 +56,14 @@ function ps_assoconnect_avertissement($texte) {
         : '';
 }
 
-function ps_assoconnect_shortcode($atts) {
-    $atts = shortcode_atts([
-        'campagne'   => '',   // clé d'une campagne enregistrée (Apparence → Campagnes AssoConnect)
-        'site'       => 'compagnie-poivresens',
-        'collect_id' => '',   // identifiant AssoConnect brut, pour une campagne ponctuelle non enregistrée
-    ], $atts, 'assoconnect');
-
+/**
+ * Résout les attributs du shortcode vers les champs d'une campagne
+ * (site, collect_id, slug) — par clé enregistrée, en ponctuel via les
+ * attributs, ou la campagne par défaut. Renvoie soit le tableau résolu,
+ * soit une chaîne (déjà l'avertissement HTML prêt à afficher) en cas
+ * d'échec — à distinguer avec is_array().
+ */
+function ps_assoconnect_resoudre(array $atts) {
     $campagnes = ps_assoconnect_campagnes();
 
     if ($atts['campagne'] !== '') {
@@ -77,23 +75,46 @@ function ps_assoconnect_shortcode($atts) {
                 $cle
             ));
         }
-        $site       = $campagnes[$cle]['site']       ?? '';
-        $collect_id = $campagnes[$cle]['collect_id'] ?? '';
-    } elseif ($atts['collect_id'] !== '') {
-        $site       = $atts['site'];
-        $collect_id = $atts['collect_id'];
-    } else {
-        $cle = sanitize_title(ps_assoconnect_campagne_defaut_cle());
-        if (!isset($campagnes[$cle])) {
-            return ps_assoconnect_avertissement(__('AssoConnect : aucune campagne par défaut configurée. Réglez-en une dans Apparence → Campagnes AssoConnect, ou précisez l\'attribut collect_id= du shortcode.', 'poivre-sens'));
-        }
-        $site       = $campagnes[$cle]['site']       ?? '';
-        $collect_id = $campagnes[$cle]['collect_id'] ?? '';
+        return $campagnes[$cle];
     }
 
-    $site       = sanitize_title($site);
-    $collect_id = preg_replace('/[^A-Za-z0-9]/', '', (string) $collect_id);
-    if ($site === '' || $collect_id === '') return '';
+    if ($atts['collect_id'] !== '' || $atts['slug'] !== '') {
+        return ['site' => $atts['site'], 'collect_id' => $atts['collect_id'], 'slug' => $atts['slug']];
+    }
+
+    $cle = sanitize_title(ps_assoconnect_campagne_defaut_cle());
+    if (!isset($campagnes[$cle])) {
+        return ps_assoconnect_avertissement(__('AssoConnect : aucune campagne par défaut configurée. Réglez-en une dans Apparence → Campagnes AssoConnect, ou précisez l\'attribut collect_id= (ou slug=) du shortcode.', 'poivre-sens'));
+    }
+    return $campagnes[$cle];
+}
+
+function ps_assoconnect_shortcode($atts) {
+    $atts = shortcode_atts([
+        'campagne'   => '',   // clé d'une campagne enregistrée (Apparence → Campagnes AssoConnect)
+        'site'       => 'compagnie-poivresens',
+        'collect_id' => '',   // identifiant AssoConnect brut (widget), pour une campagne ponctuelle non enregistrée
+        'slug'       => '',   // identifiant AssoConnect brut (lien direct), idem
+        'lien'       => '0',  // '1' : lien « click and pay » plutôt que le widget intégré
+        'texte'      => '',   // libellé du lien (mode lien= uniquement)
+    ], $atts, 'assoconnect');
+
+    $campagne = ps_assoconnect_resoudre($atts);
+    if (!is_array($campagne)) return $campagne; // avertissement déjà rendu
+
+    $site = sanitize_title($campagne['site'] ?? '');
+    if ($site === '') return '';
+
+    if (filter_var($atts['lien'], FILTER_VALIDATE_BOOLEAN)) {
+        $slug = preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($campagne['slug'] ?? ''));
+        if ($slug === '') return '';
+        $texte = $atts['texte'] !== '' ? $atts['texte'] : __('Accéder au paiement', 'poivre-sens');
+        $url   = "https://{$site}.assoconnect.com/collect/choice/{$slug}";
+        return '<p><a href="' . esc_url($url) . '" class="hero__cta" target="_blank" rel="noopener">' . esc_html($texte) . '</a></p>';
+    }
+
+    $collect_id = preg_replace('/[^A-Za-z0-9]/', '', (string) ($campagne['collect_id'] ?? ''));
+    if ($collect_id === '') return '';
 
     wp_enqueue_script(
         'ps-assoconnect-iframe',
@@ -135,6 +156,7 @@ function ps_assoconnect_traiter_soumission() {
             'label'      => sanitize_text_field(wp_unslash($_POST['label'] ?? $cle)),
             'site'       => sanitize_title(wp_unslash($_POST['site'] ?? '')),
             'collect_id' => preg_replace('/[^A-Za-z0-9]/', '', wp_unslash($_POST['collect_id'] ?? '')),
+            'slug'       => preg_replace('/[^A-Za-z0-9_-]/', '', wp_unslash($_POST['slug'] ?? '')),
         ];
         update_option('ps_assoconnect_campagnes', $campagnes);
 
@@ -177,11 +199,12 @@ function ps_assoconnect_admin_page() {
     $label_champ      = $edite['label']      ?? '';
     $site_champ       = $edite['site']       ?? 'compagnie-poivresens';
     $collect_id_champ = $edite['collect_id'] ?? '';
+    $slug_champ       = $edite['slug']       ?? '';
     ?>
     <div class="wrap">
         <h1><?php _e('Campagnes AssoConnect', 'poivre-sens'); ?></h1>
         <p style="max-width:760px;color:#555">
-            <?php _e('Chaque campagne (adhésion, dons…) enregistrée ici devient utilisable partout sur le site via <code>[assoconnect campagne="clé"]</code>. La campagne marquée « par défaut » est celle utilisée quand le shortcode <code>[assoconnect]</code> est écrit seul — pratique pour l\'adhésion annuelle, dont l\'identifiant change chaque année : il suffit de le mettre à jour ici, sans modifier aucune page. L\'identifiant à copier est le <code>data-collect-id</code> donné par AssoConnect (Formulaire de campagne › Afficher sur un site externe).', 'poivre-sens'); ?>
+            <?php _e('Chaque campagne (adhésion, dons…) enregistrée ici devient utilisable partout sur le site via <code>[assoconnect campagne="clé"]</code> (widget intégré) ou <code>[assoconnect campagne="clé" lien="1"]</code> (simple lien de paiement). La campagne marquée « par défaut » est celle utilisée quand le shortcode <code>[assoconnect]</code> est écrit seul — pratique pour l\'adhésion annuelle, dont l\'identifiant change chaque année : il suffit de le mettre à jour ici, sans modifier aucune page.', 'poivre-sens'); ?>
         </p>
 
         <?php if ($resultat === 'enregistre'): ?>
@@ -198,7 +221,7 @@ function ps_assoconnect_admin_page() {
                 <tr>
                     <th><?php _e('Clé', 'poivre-sens'); ?></th>
                     <th><?php _e('Libellé', 'poivre-sens'); ?></th>
-                    <th><?php _e('Sous-domaine / identifiant', 'poivre-sens'); ?></th>
+                    <th><?php _e('Sous-domaine / widget / lien', 'poivre-sens'); ?></th>
                     <th><?php _e('Shortcode', 'poivre-sens'); ?></th>
                     <th><?php _e('Par défaut', 'poivre-sens'); ?></th>
                     <th></th>
@@ -209,7 +232,7 @@ function ps_assoconnect_admin_page() {
                 <tr>
                     <td><code><?= esc_html($cle) ?></code></td>
                     <td><?= esc_html($c['label'] ?? '') ?></td>
-                    <td style="font-size:12px;color:#666"><?= esc_html(($c['site'] ?? '') . ' / ' . ($c['collect_id'] ?? '')) ?></td>
+                    <td style="font-size:12px;color:#666"><?= esc_html(($c['site'] ?? '') . ' / ' . ($c['collect_id'] ?? '') . ' / ' . ($c['slug'] ?? '')) ?></td>
                     <td><code>[assoconnect campagne="<?= esc_html($cle) ?>"]</code></td>
                     <td><?= $cle === $defaut ? '✓' : '' ?></td>
                     <td>
@@ -249,10 +272,17 @@ function ps_assoconnect_admin_page() {
                     </td>
                 </tr>
                 <tr>
-                    <th><label for="ps-asc-collect"><?php _e('Identifiant de la campagne (data-collect-id)', 'poivre-sens'); ?></label></th>
+                    <th><label for="ps-asc-collect"><?php _e('Identifiant du widget (data-collect-id)', 'poivre-sens'); ?></label></th>
                     <td>
                         <input type="text" id="ps-asc-collect" name="collect_id" value="<?= esc_attr($collect_id_champ) ?>" class="regular-text">
-                        <p class="description"><?php _e('Dans AssoConnect : Formulaire de campagne › Afficher le formulaire sur un site externe › copiez la valeur de data-collect-id.', 'poivre-sens'); ?></p>
+                        <p class="description"><?php _e('Utilisé par [assoconnect] (widget intégré). Dans AssoConnect : Formulaire de campagne › Afficher le formulaire sur un site externe › copiez la valeur de data-collect-id.', 'poivre-sens'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="ps-asc-slug"><?php _e('Identifiant du lien direct', 'poivre-sens'); ?></label></th>
+                    <td>
+                        <input type="text" id="ps-asc-slug" name="slug" value="<?= esc_attr($slug_champ) ?>" class="regular-text" placeholder="752547-b-adhesion-cie-poivre-sens-2026-2027">
+                        <p class="description"><?php _e('Utilisé par [assoconnect lien="1"] (lien « click and pay » vers la page de paiement AssoConnect, plutôt que le widget intégré). C\'est la partie après /collect/choice/ ou /collect/description/ dans l\'URL de la campagne.', 'poivre-sens'); ?></p>
                     </td>
                 </tr>
                 <tr>

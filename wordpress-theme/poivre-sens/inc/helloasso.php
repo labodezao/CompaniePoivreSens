@@ -26,27 +26,19 @@ defined('ABSPATH') || exit;
    1. STOCKAGE DES CAMPAGNES — option ps_helloasso_campagnes
    ═══════════════════════════════════════════════════════════ */
 
-/** Campagne pré-remplie à la première utilisation (celle déjà en ligne). */
-function ps_helloasso_campagnes_defaut() {
-    return [
-        'adhesion' => [
-            'label' => __('Adhésion', 'poivre-sens'),
-            'assoc' => 'compagnie-poivre-sens',
-            'type'  => 'adhesions',
-            'slug'  => 'adhesion-compagnie-poivre-et-sens',
-        ],
-    ];
-}
-
-/** Toutes les campagnes enregistrées, clé => [label, assoc, type, slug]. */
+/** Toutes les campagnes enregistrées, clé => [label, assoc, type, slug].
+ *  Aucune campagne pré-remplie : les identifiants de l'association (et leur
+ *  renouvellement annuel) sont une donnée de configuration, pas une valeur
+ *  à coder en dur dans le thème — à saisir depuis Apparence → Campagnes
+ *  HelloAsso après l'activation. */
 function ps_helloasso_campagnes() {
-    $campagnes = get_option('ps_helloasso_campagnes', ps_helloasso_campagnes_defaut());
+    $campagnes = get_option('ps_helloasso_campagnes', []);
     return is_array($campagnes) ? $campagnes : [];
 }
 
 /** Clé de la campagne utilisée quand le shortcode n'en précise aucune. */
 function ps_helloasso_campagne_defaut_cle() {
-    return (string) get_option('ps_helloasso_campagne_defaut', 'adhesion');
+    return (string) get_option('ps_helloasso_campagne_defaut', '');
 }
 
 /* ═══════════════════════════════════════════════════════════
