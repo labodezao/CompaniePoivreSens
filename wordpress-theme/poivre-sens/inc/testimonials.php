@@ -50,6 +50,35 @@ add_action('init', function () {
     ]);
 });
 
+/**
+ * Force un éditeur clair (fond blanc, texte sombre) sur l'écran de
+ * modification d'un témoignage, quel que soit le mode sombre du
+ * navigateur/système du visiteur — color-scheme empêche l'inversion
+ * automatique, le reste couvre les navigateurs qui l'ignorent encore.
+ * Un style sans fichier source (juste du CSS en ligne) suffit : WordPress
+ * le recopie automatiquement dans l'iframe de l'éditeur de blocs.
+ */
+add_action('enqueue_block_editor_assets', function () {
+    $ecran = get_current_screen();
+    if (!$ecran || $ecran->post_type !== 'temoignage') return;
+
+    wp_register_style('ps-temoignage-editeur-clair', false);
+    wp_enqueue_style('ps-temoignage-editeur-clair');
+    wp_add_inline_style('ps-temoignage-editeur-clair', '
+        html, :root { color-scheme: light !important; }
+        body.block-editor-iframe__body,
+        .editor-styles-wrapper,
+        .edit-post-visual-editor,
+        .interface-interface-skeleton,
+        .interface-interface-skeleton__sidebar,
+        .block-editor-writing-flow,
+        .editor-post-title__input {
+            background: #fff !important;
+            color: #1e1e1e !important;
+        }
+    ');
+});
+
 /** Couleur d'un type de témoignage (choisie sur sa page de modification). */
 function ps_temoignage_type_couleur($term_id) {
     return (string) get_term_meta($term_id, '_temoignage_type_color', true);
