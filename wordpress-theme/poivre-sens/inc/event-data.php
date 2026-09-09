@@ -57,6 +57,10 @@ function ps_evt_champ($post_id, $champ) {
         if ($champ === 'type_label') {
             return ps_evt_type_label((string) get_post_meta($post_id, '_evt_type', true));
         }
+        if ($champ === 'billetterie') {
+            $externe = ps_evt_inscription_externe($post_id);
+            return $externe !== '' ? $externe : (string) get_post_meta($post_id, '_evt_billetterie', true);
+        }
         // Réservation en ligne : notion propre au plugin, sans équivalent ici.
         if ($champ === 'prix_brut') return 0.0;
         return isset($legacy[$champ]) ? get_post_meta($post_id, $legacy[$champ], true) : '';
@@ -109,7 +113,8 @@ function ps_evt_champ($post_id, $champ) {
                 : __('Gratuit', 'poivre-sens');
 
         case 'billetterie':
-            return (string) get_post_meta($post_id, '_cfeb_event_url', true);
+            $externe = ps_evt_inscription_externe($post_id);
+            return $externe !== '' ? $externe : (string) get_post_meta($post_id, '_cfeb_event_url', true);
 
         case 'prix_brut':
             $montant = get_post_meta($post_id, '_cfeb_prix', true);
@@ -186,6 +191,58 @@ function ps_evt_statut_resa($post_id) {
 function ps_evt_cle_ville() {
     return ps_evt_plugin_actif() ? '_cfeb_ville' : '_evt_ville';
 }
+
+/* ═══════════════════════════════════════════════════════════
+   INSCRIPTION EXTERNE — champ propre au thème, prioritaire sur la
+   réservation du plugin ou son champ « URL de billetterie » (ce
+   dernier n'a en réalité aucun champ d'édition dans l'admin du
+   plugin, quelle que soit la source de l'événement).
+   ═══════════════════════════════════════════════════════════ */
+
+/** Valeur brute du champ « Inscription externe » d'un événement : une URL
+ *  de billetterie classique, un shortcode de paiement (ex. [assoconnect
+ *  campagne="…"] ou [helloasso campagne="…"]), ou vide. */
+function ps_evt_inscription_externe($post_id) {
+    return trim((string) get_post_meta($post_id, '_ps_evt_inscription_externe', true));
+}
+
+/** Vrai si la valeur ressemble à un shortcode plutôt qu'à une URL. */
+function ps_evt_inscription_est_shortcode($valeur) {
+    return strpos(trim((string) $valeur), '[') === 0;
+}
+
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'ps_evt_inscription_externe',
+        __('Inscription externe', 'poivre-sens'),
+        function ($post) {
+            wp_nonce_field('ps_evt_inscription_externe_save', 'ps_evt_inscription_externe_nonce');
+            $valeur = ps_evt_inscription_externe($post->ID);
+            ?>
+            <p style="font-size:12px;color:#666;margin:0 0 8px">
+                <?php _e('Laissez vide pour garder la réservation en ligne du plugin. Sinon, collez une URL de billetterie externe, ou un shortcode de paiement — il remplace alors le bouton de réservation sur la fiche de cet événement.', 'poivre-sens'); ?>
+            </p>
+            <input type="text" name="ps_evt_inscription_externe" value="<?= esc_attr($valeur) ?>"
+                style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px"
+                placeholder='https://… ou [assoconnect campagne=&quot;cle&quot;]'>
+            <p style="font-size:11px;color:#999;margin:6px 0 0">
+                <?php _e('Exemples : [assoconnect campagne="cle"] · [helloasso campagne="cle"] — les campagnes se règlent dans Apparence.', 'poivre-sens'); ?>
+            </p>
+            <?php
+        },
+        ps_evt_cpt(), 'side', 'default'
+    );
+});
+
+add_action('save_post', function ($post_id) {
+    if (get_post_type($post_id) !== ps_evt_cpt()) return;
+    if (!isset($_POST['ps_evt_inscription_externe_nonce']) || !wp_verify_nonce($_POST['ps_evt_inscription_externe_nonce'], 'ps_evt_inscription_externe_save')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (isset($_POST['ps_evt_inscription_externe'])) {
+        update_post_meta($post_id, '_ps_evt_inscription_externe', sanitize_text_field(wp_unslash($_POST['ps_evt_inscription_externe'])));
+    }
+});
 
 /**
  * Types d'événement proposés dans les filtres, sous la forme

@@ -167,6 +167,9 @@ get_header(); ?>
         <?php _e('Cet événement est complet.', 'poivre-sens'); ?>
     </p>
 
+    <?php elseif ($billetterie && !$complet && ps_evt_inscription_est_shortcode($billetterie)): ?>
+    <div class="single-evt__inscription-externe"><?= do_shortcode($billetterie) ?></div>
+
     <?php elseif ($billetterie && !$complet): ?>
     <a href="<?= esc_url($billetterie) ?>" class="single-evt__billetterie" target="_blank" rel="noopener">
         <?php _e('Réserver ma place', 'poivre-sens'); ?> →
