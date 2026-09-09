@@ -307,6 +307,32 @@ function ps_evt_type_sauver_lien($term_id) {
 }
 
 /**
+ * Migration ponctuelle (se déclenche une seule fois, drapeau en option) :
+ * préremplit le lien de paiement par défaut des catégories déjà en place
+ * sur le site, sans jamais écraser une valeur déjà réglée à la main —
+ * l'administrateur reste libre de la corriger ensuite depuis Événements
+ * → Types d'événement.
+ */
+add_action('admin_init', function () {
+    if (!defined('CFEB_TAX') || get_option('ps_evt_liens_categories_v1')) return;
+
+    $liens_par_slug = [
+        'sens-et-mouvement' => '[assoconnect slug="752566-z-stage-mensuel-sens-et-mouvement"]',
+        'corps-vivant'      => '[assoconnect slug="753542-e-ateliers-danse-improvisation-corps-vivant-2026-2027"]',
+        'labo-bal'          => 'https://www.helloasso.com/associations/quai-des-bals',
+    ];
+
+    foreach ($liens_par_slug as $slug => $lien) {
+        $terme = get_term_by('slug', $slug, CFEB_TAX);
+        if ($terme && ps_evt_type_lien_defaut($terme->term_id) === '') {
+            update_term_meta($terme->term_id, '_ps_evt_type_lien_paiement', $lien);
+        }
+    }
+
+    update_option('ps_evt_liens_categories_v1', 1);
+}, 20); // après l'enregistrement des hooks de taxonomie ci-dessus
+
+/**
  * Types d'événement proposés dans les filtres, sous la forme
  * identifiant => libellé. Ils viennent des catégories du plugin
  * quand il est actif, sinon de la liste figée du thème.
