@@ -136,7 +136,7 @@ function ps_assoconnect_shortcode($atts) {
         $slug = preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($campagne['slug'] ?? ''));
         if ($slug === '') return '';
         // Priorité : attribut du shortcode > texte enregistré sur la campagne > défaut générique.
-        $texte = $atts['texte'] !== '' ? $atts['texte'] : (($campagne['texte_bouton'] ?? '') !== '' ? $campagne['texte_bouton'] : __('Accéder au paiement', 'poivre-sens'));
+        $texte = $atts['texte'] !== '' ? $atts['texte'] : (($campagne['texte_bouton'] ?? '') !== '' ? $campagne['texte_bouton'] : __('Je m\'inscris !', 'poivre-sens'));
         $url   = "https://{$site}.assoconnect.com/collect/choice/{$slug}";
         // Style posé en ligne plutôt que sur une classe du thème (.hero__cta, pensée
         // pour le fond sombre du hero) : ce bouton doit rester lisible quel que soit
@@ -324,7 +324,7 @@ function ps_assoconnect_admin_page() {
                 <tr>
                     <th><label for="ps-asc-texte"><?php _e('Texte du bouton (mode lien)', 'poivre-sens'); ?></label></th>
                     <td>
-                        <input type="text" id="ps-asc-texte" name="texte_bouton" value="<?= esc_attr($texte_champ) ?>" class="regular-text" placeholder="<?php esc_attr_e('Accéder au paiement', 'poivre-sens'); ?>">
+                        <input type="text" id="ps-asc-texte" name="texte_bouton" value="<?= esc_attr($texte_champ) ?>" class="regular-text" placeholder="<?php esc_attr_e('Je m\'inscris !', 'poivre-sens'); ?>">
                         <p class="description"><?php _e('Affiché sur [assoconnect] (mode lien, par défaut) pour cette campagne. Laissez vide pour le texte par défaut ; l\'attribut texte= du shortcode reste prioritaire s\'il est précisé.', 'poivre-sens'); ?></p>
                     </td>
                 </tr>
