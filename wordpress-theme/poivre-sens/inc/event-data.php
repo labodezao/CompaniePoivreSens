@@ -307,30 +307,96 @@ function ps_evt_type_sauver_lien($term_id) {
 }
 
 /**
+ * Devine le lien de paiement d'une catégorie à partir de son nom plutôt que
+ * de son slug (identifiant technique) : les slugs réels des catégories déjà
+ * en place sur le site (ex. « SENS & MOUVEMENT », « LABO DANSE — Quai des
+ * Bals ») ne sont pas prévisibles avec certitude depuis ici (WordPress les
+ * dérive du nom via sanitize_title(), qui peut abréger ou couper les mots
+ * différemment de ce qu'on devinerait) — reconnaître des mots-clés dans le
+ * nom, lui, ne dépend d'aucune hypothèse sur cette dérivation.
+ */
+function ps_evt_deviner_lien_categorie($nom_categorie) {
+    $nom = function_exists('remove_accents') ? remove_accents($nom_categorie) : $nom_categorie;
+    $nom = ' ' . strtolower((string) $nom) . ' ';
+    $nom = preg_replace('/[^a-z0-9]+/', ' ', $nom);
+
+    $regles = [
+        // Tous les mots-clés doivent être présents dans le nom.
+        [['sens', 'mouvement'], '[assoconnect slug="752566-z-stage-mensuel-sens-et-mouvement"]'],
+        [['corps', 'vivant'],   '[assoconnect slug="753542-e-ateliers-danse-improvisation-corps-vivant-2026-2027"]'],
+        [['labo'],              'https://www.helloasso.com/associations/quai-des-bals'],
+    ];
+    foreach ($regles as [$mots, $lien]) {
+        $trouve = true;
+        foreach ($mots as $mot) {
+            if (strpos($nom, $mot) === false) { $trouve = false; break; }
+        }
+        if ($trouve) return $lien;
+    }
+    return '';
+}
+
+/**
  * Migration ponctuelle (se déclenche une seule fois, drapeau en option) :
  * préremplit le lien de paiement par défaut des catégories déjà en place
  * sur le site, sans jamais écraser une valeur déjà réglée à la main —
  * l'administrateur reste libre de la corriger ensuite depuis Événements
  * → Types d'événement.
+ *
+ * v2 (reconnaissance par nom plutôt que par slug deviné) : la v1 n'avait
+ * correctement rempli que « Corps Vivant », les slugs supposés des deux
+ * autres catégories ne correspondant pas aux vrais slugs du site.
  */
 add_action('admin_init', function () {
-    if (!defined('CFEB_TAX') || get_option('ps_evt_liens_categories_v1')) return;
+    if (!defined('CFEB_TAX') || get_option('ps_evt_liens_categories_v2')) return;
 
-    $liens_par_slug = [
-        'sens-et-mouvement' => '[assoconnect slug="752566-z-stage-mensuel-sens-et-mouvement"]',
-        'corps-vivant'      => '[assoconnect slug="753542-e-ateliers-danse-improvisation-corps-vivant-2026-2027"]',
-        'labo-bal'          => 'https://www.helloasso.com/associations/quai-des-bals',
-    ];
-
-    foreach ($liens_par_slug as $slug => $lien) {
-        $terme = get_term_by('slug', $slug, CFEB_TAX);
-        if ($terme && ps_evt_type_lien_defaut($terme->term_id) === '') {
-            update_term_meta($terme->term_id, '_ps_evt_type_lien_paiement', $lien);
+    $termes = get_terms(['taxonomy' => CFEB_TAX, 'hide_empty' => false]);
+    if (!is_wp_error($termes)) {
+        foreach ($termes as $terme) {
+            if (ps_evt_type_lien_defaut($terme->term_id) !== '') continue;
+            $lien = ps_evt_deviner_lien_categorie($terme->name);
+            if ($lien !== '') {
+                update_term_meta($terme->term_id, '_ps_evt_type_lien_paiement', $lien);
+            }
         }
     }
 
-    update_option('ps_evt_liens_categories_v1', 1);
+    update_option('ps_evt_liens_categories_v2', 1);
 }, 20); // après l'enregistrement des hooks de taxonomie ci-dessus
+
+/**
+ * Migration ponctuelle complémentaire : au lieu de compter uniquement sur
+ * le lien par défaut de la catégorie (ci-dessus), pose directement le
+ * shortcode/URL de paiement sur chaque événement déjà publié qui n'a pas
+ * encore son propre champ « Inscription externe » — demandé pour que le
+ * lien apparaisse bien sur les événements déjà créés, sans dépendre d'une
+ * correspondance de catégorie qui pourrait encore échouer pour l'un d'eux.
+ * N'écrase jamais un champ déjà réglé à la main sur l'événement.
+ */
+add_action('admin_init', function () {
+    if (!defined('CFEB_TAX') || !defined('CFEB_SLUG') || get_option('ps_evt_liens_evenements_v1')) return;
+
+    $evenements = get_posts([
+        'post_type'      => CFEB_SLUG,
+        'post_status'    => 'any',
+        'numberposts'    => -1,
+        'fields'         => 'ids',
+    ]);
+
+    foreach ($evenements as $post_id) {
+        if (ps_evt_inscription_externe($post_id) !== '') continue;
+
+        $termes = get_the_terms($post_id, CFEB_TAX);
+        if (!is_array($termes) || !$termes) continue;
+
+        $lien = ps_evt_deviner_lien_categorie($termes[0]->name);
+        if ($lien !== '') {
+            update_post_meta($post_id, '_ps_evt_inscription_externe', $lien);
+        }
+    }
+
+    update_option('ps_evt_liens_evenements_v1', 1);
+}, 21); // après la migration des catégories ci-dessus
 
 /**
  * Types d'événement proposés dans les filtres, sous la forme

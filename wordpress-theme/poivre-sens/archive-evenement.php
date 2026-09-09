@@ -50,7 +50,7 @@ $villes = $wpdb->get_col($wpdb->prepare("
     $ps_adhesion_cta = do_shortcode('[assoconnect campagne="adhesion" texte="' . __('Devenir adhérent', 'poivre-sens') . '"]');
     if ($ps_adhesion_cta !== ''): ?>
     <div class="arch-evts__adhesion">
-        <span><?php _e('Envie de nous rejoindre à l\'année ?', 'poivre-sens'); ?></span>
+        <span><?php _e('Envie de nous rejoindre ?', 'poivre-sens'); ?></span>
         <?= $ps_adhesion_cta ?>
     </div>
     <?php endif; ?>

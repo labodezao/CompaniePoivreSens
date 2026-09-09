@@ -604,6 +604,13 @@ h4.co-h {
    sortie contient son propre <p>, qu'on neutralise pour l'aligner dans la ligne. */
 .cal-list__action-paiement{display:inline-flex;align-items:center}
 .cal-list__action-paiement p{margin:0}
+
+/* Bouton de paiement des shortcodes [assoconnect]/[helloasso] (mode lien) —
+   même famille visuelle que .cal-list__action-btn (fond plein, pas un lien
+   texte comme .hero__cta) : reste lisible quel que soit le fond de la page,
+   sans la boîte épaisse d'un bouton générique. */
+.ps-cta-btn{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-size:.68rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--noir);background:var(--or);padding:8px 18px;text-decoration:none;transition:background .2s,color .2s}
+.ps-cta-btn:hover{background:var(--orlt);color:var(--noir)}
 .cal-list__thumb{width:120px;height:80px;flex-shrink:0;overflow:hidden;align-self:center}
 .cal-list__thumb img{width:100%;height:100%;object-fit:cover;filter:brightness(.8) saturate(.85);transition:filter .3s}
 .cal-list__event:hover .cal-list__thumb img{filter:brightness(.95) saturate(1)}
