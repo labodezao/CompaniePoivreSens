@@ -126,6 +126,17 @@ add_shortcode('ps_evenements', function (): string {
         <h2 class="sh" id="titre-evts">Prochains événements</h2>
         <div class="regle"></div>
       </div>
+      <?php
+      // Adhésion — même encart que sur /evenements/ (voir archive-evenement.php) :
+      // réglez la campagne « adhesion » dans Apparence → Campagnes AssoConnect ;
+      // absent ici (silencieusement pour un visiteur) tant qu'elle ne l'est pas.
+      $ps_adhesion_cta = do_shortcode('[assoconnect campagne="adhesion" texte="' . __('Devenir adhérent', 'poivre-sens') . '"]');
+      if ($ps_adhesion_cta !== '') : ?>
+      <div class="arch-evts__adhesion">
+        <span><?php _e('Envie de nous rejoindre ?', 'poivre-sens'); ?></span>
+        <?= $ps_adhesion_cta ?>
+      </div>
+      <?php endif; ?>
       <?php if ($q->have_posts()) : ?>
       <div class="cal-list cal-list--compact">
         <?php while ($q->have_posts()) : $q->the_post();
