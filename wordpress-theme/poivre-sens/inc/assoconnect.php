@@ -138,13 +138,10 @@ function ps_assoconnect_shortcode($atts) {
         // Priorité : attribut du shortcode > texte enregistré sur la campagne > défaut générique.
         $texte = $atts['texte'] !== '' ? $atts['texte'] : (($campagne['texte_bouton'] ?? '') !== '' ? $campagne['texte_bouton'] : __('Je m\'inscris !', 'poivre-sens'));
         $url   = "https://{$site}.assoconnect.com/collect/choice/{$slug}";
-        // Style posé en ligne plutôt que sur une classe du thème (.hero__cta, pensée
-        // pour le fond sombre du hero) : ce bouton doit rester lisible quel que soit
-        // le fond de la page où il est inséré, sans dépendre du contexte alentour.
-        $style = 'display:inline-flex;align-items:center;gap:10px;background:#c28b36;color:#1f1008;'
-               . 'font-family:Inter,system-ui,sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.06em;'
-               . 'text-transform:uppercase;text-decoration:none;padding:14px 28px;border-radius:2px';
-        return '<p><a href="' . esc_url($url) . '" style="' . esc_attr($style) . '" target="_blank" rel="noopener">' . esc_html($texte) . ' →</a></p>';
+        // .ps-cta-btn (fond plein) plutôt qu'une classe comme .hero__cta (texte
+        // seul, pensée pour le fond sombre du hero) : ce bouton doit rester
+        // lisible quel que soit le fond de la page où il est inséré.
+        return '<p><a href="' . esc_url($url) . '" class="ps-cta-btn" target="_blank" rel="noopener">' . esc_html($texte) . '</a></p>';
     }
 
     $collect_id = preg_replace('/[^A-Za-z0-9]/', '', (string) ($campagne['collect_id'] ?? ''));
