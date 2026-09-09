@@ -163,7 +163,11 @@ add_shortcode('ps_evenements', function (): string {
             </ul>
             <div class="cal-list__actions">
               <a href="<?php the_permalink(); ?>" class="cal-list__action-link"><?php _e('En savoir plus', 'poivre-sens'); ?> →</a>
-              <?php if ($b && !$cp && $se === 'publie') : ?><a href="<?= esc_url($b) ?>" class="cal-list__action-btn" target="_blank" rel="noopener"><?php _e('Réserver', 'poivre-sens'); ?></a><?php endif; ?>
+              <?php if ($b && !$cp && $se === 'publie' && ps_evt_inscription_est_shortcode($b)) : ?>
+              <span class="cal-list__action-paiement"><?= do_shortcode($b) ?></span>
+              <?php elseif ($b && !$cp && $se === 'publie') : ?>
+              <a href="<?= esc_url($b) ?>" class="cal-list__action-btn" target="_blank" rel="noopener"><?php _e('Réserver', 'poivre-sens'); ?></a>
+              <?php endif; ?>
             </div>
           </div>
         </div>

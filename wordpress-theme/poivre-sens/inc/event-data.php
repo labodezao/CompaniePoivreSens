@@ -343,11 +343,14 @@ function ps_evt_deviner_lien_categorie($nom_categorie) {
  * l'administrateur reste libre de la corriger ensuite depuis Événements
  * → Types d'événement.
  *
- * v2 (reconnaissance par nom plutôt que par slug deviné) : la v1 n'avait
- * correctement rempli que « Corps Vivant », les slugs supposés des deux
- * autres catégories ne correspondant pas aux vrais slugs du site.
+ * v2 (reconnaissance par nom plutôt que par slug deviné, sur « init » plutôt
+ * que « admin_init ») : la v1 n'avait correctement rempli que « Corps
+ * Vivant », les slugs supposés des deux autres catégories ne correspondant
+ * pas aux vrais slugs du site — et étant posée sur « admin_init », elle ne
+ * s'exécutait de toute façon qu'à la prochaine visite de l'administration,
+ * pas au premier chargement du site par un visiteur.
  */
-add_action('admin_init', function () {
+add_action('init', function () {
     if (!defined('CFEB_TAX') || get_option('ps_evt_liens_categories_v2')) return;
 
     $termes = get_terms(['taxonomy' => CFEB_TAX, 'hide_empty' => false]);
@@ -371,9 +374,12 @@ add_action('admin_init', function () {
  * encore son propre champ « Inscription externe » — demandé pour que le
  * lien apparaisse bien sur les événements déjà créés, sans dépendre d'une
  * correspondance de catégorie qui pourrait encore échouer pour l'un d'eux.
- * N'écrase jamais un champ déjà réglé à la main sur l'événement.
+ * N'écrase jamais un champ déjà réglé à la main sur l'événement. Sur
+ * « init » (comme la migration des catégories ci-dessus) pour s'exécuter
+ * dès le premier chargement du site, sans attendre une visite de
+ * l'administration.
  */
-add_action('admin_init', function () {
+add_action('init', function () {
     if (!defined('CFEB_TAX') || !defined('CFEB_SLUG') || get_option('ps_evt_liens_evenements_v1')) return;
 
     $evenements = get_posts([
