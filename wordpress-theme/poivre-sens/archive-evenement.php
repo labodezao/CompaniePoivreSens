@@ -43,6 +43,18 @@ $villes = $wpdb->get_col($wpdb->prepare("
         </p>
     </div>
 
+    <?php
+    // Adhésion — bandeau permanent, au-dessus des dates quelle que soit la vue.
+    // Réglez la campagne « adhesion » dans Apparence → Campagnes AssoConnect ;
+    // absente ici (silencieusement pour un visiteur) tant qu'elle ne l'est pas.
+    $ps_adhesion_cta = do_shortcode('[assoconnect campagne="adhesion" texte="' . __('Devenir adhérent', 'poivre-sens') . '"]');
+    if ($ps_adhesion_cta !== ''): ?>
+    <div class="arch-evts__adhesion">
+        <span><?php _e('Envie de nous rejoindre à l\'année ?', 'poivre-sens'); ?></span>
+        <?= $ps_adhesion_cta ?>
+    </div>
+    <?php endif; ?>
+
     <!-- Vue : liste ou calendrier -->
     <div class="cal-list__vues">
         <a href="<?= esc_url(add_query_arg(array_filter(['vue' => 'liste', 'type' => $filtre_type, 'ville' => $filtre_ville, 'passes' => $show_past ? '1' : '']), $base)) ?>"

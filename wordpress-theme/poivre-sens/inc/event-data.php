@@ -114,7 +114,10 @@ function ps_evt_champ($post_id, $champ) {
 
         case 'billetterie':
             $externe = ps_evt_inscription_externe($post_id);
-            return $externe !== '' ? $externe : (string) get_post_meta($post_id, '_cfeb_event_url', true);
+            if ($externe !== '') return $externe;
+            $defaut_type = ps_evt_type_lien_paiement_categorie($post_id);
+            if ($defaut_type !== '') return $defaut_type;
+            return (string) get_post_meta($post_id, '_cfeb_event_url', true);
 
         case 'prix_brut':
             $montant = get_post_meta($post_id, '_cfeb_prix', true);
@@ -220,7 +223,7 @@ add_action('add_meta_boxes', function () {
             $valeur = ps_evt_inscription_externe($post->ID);
             ?>
             <p style="font-size:12px;color:#666;margin:0 0 8px">
-                <?php _e('Laissez vide pour garder la réservation en ligne du plugin. Sinon, collez une URL de billetterie externe, ou un shortcode de paiement — il remplace alors le bouton de réservation sur la fiche de cet événement.', 'poivre-sens'); ?>
+                <?php _e('Laissez vide pour utiliser le lien de paiement par défaut du type de cet événement (réglé dans Événements → Types d\'événement), ou à défaut la réservation en ligne du plugin. Sinon, collez ici une URL de billetterie externe, ou un shortcode de paiement — propre à cet événement, il l\'emporte sur tout le reste.', 'poivre-sens'); ?>
             </p>
             <input type="text" name="ps_evt_inscription_externe" value="<?= esc_attr($valeur) ?>"
                 style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px"
@@ -243,6 +246,65 @@ add_action('save_post', function ($post_id) {
         update_post_meta($post_id, '_ps_evt_inscription_externe', sanitize_text_field(wp_unslash($_POST['ps_evt_inscription_externe'])));
     }
 });
+
+/* ═══════════════════════════════════════════════════════════
+   LIEN DE PAIEMENT PAR DÉFAUT — par catégorie d'événement, pour ne
+   pas avoir à le régler événement par événement. Le champ
+   « Inscription externe » de l'événement lui-même reste prioritaire
+   quand il est renseigné (voir ps_evt_champ() ci-dessus).
+   ═══════════════════════════════════════════════════════════ */
+
+/** Lien de paiement par défaut d'une catégorie (URL ou shortcode), réglé
+ *  sur sa page de modification (Événements → Types d'événement). */
+function ps_evt_type_lien_defaut($term_id) {
+    return trim((string) get_term_meta($term_id, '_ps_evt_type_lien_paiement', true));
+}
+
+/** Lien par défaut du type assigné à un événement, ou chaîne vide s'il n'a
+ *  pas de type ou que son type n'a pas de lien réglé. */
+function ps_evt_type_lien_paiement_categorie($post_id) {
+    if (!defined('CFEB_TAX')) return '';
+    $termes = get_the_terms($post_id, CFEB_TAX);
+    if (!is_array($termes) || !$termes) return '';
+    return ps_evt_type_lien_defaut($termes[0]->term_id);
+}
+
+add_action('admin_init', function () {
+    if (!defined('CFEB_TAX')) return;
+    add_action(CFEB_TAX . '_add_form_fields', 'ps_evt_type_champ_lien_ajout');
+    add_action(CFEB_TAX . '_edit_form_fields', 'ps_evt_type_champ_lien_modif');
+    add_action('created_' . CFEB_TAX, 'ps_evt_type_sauver_lien');
+    add_action('edited_' . CFEB_TAX,  'ps_evt_type_sauver_lien');
+});
+
+function ps_evt_type_champ_lien_ajout() {
+    ?>
+    <div class="form-field">
+        <label for="ps_evt_type_lien_paiement"><?php _e('Lien de paiement par défaut', 'poivre-sens'); ?></label>
+        <input type="text" name="ps_evt_type_lien_paiement" id="ps_evt_type_lien_paiement" placeholder='https://… ou [assoconnect campagne="cle"]'>
+        <p><?php _e('Utilisé par tout événement de ce type dont le champ « Inscription externe » (sur la fiche de l\'événement) est vide.', 'poivre-sens'); ?></p>
+    </div>
+    <?php
+}
+
+function ps_evt_type_champ_lien_modif($term) {
+    $valeur = ps_evt_type_lien_defaut($term->term_id);
+    ?>
+    <tr class="form-field">
+        <th scope="row"><label for="ps_evt_type_lien_paiement"><?php _e('Lien de paiement par défaut', 'poivre-sens'); ?></label></th>
+        <td>
+            <input type="text" name="ps_evt_type_lien_paiement" id="ps_evt_type_lien_paiement" value="<?php echo esc_attr($valeur); ?>" class="large-text"
+                placeholder='https://… ou [assoconnect campagne="cle"]'>
+            <p class="description"><?php _e('URL de billetterie, ou shortcode de paiement (ex. [assoconnect campagne="cle"] / [helloasso campagne="cle"] / [assoconnect slug="…"] pour une campagne ponctuelle). Utilisé par tout événement de ce type dont le champ « Inscription externe » propre à l\'événement est vide.', 'poivre-sens'); ?></p>
+        </td>
+    </tr>
+    <?php
+}
+
+function ps_evt_type_sauver_lien($term_id) {
+    if (!isset($_POST['ps_evt_type_lien_paiement'])) return;
+    update_term_meta($term_id, '_ps_evt_type_lien_paiement', sanitize_text_field(wp_unslash($_POST['ps_evt_type_lien_paiement'])));
+}
 
 /**
  * Types d'événement proposés dans les filtres, sous la forme

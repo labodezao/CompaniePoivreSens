@@ -293,6 +293,9 @@ body.nav-open { overflow:hidden; }
 
 /* ── Archive événements ─────────────────────────────────── */
 .arch-evts { padding:100px 80px; min-height:70vh; }
+.arch-evts__adhesion{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:18px 24px;margin-bottom:28px;background:var(--noir2);border:1px solid var(--bord)}
+.arch-evts__adhesion span{font-size:.78rem;color:var(--creme);letter-spacing:.02em}
+.arch-evts__adhesion p{margin:0}
 .arch-evts__g {
   display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
   gap:1px; background:var(--bord); border:1px solid var(--bord);
