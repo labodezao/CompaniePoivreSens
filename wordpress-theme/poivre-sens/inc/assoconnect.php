@@ -49,8 +49,12 @@ function ps_assoconnect_campagne_defaut_cle() {
  * si elle n'existe pas encore, et la marque par défaut si aucune campagne
  * par défaut n'est réglée — sans jamais écraser une configuration déjà
  * faite à la main depuis Apparence → Campagnes AssoConnect.
+ *
+ * Sur « init » plutôt que « admin_init » pour s'exécuter dès le premier
+ * chargement du site par un visiteur, sans attendre une visite de
+ * l'administration.
  */
-add_action('admin_init', function () {
+add_action('init', function () {
     if (get_option('ps_assoconnect_migration_adhesion_v1')) return;
 
     $campagnes = ps_assoconnect_campagnes();
