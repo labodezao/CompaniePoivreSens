@@ -43,6 +43,33 @@ function ps_assoconnect_campagne_defaut_cle() {
     return (string) get_option('ps_assoconnect_campagne_defaut', '');
 }
 
+/**
+ * Migration ponctuelle (se déclenche une seule fois, drapeau en option) :
+ * enregistre la campagne d'adhésion déjà en ligne sous la clé « adhesion »
+ * si elle n'existe pas encore, et la marque par défaut si aucune campagne
+ * par défaut n'est réglée — sans jamais écraser une configuration déjà
+ * faite à la main depuis Apparence → Campagnes AssoConnect.
+ */
+add_action('admin_init', function () {
+    if (get_option('ps_assoconnect_migration_adhesion_v1')) return;
+
+    $campagnes = ps_assoconnect_campagnes();
+    if (!isset($campagnes['adhesion'])) {
+        $campagnes['adhesion'] = [
+            'label'      => __('Adhésion', 'poivre-sens'),
+            'site'       => 'compagnie-poivresens',
+            'collect_id' => '01M20DSQS51GK8S413328KY1TP',
+            'slug'       => '752547-b-adhesion-cie-poivre-sens-2026-2027',
+        ];
+        update_option('ps_assoconnect_campagnes', $campagnes);
+    }
+    if (ps_assoconnect_campagne_defaut_cle() === '') {
+        update_option('ps_assoconnect_campagne_defaut', 'adhesion');
+    }
+
+    update_option('ps_assoconnect_migration_adhesion_v1', 1);
+});
+
 /* ═══════════════════════════════════════════════════════════
    2. SHORTCODE
    ═══════════════════════════════════════════════════════════ */

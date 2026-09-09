@@ -188,12 +188,10 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
                     <a href="<?= esc_url($e['permalink']) ?>" class="cal-list__action-link">
                         <?= __('En savoir plus', 'poivre-sens') ?> →
                     </a>
-                    <?php if ($e['billetterie'] && !$e['complet'] && $e['statut_event'] === 'publie' && !ps_evt_inscription_est_shortcode($e['billetterie'])): ?>
-                    <a href="<?= esc_url($e['billetterie']) ?>" class="cal-list__action-btn" target="_blank" rel="noopener">
-                        <?= __('Réserver', 'poivre-sens') ?>
-                    </a>
+                    <?php if ($e['billetterie'] && !$e['complet'] && $e['statut_event'] === 'publie' && ps_evt_inscription_est_shortcode($e['billetterie'])): ?>
+                    <span class="cal-list__action-paiement"><?= do_shortcode($e['billetterie']) ?></span>
                     <?php elseif ($e['billetterie'] && !$e['complet'] && $e['statut_event'] === 'publie'): ?>
-                    <a href="<?= esc_url($e['permalink']) ?>" class="cal-list__action-btn">
+                    <a href="<?= esc_url($e['billetterie']) ?>" class="cal-list__action-btn" target="_blank" rel="noopener">
                         <?= __('Réserver', 'poivre-sens') ?>
                     </a>
                     <?php endif; ?>
