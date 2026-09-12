@@ -368,40 +368,38 @@ add_action('init', function () {
 }, 20); // après l'enregistrement des hooks de taxonomie ci-dessus
 
 /**
- * Migration ponctuelle complémentaire : au lieu de compter uniquement sur
- * le lien par défaut de la catégorie (ci-dessus), pose directement le
- * shortcode/URL de paiement sur chaque événement déjà publié qui n'a pas
- * encore son propre champ « Inscription externe » — demandé pour que le
- * lien apparaisse bien sur les événements déjà créés, sans dépendre d'une
- * correspondance de catégorie qui pourrait encore échouer pour l'un d'eux.
- * N'écrase jamais un champ déjà réglé à la main sur l'événement. Sur
- * « init » (comme la migration des catégories ci-dessus) pour s'exécuter
- * dès le premier chargement du site, sans attendre une visite de
- * l'administration.
+ * Migration ponctuelle : retire le champ « Inscription externe » propre à
+ * chaque événement ainsi que le champ « URL de billetterie » du plugin,
+ * pour que le lien de paiement par défaut de la catégorie (ci-dessus)
+ * redevienne la seule source utilisée.
+ *
+ * Une précédente migration (v1, désormais supprimée) avait au contraire
+ * copié le lien de la catégorie directement sur chaque événement, pour
+ * qu'il s'affiche tout de suite sans dépendre d'une correspondance de
+ * catégorie qui pouvait encore échouer. Mais cette copie fige le lien sur
+ * l'événement : le corriger ensuite dans Événements → Types d'événement
+ * n'a alors plus aucun effet sur les événements déjà créés, qui gardent
+ * l'ancienne valeur — exactement le problème que le réglage par catégorie
+ * était censé éviter. Cette migration efface donc sans condition ce que
+ * la v1 avait posé (et tout champ billetterie du plugin), pour que les
+ * événements retombent sur le lien de la catégorie.
  */
 add_action('init', function () {
-    if (!defined('CFEB_TAX') || !defined('CFEB_SLUG') || get_option('ps_evt_liens_evenements_v1')) return;
+    if (!defined('CFEB_SLUG') || get_option('ps_evt_nettoyage_liens_evenements_v1')) return;
 
     $evenements = get_posts([
-        'post_type'      => CFEB_SLUG,
-        'post_status'    => 'any',
-        'numberposts'    => -1,
-        'fields'         => 'ids',
+        'post_type'   => CFEB_SLUG,
+        'post_status' => 'any',
+        'numberposts' => -1,
+        'fields'      => 'ids',
     ]);
 
     foreach ($evenements as $post_id) {
-        if (ps_evt_inscription_externe($post_id) !== '') continue;
-
-        $termes = get_the_terms($post_id, CFEB_TAX);
-        if (!is_array($termes) || !$termes) continue;
-
-        $lien = ps_evt_deviner_lien_categorie($termes[0]->name);
-        if ($lien !== '') {
-            update_post_meta($post_id, '_ps_evt_inscription_externe', $lien);
-        }
+        delete_post_meta($post_id, '_ps_evt_inscription_externe');
+        delete_post_meta($post_id, '_cfeb_event_url');
     }
 
-    update_option('ps_evt_liens_evenements_v1', 1);
+    update_option('ps_evt_nettoyage_liens_evenements_v1', 1);
 }, 21); // après la migration des catégories ci-dessus
 
 /**
