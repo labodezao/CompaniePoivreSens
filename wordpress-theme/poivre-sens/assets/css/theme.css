@@ -209,6 +209,7 @@ body.nav-open { overflow:hidden; }
 .tem-page-item { padding:32px 0; border-top:1px solid var(--bord); }
 .tem-page-item:first-child { border-top:none; padding-top:0; }
 .tem-page-item .tem-texte { margin-bottom:20px; }
+.tem-page--vide { padding:60px 0; text-align:center; font-size:.9rem; color:var(--gris); }
 
 /* ── Influences ──────────────────────────────────────────── */
 .influences { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--bord); border:1px solid var(--bord); }
