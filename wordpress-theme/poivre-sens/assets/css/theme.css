@@ -223,6 +223,12 @@ body.nav-open { overflow:hidden; }
   animation-name:tem-marquee-scroll; animation-timing-function:linear; animation-iteration-count:infinite;
 }
 .tem-marquee:hover .tem-marquee__track { animation-play-state:paused; }
+/* Un seul témoignage : rien à faire défiler ni à mettre en boucle — carte
+   fixe, centrée dans la largeur pleine page (sans ça, width:max-content sur
+   .tem-marquee__track la laisse collée à gauche, avec tout le vide visible
+   à droite sur un écran large). */
+.tem-marquee--fixe { display:flex; justify-content:center; }
+.tem-marquee--fixe .tem-marquee__track { animation:none; }
 .tem-marquee__card {
   flex:0 0 320px; max-width:320px; text-align:left; cursor:pointer;
   background:var(--noir2); border:1px solid var(--bord); padding:32px 28px;
