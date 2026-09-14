@@ -598,14 +598,14 @@ add_shortcode('ps_temoignages', function ($atts): string {
 
 /**
  * [ps_temoignages_page] — bandeau défilant (en boucle, en pause au survol)
- * de tous les témoignages publiés, plutôt qu'une liste statique : pensé
- * pour occuper une page « Témoignages » à part (voir le pattern Gutenberg
- * du même nom), le shortcode [ps_temoignages] de l'accueil restant
- * l'aperçu condensé en grille.
+ * de tous les témoignages publiés, pensé pour occuper une page
+ * « Témoignages » à part (voir le pattern Gutenberg du même nom) ; le
+ * shortcode [ps_temoignages] de l'accueil reste l'aperçu condensé en grille.
  *
- * Les témoignages vidéo n'y figurent pas — un lecteur vidéo ne se prête
- * pas à un défilement continu — ils restent visibles ailleurs, sur la
- * grille de l'accueil.
+ * Chaque carte n'affiche qu'un aperçu (extrait de texte, ou simple mention
+ * pour une vidéo — un lecteur ne se prête pas à un défilement continu) ; le
+ * témoignage complet (texte intégral, ou la vidéo) s'ouvre en fenêtre
+ * modale au clic (ou entrée/espace au clavier).
  */
 add_shortcode('ps_temoignages_page', function (): string {
     $q = new WP_Query([
@@ -620,16 +620,19 @@ add_shortcode('ps_temoignages_page', function (): string {
     if ($q->have_posts()) {
         while ($q->have_posts()) {
             $q->the_post();
-            $d = ps_temoignage_donnees(get_the_ID());
-            if ($d['video_html']) continue; // pas de lecteur vidéo dans un bandeau défilant
-            ob_start(); the_content(); $texte = ob_get_clean();
+            $id = get_the_ID();
+            $d  = ps_temoignage_donnees($id);
+            ob_start(); the_content(); $texte_complet = ob_get_clean();
             $items[] = [
-                'badge'   => ps_temoignage_type_badge_html($d['type']),
-                'etoiles' => $d['etoiles'],
-                'texte'   => $texte,
-                'photo'   => $d['photo'],
-                'nom'     => get_the_title(),
-                'role'    => $d['role'],
+                'id'            => $id,
+                'badge'         => ps_temoignage_type_badge_html($d['type']),
+                'etoiles'       => $d['etoiles'],
+                'video_html'    => $d['video_html'],
+                'texte_complet' => $texte_complet,
+                'abstract'      => wp_trim_words(wp_strip_all_tags(get_the_content()), 22, '…'),
+                'photo'         => $d['photo'],
+                'nom'           => get_the_title(),
+                'role'          => $d['role'],
             ];
         }
         wp_reset_postdata();
@@ -659,13 +662,19 @@ add_shortcode('ps_temoignages_page', function (): string {
       </p>
       <div class="tem-marquee">
         <div class="tem-marquee__track" style="animation-duration:<?= (int) $duree ?>s">
-          <?php foreach ([false, true] as $doublon) : foreach ($items as $it) : ?>
-          <figure class="tem-marquee__card"<?= $doublon ? ' aria-hidden="true"' : '' ?>>
+          <?php foreach ([false, true] as $doublon) : foreach ($items as $it) :
+            $modal_id = 'tem-modal-' . (int) $it['id'];
+          ?>
+          <figure class="tem-marquee__card" data-tem-modal="<?= esc_attr($modal_id) ?>"<?= $doublon ? ' aria-hidden="true" tabindex="-1"' : ' role="button" tabindex="0"' ?>>
             <?= $it['badge'] ?>
             <?php if ($it['etoiles'] > 0) : ?>
             <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $it['etoiles']) . str_repeat('☆', 5 - $it['etoiles']) ?></div>
             <?php endif; ?>
-            <blockquote class="tem-texte"><?= $it['texte'] ?></blockquote>
+            <?php if ($it['video_html']) : ?>
+            <p class="tem-marquee__video-indice">▶ <?php _e('Témoignage vidéo', 'poivre-sens') ?></p>
+            <?php else : ?>
+            <blockquote class="tem-texte"><p><?= esc_html($it['abstract']) ?></p></blockquote>
+            <?php endif; ?>
             <figcaption class="tem-auteur">
               <?php if ($it['photo']) : ?><img src="<?= esc_url($it['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
               <div>
@@ -678,6 +687,55 @@ add_shortcode('ps_temoignages_page', function (): string {
         </div>
       </div>
     </div>
+
+    <?php foreach ($items as $it) : ?>
+    <dialog class="tem-modal" id="tem-modal-<?= (int) $it['id'] ?>">
+      <div class="tem-modal__contenu">
+        <button type="button" class="tem-modal__fermer" data-tem-modal-fermer aria-label="<?php echo esc_attr__('Fermer', 'poivre-sens'); ?>">×</button>
+        <?= $it['badge'] ?>
+        <?php if ($it['etoiles'] > 0) : ?>
+        <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $it['etoiles']) . str_repeat('☆', 5 - $it['etoiles']) ?></div>
+        <?php endif; ?>
+        <?php if ($it['video_html']) : ?>
+        <div class="tem-video"><?= $it['video_html'] ?></div>
+        <?php else : ?>
+        <blockquote class="tem-texte"><?= $it['texte_complet'] ?></blockquote>
+        <?php endif; ?>
+        <div class="tem-auteur">
+          <?php if ($it['photo']) : ?><img src="<?= esc_url($it['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
+          <div>
+            <p class="tem-nom"><?= $it['nom'] ?></p>
+            <?php if ($it['role']) : ?><p class="tem-role"><?= esc_html($it['role']) ?></p><?php endif; ?>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <?php endforeach; ?>
+
+    <script>
+    (function () {
+      if (window.__psTemModalBound) return;
+      window.__psTemModalBound = true;
+      function ouvrir(carte) {
+        var modal = document.getElementById(carte.getAttribute('data-tem-modal'));
+        if (modal && typeof modal.showModal === 'function') modal.showModal();
+      }
+      document.addEventListener('click', function (e) {
+        var fermer = e.target.closest('[data-tem-modal-fermer]');
+        if (fermer) { var dlg = fermer.closest('dialog'); if (dlg) dlg.close(); return; }
+        if (e.target.tagName === 'DIALOG' && e.target.classList.contains('tem-modal')) { e.target.close(); return; }
+        var carte = e.target.closest('[data-tem-modal]');
+        if (carte) ouvrir(carte);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var carte = e.target.closest('[data-tem-modal]');
+        if (!carte) return;
+        e.preventDefault();
+        ouvrir(carte);
+      });
+    })();
+    </script>
     <?php
     return ob_get_clean();
 });
