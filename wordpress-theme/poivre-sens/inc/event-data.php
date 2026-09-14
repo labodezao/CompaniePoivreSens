@@ -61,6 +61,7 @@ function ps_evt_champ($post_id, $champ) {
             $externe = ps_evt_inscription_externe($post_id);
             return $externe !== '' ? $externe : (string) get_post_meta($post_id, '_evt_billetterie', true);
         }
+        if ($champ === 'sous_titre') return ps_evt_sous_titre($post_id);
         // Réservation en ligne : notion propre au plugin, sans équivalent ici.
         if ($champ === 'prix_brut') return 0.0;
         return isset($legacy[$champ]) ? get_post_meta($post_id, $legacy[$champ], true) : '';
@@ -118,6 +119,9 @@ function ps_evt_champ($post_id, $champ) {
             $defaut_type = ps_evt_type_lien_paiement_categorie($post_id);
             if ($defaut_type !== '') return $defaut_type;
             return (string) get_post_meta($post_id, '_cfeb_event_url', true);
+
+        case 'sous_titre':
+            return ps_evt_sous_titre($post_id);
 
         case 'prix_brut':
             $montant = get_post_meta($post_id, '_cfeb_prix', true);
@@ -248,6 +252,48 @@ add_action('save_post', function ($post_id) {
 });
 
 /* ═══════════════════════════════════════════════════════════
+   SOUS-TITRE — quelques mots affichés sous le nom de l'événement dans
+   le calendrier, pour préciser le thème de la séance sans passer par
+   le titre lui-même (qui, lui, reste souvent le même d'une séance à
+   l'autre : « Vendredi Corps Vivant », etc.).
+   ═══════════════════════════════════════════════════════════ */
+
+/** Sous-titre propre à un événement, ou chaîne vide. */
+function ps_evt_sous_titre($post_id) {
+    return trim((string) get_post_meta($post_id, '_ps_evt_sous_titre', true));
+}
+
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'ps_evt_sous_titre',
+        __('Sous-titre (agenda)', 'poivre-sens'),
+        function ($post) {
+            wp_nonce_field('ps_evt_sous_titre_save', 'ps_evt_sous_titre_nonce');
+            $valeur = ps_evt_sous_titre($post->ID);
+            ?>
+            <input type="text" name="ps_evt_sous_titre" value="<?= esc_attr($valeur) ?>"
+                style="width:100%;padding:7px 10px;border:1px solid #ddd;border-radius:3px;font-size:13px"
+                placeholder="<?php echo esc_attr__('ex. Improvisation et ancrage au sol', 'poivre-sens'); ?>">
+            <p style="font-size:11px;color:#999;margin:6px 0 0">
+                <?php _e('Facultatif. Affiché en petit sous le nom de cet événement dans le calendrier — le thème de la séance, en quelques mots.', 'poivre-sens'); ?>
+            </p>
+            <?php
+        },
+        ps_evt_cpt(), 'side', 'default'
+    );
+});
+
+add_action('save_post', function ($post_id) {
+    if (get_post_type($post_id) !== ps_evt_cpt()) return;
+    if (!isset($_POST['ps_evt_sous_titre_nonce']) || !wp_verify_nonce($_POST['ps_evt_sous_titre_nonce'], 'ps_evt_sous_titre_save')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (isset($_POST['ps_evt_sous_titre'])) {
+        update_post_meta($post_id, '_ps_evt_sous_titre', sanitize_text_field(wp_unslash($_POST['ps_evt_sous_titre'])));
+    }
+});
+
+/* ═══════════════════════════════════════════════════════════
    LIEN DE PAIEMENT PAR DÉFAUT — par catégorie d'événement, pour ne
    pas avoir à le régler événement par événement. Le champ
    « Inscription externe » de l'événement lui-même reste prioritaire
@@ -269,6 +315,21 @@ function ps_evt_type_lien_paiement_categorie($post_id) {
     return ps_evt_type_lien_defaut($termes[0]->term_id);
 }
 
+/** Texte de présentation commun à une catégorie (URL ou paragraphes libres),
+ *  réglé sur sa page de modification (Événements → Types d'événement). */
+function ps_evt_type_texte_intro($term_id) {
+    return trim((string) get_term_meta($term_id, '_ps_evt_type_texte_intro', true));
+}
+
+/** Texte de présentation du type assigné à un événement, ou chaîne vide s'il
+ *  n'a pas de type ou que son type n'a pas de texte réglé. */
+function ps_evt_type_texte_intro_categorie($post_id) {
+    if (!defined('CFEB_TAX')) return '';
+    $termes = get_the_terms($post_id, CFEB_TAX);
+    if (!is_array($termes) || !$termes) return '';
+    return ps_evt_type_texte_intro($termes[0]->term_id);
+}
+
 add_action('admin_init', function () {
     if (!defined('CFEB_TAX')) return;
     add_action(CFEB_TAX . '_add_form_fields', 'ps_evt_type_champ_lien_ajout');
@@ -284,11 +345,17 @@ function ps_evt_type_champ_lien_ajout() {
         <input type="text" name="ps_evt_type_lien_paiement" id="ps_evt_type_lien_paiement" placeholder='https://… ou [assoconnect campagne="cle"]'>
         <p><?php _e('Utilisé par tout événement de ce type dont le champ « Inscription externe » (sur la fiche de l\'événement) est vide.', 'poivre-sens'); ?></p>
     </div>
+    <div class="form-field">
+        <label for="ps_evt_type_texte_intro"><?php _e('Texte de présentation commun', 'poivre-sens'); ?></label>
+        <textarea name="ps_evt_type_texte_intro" id="ps_evt_type_texte_intro" rows="5"></textarea>
+        <p><?php _e('Affiché en premier sur la fiche de chaque événement de ce type, avant le texte propre à l\'événement (qui vient s\'ajouter juste après, comme un deuxième paragraphe).', 'poivre-sens'); ?></p>
+    </div>
     <?php
 }
 
 function ps_evt_type_champ_lien_modif($term) {
-    $valeur = ps_evt_type_lien_defaut($term->term_id);
+    $valeur       = ps_evt_type_lien_defaut($term->term_id);
+    $texte_intro  = ps_evt_type_texte_intro($term->term_id);
     ?>
     <tr class="form-field">
         <th scope="row"><label for="ps_evt_type_lien_paiement"><?php _e('Lien de paiement par défaut', 'poivre-sens'); ?></label></th>
@@ -298,12 +365,23 @@ function ps_evt_type_champ_lien_modif($term) {
             <p class="description"><?php _e('URL de billetterie, ou shortcode de paiement (ex. [assoconnect campagne="cle"] / [helloasso campagne="cle"] / [assoconnect slug="…"] pour une campagne ponctuelle). Utilisé par tout événement de ce type dont le champ « Inscription externe » propre à l\'événement est vide.', 'poivre-sens'); ?></p>
         </td>
     </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="ps_evt_type_texte_intro"><?php _e('Texte de présentation commun', 'poivre-sens'); ?></label></th>
+        <td>
+            <textarea name="ps_evt_type_texte_intro" id="ps_evt_type_texte_intro" rows="6" class="large-text"><?php echo esc_textarea($texte_intro); ?></textarea>
+            <p class="description"><?php _e('Affiché en premier sur la fiche de chaque événement de ce type, avant le texte propre à l\'événement (qui vient s\'ajouter juste après, comme un deuxième paragraphe).', 'poivre-sens'); ?></p>
+        </td>
+    </tr>
     <?php
 }
 
 function ps_evt_type_sauver_lien($term_id) {
-    if (!isset($_POST['ps_evt_type_lien_paiement'])) return;
-    update_term_meta($term_id, '_ps_evt_type_lien_paiement', sanitize_text_field(wp_unslash($_POST['ps_evt_type_lien_paiement'])));
+    if (isset($_POST['ps_evt_type_lien_paiement'])) {
+        update_term_meta($term_id, '_ps_evt_type_lien_paiement', sanitize_text_field(wp_unslash($_POST['ps_evt_type_lien_paiement'])));
+    }
+    if (isset($_POST['ps_evt_type_texte_intro'])) {
+        update_term_meta($term_id, '_ps_evt_type_texte_intro', wp_kses_post(wp_unslash($_POST['ps_evt_type_texte_intro'])));
+    }
 }
 
 /**
