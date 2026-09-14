@@ -597,11 +597,15 @@ add_shortcode('ps_temoignages', function ($atts): string {
 });
 
 /**
- * [ps_temoignages_page] — liste complète des témoignages publiés, en
- * colonne (inspirée d'une page d'avis dédiée) plutôt qu'en grille limitée :
- * compte total en en-tête, un témoignage par ligne. Prévu pour une page
- * « Témoignages » à part (voir le pattern Gutenberg du même nom), le
- * shortcode [ps_temoignages] de l'accueil restant l'aperçu condensé.
+ * [ps_temoignages_page] — bandeau défilant (en boucle, en pause au survol)
+ * de tous les témoignages publiés, plutôt qu'une liste statique : pensé
+ * pour occuper une page « Témoignages » à part (voir le pattern Gutenberg
+ * du même nom), le shortcode [ps_temoignages] de l'accueil restant
+ * l'aperçu condensé en grille.
+ *
+ * Les témoignages vidéo n'y figurent pas — un lecteur vidéo ne se prête
+ * pas à un défilement continu — ils restent visibles ailleurs, sur la
+ * grille de l'accueil.
  */
 add_shortcode('ps_temoignages_page', function (): string {
     $q = new WP_Query([
@@ -611,7 +615,27 @@ add_shortcode('ps_temoignages_page', function (): string {
         'orderby'        => 'menu_order',
         'order'          => 'ASC',
     ]);
-    if (!$q->have_posts()) {
+
+    $items = [];
+    if ($q->have_posts()) {
+        while ($q->have_posts()) {
+            $q->the_post();
+            $d = ps_temoignage_donnees(get_the_ID());
+            if ($d['video_html']) continue; // pas de lecteur vidéo dans un bandeau défilant
+            ob_start(); the_content(); $texte = ob_get_clean();
+            $items[] = [
+                'badge'   => ps_temoignage_type_badge_html($d['type']),
+                'etoiles' => $d['etoiles'],
+                'texte'   => $texte,
+                'photo'   => $d['photo'],
+                'nom'     => get_the_title(),
+                'role'    => $d['role'],
+            ];
+        }
+        wp_reset_postdata();
+    }
+
+    if (!$items) {
         ob_start();
         ?>
         <div class="tem-page tem-page--vide">
@@ -620,7 +644,12 @@ add_shortcode('ps_temoignages_page', function (): string {
         <?php
         return ob_get_clean();
     }
-    $total = $q->post_count;
+
+    $total = count($items);
+    // Rythme constant quel que soit le nombre de témoignages : ~5s par carte,
+    // avec un minimum pour qu'une poignée de témoignages ne défile pas trop vite.
+    $duree = max(20, $total * 5);
+
     ob_start();
     ?>
     <div class="tem-page">
@@ -628,29 +657,26 @@ add_shortcode('ps_temoignages_page', function (): string {
         <strong><?= (int) $total ?></strong>
         <?= esc_html(_n('témoignage', 'témoignages', $total, 'poivre-sens')) ?>
       </p>
-      <?php while ($q->have_posts()) : $q->the_post();
-        $id = get_the_ID();
-        $d  = ps_temoignage_donnees($id);
-      ?>
-      <article class="tem-page-item">
-        <?= ps_temoignage_type_badge_html($d['type']) ?>
-        <?php if ($d['etoiles'] > 0) : ?>
-        <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $d['etoiles']) . str_repeat('☆', 5 - $d['etoiles']) ?></div>
-        <?php endif; ?>
-        <?php if ($d['video_html']) : ?>
-        <div class="tem-video"><?= $d['video_html'] ?></div>
-        <?php else : ?>
-        <blockquote class="tem-texte"><?php the_content(); ?></blockquote>
-        <?php endif; ?>
-        <div class="tem-auteur">
-          <?php if ($d['photo']) : ?><img src="<?= esc_url($d['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
-          <div>
-            <p class="tem-nom"><?php the_title(); ?></p>
-            <?php if ($d['role']) : ?><p class="tem-role"><?= esc_html($d['role']) ?></p><?php endif; ?>
-          </div>
+      <div class="tem-marquee">
+        <div class="tem-marquee__track" style="animation-duration:<?= (int) $duree ?>s">
+          <?php foreach ([false, true] as $doublon) : foreach ($items as $it) : ?>
+          <figure class="tem-marquee__card"<?= $doublon ? ' aria-hidden="true"' : '' ?>>
+            <?= $it['badge'] ?>
+            <?php if ($it['etoiles'] > 0) : ?>
+            <div class="tem-etoiles" aria-hidden="true"><?= str_repeat('★', $it['etoiles']) . str_repeat('☆', 5 - $it['etoiles']) ?></div>
+            <?php endif; ?>
+            <blockquote class="tem-texte"><?= $it['texte'] ?></blockquote>
+            <figcaption class="tem-auteur">
+              <?php if ($it['photo']) : ?><img src="<?= esc_url($it['photo']) ?>" alt="" class="tem-photo" loading="lazy"><?php endif; ?>
+              <div>
+                <p class="tem-nom"><?= $it['nom'] ?></p>
+                <?php if ($it['role']) : ?><p class="tem-role"><?= esc_html($it['role']) ?></p><?php endif; ?>
+              </div>
+            </figcaption>
+          </figure>
+          <?php endforeach; endforeach; ?>
         </div>
-      </article>
-      <?php endwhile; wp_reset_postdata(); ?>
+      </div>
     </div>
     <?php
     return ob_get_clean();
