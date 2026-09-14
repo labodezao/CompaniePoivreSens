@@ -78,6 +78,7 @@ if ($query->have_posts()) {
             'type'        => ps_evt_champ($id, 'type_label'),
             'type_slug'   => ps_evt_champ($id, 'type'),
             'type_couleur' => ps_evt_champ($id, 'type_color'),
+            'sous_titre'  => ps_evt_champ($id, 'sous_titre'),
             'prix'        => ps_evt_champ($id, 'prix'),
             'billetterie' => ps_evt_champ($id, 'billetterie'),
             'complet'     => ps_evt_champ($id, 'complet'),
@@ -155,6 +156,9 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
                 <h3 class="cal-list__title">
                     <a href="<?= esc_url($e['permalink']) ?>"><?= esc_html($e['title']) ?></a>
                 </h3>
+                <?php if ($e['sous_titre']): ?>
+                <p class="cal-list__soustitre"><?= esc_html($e['sous_titre']) ?></p>
+                <?php endif; ?>
 
                 <ul class="cal-list__meta" role="list">
                     <?php if ($e['heure']): ?>

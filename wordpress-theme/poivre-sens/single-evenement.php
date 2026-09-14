@@ -146,6 +146,15 @@ get_header(); ?>
     <?php endif; ?>
 
     <div class="single-evt__corps">
+        <?php
+        // Texte de présentation commun à la catégorie (réglé dans Événements
+        // → Types d'événement) : premier paragraphe, avant le texte propre à
+        // cet événement — the_content() ci-dessous vient s'y ajouter, comme un
+        // deuxième paragraphe, sans jamais le remplacer.
+        $texte_intro = ps_evt_type_texte_intro_categorie($id);
+        if ($texte_intro !== ''): ?>
+        <div class="single-evt__intro"><?= wp_kses_post(wpautop($texte_intro)) ?></div>
+        <?php endif; ?>
         <?php the_content(); ?>
     </div>
 
