@@ -610,7 +610,13 @@ add_shortcode('ps_temoignages_page', function (): string {
         'order'          => 'ASC',
     ]);
     if (!$q->have_posts()) {
-        return '';
+        ob_start();
+        ?>
+        <div class="tem-page tem-page--vide">
+          <p><?php _e('Aucun témoignage publié pour le moment.', 'poivre-sens'); ?></p>
+        </div>
+        <?php
+        return ob_get_clean();
     }
     $total = $q->post_count;
     ob_start();

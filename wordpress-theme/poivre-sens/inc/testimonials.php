@@ -51,14 +51,23 @@ add_action('init', function () {
 });
 
 /**
- * Force un éditeur clair (fond blanc, texte sombre) sur l'écran de
- * modification d'un témoignage, quel que soit le mode sombre du
- * navigateur/système du visiteur — color-scheme empêche l'inversion
- * automatique, le reste couvre les navigateurs qui l'ignorent encore.
- * Un style sans fichier source (juste du CSS en ligne) suffit : WordPress
- * le recopie automatiquement dans l'iframe de l'éditeur de blocs.
+ * Éditeur classique (WYSIWYG simple : gras, italique, listes, lien) plutôt
+ * que l'éditeur de blocs — un texte de quelques lignes se saisit plus
+ * directement dans une seule zone que composé bloc par bloc, comme pour
+ * les métaboîtes du plugin CF Réservations (voir inc/event-data.php).
  */
-add_action('enqueue_block_editor_assets', function () {
+add_filter('use_block_editor_for_post_type', function ($actif, $type) {
+    return $type === 'temoignage' ? false : $actif;
+}, 10, 2);
+
+/**
+ * Force un écran clair (fond blanc, texte sombre) sur l'écran de
+ * modification d'un témoignage, quel que soit le mode sombre du
+ * navigateur/système de la personne qui l'édite — color-scheme empêche
+ * l'inversion automatique, le reste couvre les navigateurs qui l'ignorent
+ * encore et le contenu de l'éditeur classique (TinyMCE) lui-même.
+ */
+add_action('admin_enqueue_scripts', function () {
     $ecran = get_current_screen();
     if (!$ecran || $ecran->post_type !== 'temoignage') return;
 
@@ -72,12 +81,41 @@ add_action('enqueue_block_editor_assets', function () {
         .interface-interface-skeleton,
         .interface-interface-skeleton__sidebar,
         .block-editor-writing-flow,
-        .editor-post-title__input {
+        .editor-post-title__input,
+        #wp-content-wrap,
+        #wp-content-editor-container,
+        .mce-content-body,
+        #content {
             background: #fff !important;
             color: #1e1e1e !important;
         }
     ');
 });
+
+/**
+ * Migration ponctuelle : crée la page publique « Témoignages » (si elle
+ * n'existe pas déjà) avec la liste complète des témoignages publiés — le
+ * motif Gutenberg « Témoignages — page complète » existait déjà, mais
+ * rien ne créait la page elle-même : il fallait la créer et y coller le
+ * motif à la main pour qu'elle apparaisse (et que le lien « Témoignages »
+ * du menu, déjà prêt dans header.php, s'affiche). N'écrase jamais une
+ * page « temoignages » déjà créée à la main, même en brouillon.
+ */
+add_action('init', function () {
+    if (get_option('ps_temoignages_page_v1')) return;
+
+    if (!get_page_by_path('temoignages')) {
+        wp_insert_post([
+            'post_type'    => 'page',
+            'post_status'  => 'publish',
+            'post_title'   => __('Témoignages', 'poivre-sens'),
+            'post_name'    => 'temoignages',
+            'post_content' => "<!-- wp:shortcode -->\n[ps_temoignages_page]\n<!-- /wp:shortcode -->",
+        ]);
+    }
+
+    update_option('ps_temoignages_page_v1', 1);
+}, 30); // après l'enregistrement du CPT ci-dessus
 
 /** Couleur d'un type de témoignage (choisie sur sa page de modification). */
 function ps_temoignage_type_couleur($term_id) {
