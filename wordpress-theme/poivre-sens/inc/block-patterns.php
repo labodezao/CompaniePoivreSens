@@ -652,6 +652,9 @@ add_shortcode('ps_temoignages_page', function (): string {
     // Rythme constant quel que soit le nombre de témoignages : ~5s par carte,
     // avec un minimum pour qu'une poignée de témoignages ne défile pas trop vite.
     $duree = max(20, $total * 5);
+    // Un seul témoignage : rien à faire défiler, la boucle n'aurait aucun
+    // sens — carte fixe et centrée à la place (voir tem-marquee--fixe).
+    $defile = $total >= 2;
 
     ob_start();
     ?>
@@ -660,9 +663,9 @@ add_shortcode('ps_temoignages_page', function (): string {
         <strong><?= (int) $total ?></strong>
         <?= esc_html(_n('témoignage', 'témoignages', $total, 'poivre-sens')) ?>
       </p>
-      <div class="tem-marquee">
-        <div class="tem-marquee__track" style="animation-duration:<?= (int) $duree ?>s">
-          <?php foreach ([false, true] as $doublon) : foreach ($items as $it) :
+      <div class="tem-marquee<?= $defile ? '' : ' tem-marquee--fixe' ?>">
+        <div class="tem-marquee__track"<?= $defile ? ' style="animation-duration:' . (int) $duree . 's"' : '' ?>>
+          <?php foreach ($defile ? [false, true] : [false] as $doublon) : foreach ($items as $it) :
             $modal_id = 'tem-modal-' . (int) $it['id'];
           ?>
           <figure class="tem-marquee__card" data-tem-modal="<?= esc_attr($modal_id) ?>"<?= $doublon ? ' aria-hidden="true" tabindex="-1"' : ' role="button" tabindex="0"' ?>>
