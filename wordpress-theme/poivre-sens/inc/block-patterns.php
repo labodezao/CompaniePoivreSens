@@ -168,7 +168,7 @@ add_shortcode('ps_evenements', function (): string {
             <?php elseif ($se === 'reporte') : ?><span class="cal-list__complet"><?php _e('Reporté', 'poivre-sens'); ?></span>
             <?php elseif ($cp) : ?><span class="cal-list__complet"><?php _e('Complet', 'poivre-sens'); ?></span><?php endif; ?>
             <h3 class="cal-list__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-            <?php if ($st) : ?><p class="cal-list__soustitre"><?= esc_html($st) ?></p><?php endif; ?>
+            <?php if ($st) : ?><p class="cal-list__soustitre cal-list__soustitre--<?= esc_attr(sanitize_html_class($tys ?: 'autre')) ?>"<?= $tyc ? ' style="color:' . esc_attr($tyc) . '"' : '' ?>><?= esc_html($st) ?></p><?php endif; ?>
             <ul class="cal-list__meta" role="list">
               <?php if ($h) : ?><li class="cal-list__meta-item"><span class="cal-list__meta-ic">🕐</span><?= esc_html($h) ?></li><?php endif; ?>
               <?php if ($l || $v) : ?><li class="cal-list__meta-item"><span class="cal-list__meta-ic">📍</span><?= esc_html(implode(', ', array_filter([$l, $v]))) ?></li><?php endif; ?>

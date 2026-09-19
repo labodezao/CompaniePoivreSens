@@ -16,9 +16,7 @@ $year    = (int)(get_query_var('ps_cal_year')  ?: date('Y'));
 $month   = (int)(get_query_var('ps_cal_month') ?: date('n'));
 $all     = (bool)get_query_var('ps_cal_all');
 
-// Limiter sur 6 mois à venir depuis aujourd'hui
 $today    = date('Y-m-d');
-$end_date = date('Y-m-d', strtotime('+6 months'));
 
 $cle = ps_evt_cle_date();
 
@@ -38,14 +36,6 @@ $args = [
         'type'    => 'CHAR',
     ]],
 ];
-if (!$all) {
-    $args['meta_query'][] = [
-        'key'     => $cle,
-        'value'   => ps_evt_borne_fin($end_date),
-        'compare' => '<=',
-        'type'    => 'CHAR',
-    ];
-}
 
 // Filtres de l'agenda (transmis par archive-evenement.php)
 $args = ps_evt_filtrer_type($args, (string) get_query_var('ps_cal_type'));
@@ -157,7 +147,7 @@ $jours_fr = ['Sun'=>'Dim','Mon'=>'Lun','Tue'=>'Mar','Wed'=>'Mer','Thu'=>'Jeu','F
                     <a href="<?= esc_url($e['permalink']) ?>"><?= esc_html($e['title']) ?></a>
                 </h3>
                 <?php if ($e['sous_titre']): ?>
-                <p class="cal-list__soustitre"><?= esc_html($e['sous_titre']) ?></p>
+                <p class="cal-list__soustitre cal-list__soustitre--<?= esc_attr(sanitize_html_class($e['type_slug'] ?: 'autre')) ?>"<?= $e['type_couleur'] ? ' style="color:' . esc_attr($e['type_couleur']) . '"' : '' ?>><?= esc_html($e['sous_titre']) ?></p>
                 <?php endif; ?>
 
                 <ul class="cal-list__meta" role="list">
