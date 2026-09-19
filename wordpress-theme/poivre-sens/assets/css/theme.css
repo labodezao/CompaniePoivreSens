@@ -639,7 +639,14 @@ h4.co-h {
 .cal-list__title:has(+ .cal-list__soustitre){margin-bottom:2px}
 .cal-list__title a{color:inherit;transition:color .2s}
 .cal-list__title a:hover{color:var(--or)}
-.cal-list__soustitre{font-size:.8rem;color:var(--gris);margin-bottom:10px}
+.cal-list__soustitre{font-size:.8rem;color:var(--or);margin-bottom:10px}
+/* Même couleur que la pastille de type (cal-list__type--*) juste au-dessus,
+   pour rester lisible — un gris uni n'était pas assez visible. */
+.cal-list__soustitre--spectacle{color:var(--rouge)}
+.cal-list__soustitre--jam{color:var(--cat-jam)}
+.cal-list__soustitre--residence{color:var(--cat-residence)}
+.cal-list__soustitre--concert{color:var(--cat-concert)}
+.cal-list__soustitre--autre{color:var(--gris)}
 .cal-list__meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:12px}
 .cal-list__meta-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--gris)}
 .cal-list__meta-ic{font-size:.72rem}
