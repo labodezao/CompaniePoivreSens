@@ -639,7 +639,7 @@ h4.co-h {
 .cal-list__title:has(+ .cal-list__soustitre){margin-bottom:2px}
 .cal-list__title a{color:inherit;transition:color .2s}
 .cal-list__title a:hover{color:var(--or)}
-.cal-list__soustitre{font-size:.8rem;color:var(--or);margin-bottom:10px}
+.cal-list__soustitre{font-size:.85rem;font-weight:600;letter-spacing:.01em;color:var(--or);margin-bottom:10px}
 /* Même couleur que la pastille de type (cal-list__type--*) juste au-dessus,
    pour rester lisible — un gris uni n'était pas assez visible. */
 .cal-list__soustitre--spectacle{color:var(--rouge)}
